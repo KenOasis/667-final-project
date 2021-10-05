@@ -14,5 +14,5 @@ app.use(testRoutes.routes);
 app.use(errorController.Error404);
 
 
-let port_number = server.listen(process.env.PORT || 3000);
+let port_number = app.listen(process.env.PORT || 3000);
 app.listen(port_number);
