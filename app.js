@@ -16,4 +16,3 @@ app.use(errorController.Error404);
 
 let port_number = process.env.PORT || 3000;
 app.listen(port_number);
-console.log("Server run at port : " + port_number);
