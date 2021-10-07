@@ -10,10 +10,6 @@ const pgp = require('pg-promise')();
 //   config.ssl = false;
 // }
 // const connection = pgp(config);
-let connectionString = process.env.DATABASE_URL + "&ssl=no-verify";
-if (process.env.NODE_ENV == 'development') {
-  connectionString = process.env.DATABASE_URL;
-}
-const connection = pgp(connectionString);
+const connection = pgp(process.env.DATABASE_URL);
 
 module.exports = connection;
