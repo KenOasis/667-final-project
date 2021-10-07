@@ -1,13 +1,9 @@
 const pgp = require('pg-promise')();
-let ssl = {rejectUnauthorized: false};
-if (process.env.NODE_ENV === 'development') {
-  ssl = false;
+let connectionString = process.env.DATABASE_URL;
+if (process.env.NODE_ENV !== 'development') {
+  connectionString += "?sslmode=require";
 }
-const config = {
-  connectionString: process.env.DATABASE_URL,
-  max: 50,
-  ssl: ssl
-}
-const connection = pgp(config);
+
+const connection = pgp(connectionString);
 
 module.exports = connection;
