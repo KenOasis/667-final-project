@@ -2,7 +2,7 @@ const pgp = require('pg-promise')();
 let config = {
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: true
+    rejectUnauthorized: false
   }
 }
 if (process.env.NODE_ENV === 'development') {
