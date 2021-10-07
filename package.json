@@ -2,16 +2,15 @@
   "name": "term-project-667-term-project",
   "version": "1.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "start-server": "node index.js",
+    "start": "nodemon app.js",
+    "start-server": "node app.js",
     "start:dev": "NODE_ENV=development DEBUG=APP_NAME:* nodemon ./bin/www",
     "db:create:migration": "npx sequelize migration:generate --name ",
     "db:migrate": "npx sequelize db:migrate",
-    "db:rollback": "npx sequelize db:migrate:undo",
-    "postinstall": "npx sequelize db:migrate"
+    "db:rollback": "npx sequelize db:migrate:undo"
   },
   "repository": {
     "type": "git",
