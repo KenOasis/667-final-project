@@ -2,8 +2,8 @@ const pgp = require('pg-promise')();
 let config = {
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    sslmode: 'require',
-    rejectUnauthorized: false
+    sslmode: 'verify-full',
+    sslrootcert: 'ca.pem'
   }
 }
 
