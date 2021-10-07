@@ -1,5 +1,5 @@
 const pgp = require('pg-promise')();
-let ssl = true;
+let ssl = {rejectUnauthorized:false};
 if (process.env.NODE_ENV === 'development') {
   ssl = false;
 }
