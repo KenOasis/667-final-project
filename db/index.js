@@ -1,14 +1,14 @@
 const pgp = require('pg-promise')();
-// let config = {
-//   connectionString: process.env.DATABASE_URL + "/?sslmode=require",
-//   ssl: {
-//     rejectUnauthorized: false
-//   }
-// }
-let connectionString = process.env.DATABASE_URL + "/?sslmode=require";
-if (process.env.NODE_ENV === 'development') {
-  connectionString = process.env.DATABASE_URL;
+let config = {
+  connectionString: process.env.DATABASE_URL + "/?sslmode=require",
+  ssl: {
+    rejectUnauthorized: false
+  }
 }
-const connection = pgp(connectionString);
+if (process.env.NODE_ENV === 'development') {
+  config.connectionString = process.env.DATABASE_URL;
+  config.ssl = false;
+}
+const connection = pgp(config);
 
 module.exports = connection;
