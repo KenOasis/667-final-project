@@ -1,5 +1,5 @@
 const pgp = require('pg-promise')();
 
-const connection = pgp(process.env.DATABASE_URL + "?pgsslmode=no-verify");
+const connection = pgp(process.env.DATABASE_URL);
 
 module.exports = connection;
