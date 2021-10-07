@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "nodemon": "^2.0.13",
     "pg": "^8.7.1",
+    "pg-connection-string": "^2.5.0",
     "pg-promise": "^10.11.0",
     "pug": "^3.0.2",
     "sequelize": "^6.6.5",

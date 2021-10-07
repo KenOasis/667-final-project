@@ -1,15 +1,12 @@
 const pgp = require('pg-promise')();
-let ssl = null;
-if (process.env.NODE_ENV === 'production'){
-  ssl = {
+const { parse } = require('pg-connection-string');
+const config = parse(process.env.DATABASE_URL);
+
+if (process.env.NODE_ENV !== 'development'){
+  config.ssl = {
     rejectUnauthorized: false
   }
 }
-let config = {
-  connectionString : process.env.DATABASE_URL,
-  ssl : ssl
-}
-
 
 const connection = pgp(config);
 
