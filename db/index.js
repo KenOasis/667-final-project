@@ -1,6 +1,6 @@
 const pgp = require('pg-promise')();
 let config = {
-  connectionString: process.env.DATABASE_URL + "sslmode=require",
+  connectionString: process.env.DATABASE_URL + "/?sslmode=require",
   ssl: {
     rejectUnauthorized: false
   }
