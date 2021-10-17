@@ -37,6 +37,6 @@ module.exports = {
     );
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('game_users');
+    return queryInterface.dropTable('decks');
   }
 }
