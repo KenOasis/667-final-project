@@ -15,7 +15,7 @@
     "db:seed": "npx sequelize db:seed:all",
     "db:seed:undo": "npx sequelize db:seed:undo:all",
     "db:migrate:seed": "npx sequelize db:migrate && npx sequelize db:seed:all",
-    "postinstall": "npx sequelize db:migrate && npx sequelize db:seed:all"
+    "postinstall": "npx sequelize db:migrate"
   },
   "repository": {
     "type": "git",
