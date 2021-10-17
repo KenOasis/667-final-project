@@ -8,6 +8,7 @@ const app = express();
 const errorController = require('./controllers/errors');
 const testRoutes = require('./routes/testMain');
 const testDBRoutes = require('./routes/testdb');
+const showCardsRoutes = require('./routes/showCards');
 
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(testRoutes.routes);
 app.use('/tests', testDBRoutes.routes);
+app.use('/showCards', showCardsRoutes.routes);
 app.use(errorController.Error404);
 
 console.log(process.env.NODE_ENV);
