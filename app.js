@@ -21,6 +21,5 @@ app.use('/tests', testDBRoutes.routes);
 app.use('/showCards', showCardsRoutes.routes);
 app.use(errorController.Error404);
 
-console.log(process.env.NODE_ENV);
 let port_number = process.env.PORT || 3000;
 app.listen(port_number);

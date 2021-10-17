@@ -1,10 +1,8 @@
-const db = require('../db');
+const db = require('../models/');
 
-exports.showAllCards = (req, res, next) => {
-  db.any(`SELECT * FROM cards`)
-    .then( results => res.json( results ))
-    .catch( error => {
-    console.log( error )
-    res.json({ error })
-    })
+exports.showAllCards = async (req, res, next) => {
+  db['cards'].findAll({raw: true})
+    .then(cards => res.json({cards}))
+    .catch(error => res.json({error}));
+  
 }

@@ -4,9 +4,6 @@ const card_colors = ['red','yellow','green', 'blue', 'none'];
 // const card_actions = ['no_action', 'skip','reverse','draw_two','wild','wild_draw_four'];
 const card_face_values = ['zero','one','two','three','four','five','six','seven','eight','nine','none'];
 
-// adding number cards
-
-
 card_types.forEach(card_type => {
   if(card_type === 'number') {
     card_face_values.forEach(face_value => {
