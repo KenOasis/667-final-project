@@ -12,7 +12,7 @@
     "db:migrate": "npx sequelize db:migrate",
     "db:rollback": "npx sequelize db:migrate:undo",
     "db:rollback:all": "npx sequelize db:migrate:undo:all",
-    "db:seed": "npx sequelize db:seed:all",
+    "db:seed:all": "npx sequelize db:seed:all",
     "db:seed:undo": "npx sequelize db:seed:undo:all",
     "db:migrate:seed": "npx sequelize db:migrate && npx sequelize db:seed:all",
     "postinstall": "npx sequelize db:migrate && npx sequelize db:seed:all"
