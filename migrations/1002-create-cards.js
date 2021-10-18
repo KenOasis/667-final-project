@@ -54,10 +54,37 @@ module.exports = {
           allowNull: false
         }
       }
+    ).then(() => queryInterface.addConstraint('users', {
+      fields: ['game_play'],
+      type: 'check',
+      where: {
+        game_play: {
+          [Sequelize.Op.gte]: 0
+        }
+      }
+    })).then(() => queryInterface.addConstraint('users', {
+      fields: ['game_win'],
+      type: 'check',
+      where: {
+        game_win: {
+          [Sequelize.Op.gte]: 0
+        }
+      }
+    })).then(() => queryInterface.addConstraint('users', {
+      fields: ['points'],
+      type: 'check',
+      where: {
+        points: {
+          [Sequelize.Op.gte]: 0
+        }
+      }})
     );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('cards');
+    return queryInterface.dropTable('cards').then(() => queryInterface.sequelize.query(`DROP TYPE IF EXISTS enum_cards_action;
+    DROP TYPE IF EXISTS enum_cards_color; 
+    DROP TYPE IF EXISTS enum_cards_face_value; 
+    DROP TYPE IF EXISTS enum_cards_type`));
   }
 }

@@ -26,6 +26,22 @@ module.exports = {
           type: Sequelize.DATE,
           allowNull: false,
           defaultValue: Sequelize.literal('NOW()')
+        },
+        game_play: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultVaule: 0,
+        },
+        game_win: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultVaule: 0,
+          min: 0
+        },
+        points: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultVaule: 300
         }
       }
     );
