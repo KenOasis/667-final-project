@@ -13,38 +13,32 @@ module.exports = {
           unique: true,
           allowNull: false
         },
-        password: {
-          type: Sequelize.STRING(50),
+        email: {
+          type: Sequelize.STRING(65),
+          unique: true,
           allowNull: false
         },
-        profile_url: {
+        password: {
           type: Sequelize.STRING(255),
-          allowNull: false,
-          defaultValue: ''
+          allowNull: false
         },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,
           defaultValue: Sequelize.literal('NOW()')
-        },
-        game_play: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultVaule: 0,
-        },
-        game_win: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultVaule: 0,
-          min: 0
-        },
-        points: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultVaule: 300
         }
       }
-    );
+    ).then(() => queryInterface.addConstraint(
+      'users', {
+        type: 'check',
+        fields: ['email'],
+        where: {
+          email: {
+            [Sequelize.Op.regexp]: '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'
+          }
+        }
+      }
+    ));
   },
 
   down: (queryInterface, Sequelize) => {

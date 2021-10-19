@@ -1,0 +1,87 @@
+table users{
+  id serial [pk, increment]
+  username varchar(20) [unique, not null]
+  password varchar(50) [not null]
+  created_at timestamp
+}
+
+table cards{
+  id serial [pk, increment]
+  type card_types [not null]
+  color card_colors [not null]
+  action card_actions [not null]
+  face_value card_face_values [not null]
+}
+
+table games{
+  id serial [pk, increment]
+  // check direction = 1 or -1
+  name varchar(20) [not null]
+  direction integer [not null, default: 1]
+  created_at timestamp [not null, default: 'current']
+  finished_at timestamp [not null, default: 'current']
+}
+
+table game_users{
+  // unique(game_id, user_id, initial_order)
+  id serial [pk, increment]
+  game_id integer [ref: > games.id]
+  user_id integer [ref: > users.id]
+  current_player boolean [not null]
+  initial_order integer [not null]
+  points integer [not null, default: 0]
+}
+
+table game_cards{
+// unique (game_id, user_id, card_id)
+  id serial [pk, increment]
+  game_id integer [ref: > games.id]
+  user_id integer [ref: > users.id]
+  card_id integer [ref: > cards.id]
+//check (1 <= draw_order <= 108)
+  draw_order integer [not null]
+  in_deck boolean [not null, default: true]
+  discarded boolean [not null, default: false]
+}
+
+enum card_face_values{
+  none
+  zero
+  one
+  two
+  three
+  four
+  five
+  six
+  seven
+  eight
+  nine
+}
+
+
+enum card_types{
+  number [note: 'NUMBER CARD']
+  action
+  wild
+}
+
+enum card_actions{
+  no_action
+  skip
+  reverse
+  draw_two
+  wild
+  wild_draw_four
+}
+
+enum card_colors{
+  red
+  yellow
+  green
+  blue
+}
+
+
+
+
+

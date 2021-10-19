@@ -1,0 +1,207 @@
+DROP TABLE IF EXISTS game_cards;
+DROP TABLE IF EXISTS game_users;
+DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS cards;
+
+DROP TYPE IF EXISTS enum_card_face_values;
+DROP TYPE IF EXISTS enum_card_types;
+DROP TYPE IF EXISTS enum_card_actions;
+DROP TYPE IF EXISTS enum_card_colors;
+
+CREATE TYPE enum_card_face_values AS ENUM(
+	'zero',
+	'one',
+	'two',
+	'three',
+	'four',
+	'five',
+	'six',
+	'seven',
+	'eight',
+	'nine',
+	'none'
+);
+CREATE TYPE enum_card_types AS ENUM(
+	'number',
+	'action',
+	'wild'
+);
+CREATE TYPE enum_card_actions AS ENUM(
+	'no_action',
+	'skip',
+	'reverse',
+	'draw_two',
+	'wild',
+	'wild_draw_four'
+);
+CREATE TYPE enum_card_colors AS ENUM(
+	'red',
+	'yellow',
+	'green',
+	'blue',
+	'none'
+);
+
+CREATE TABLE users(
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(20) UNIQUE NOT NULL,
+  	email VARCHAR(65) UNIQUE NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
+);
+
+
+
+CREATE TABLE cards(		
+	id SERIAL PRIMARY KEY,
+	type enum_card_types NOT NULL,
+	color enum_card_colors NOT NULL,
+	action enum_card_actions NOT NULL,
+	face_value enum_card_face_values NOT NULL
+);
+
+CREATE TABLE games(
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	finished_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  name VARCHAR(20) NOT NULL,
+	direction INTEGER NOT NULL CHECK(direction IN (-1, 1))
+);
+
+CREATE TABLE game_users(
+	id SERIAL PRIMARY KEY,
+	game_id INTEGER REFERENCES games(id) ON DELETE RESTRICT,
+	user_id INTEGER REFERENCES users(id) ON DELETE RESTRICT,
+	current_player boolean NOT NULL,
+	initial_order INTEGER NOT NULL,
+	points INTEGER NOT NULL DEFAULT 0,
+	UNIQUE(game_id, user_id, initial_order)
+);
+
+CREATE TABLE game_cards(
+	id SERIAL PRIMARY KEY,
+	game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
+	user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+	card_id INTEGER REFERENCES cards(id) ON DELETE RESTRICT,
+	draw_order INTEGER NOT NULL CHECK(draw_order >= 1 AND draw_order <= 108),
+	in_deck BOOLEAN NOT NULL DEFAULT true,
+	discarded BOOLEAN NOT NULL DEFAULT false,
+	UNIQUE(game_id, user_id, card_id)
+);
+
+
+
+
+INSERT INTO cards(type, color, action, face_value)
+VALUES
+	('number', 'red', 'no_action', 'zero'),
+	('number', 'red', 'no_action', 'one'),
+	('number', 'red', 'no_action', 'two'),
+	('number', 'red', 'no_action', 'three'),
+	('number', 'red', 'no_action', 'four'),
+	('number', 'red', 'no_action', 'five'),
+	('number', 'red', 'no_action', 'six'),
+	('number', 'red', 'no_action', 'seven'),
+	('number', 'red', 'no_action', 'eight'),
+	('number', 'red', 'no_action', 'nine'),
+	('number', 'red', 'no_action', 'one'),
+	('number', 'red', 'no_action', 'two'),
+	('number', 'red', 'no_action', 'three'),
+	('number', 'red', 'no_action', 'four'),
+	('number', 'red', 'no_action', 'five'),
+	('number', 'red', 'no_action', 'six'),
+	('number', 'red', 'no_action', 'seven'),
+	('number', 'red', 'no_action', 'eight'),
+	('number', 'red', 'no_action', 'nine'),
+	('number', 'yellow', 'no_action', 'zero'),
+	('number', 'yellow', 'no_action', 'one'),
+	('number', 'yellow', 'no_action', 'two'),
+	('number', 'yellow', 'no_action', 'three'),
+	('number', 'yellow', 'no_action', 'four'),
+	('number', 'yellow', 'no_action', 'five'),
+	('number', 'yellow', 'no_action', 'six'),
+	('number', 'yellow', 'no_action', 'seven'),
+	('number', 'yellow', 'no_action', 'eight'),
+	('number', 'yellow', 'no_action', 'nine'),
+	('number', 'yellow', 'no_action', 'one'),
+	('number', 'yellow', 'no_action', 'two'),
+	('number', 'yellow', 'no_action', 'three'),
+	('number', 'yellow', 'no_action', 'four'),
+	('number', 'yellow', 'no_action', 'five'),
+	('number', 'yellow', 'no_action', 'six'),
+	('number', 'yellow', 'no_action', 'seven'),
+	('number', 'yellow', 'no_action', 'eight'),
+	('number', 'yellow', 'no_action', 'nine'),
+	('number', 'green', 'no_action', 'zero'),
+	('number', 'green', 'no_action', 'one'),
+	('number', 'green', 'no_action', 'two'),
+	('number', 'green', 'no_action', 'three'),
+	('number', 'green', 'no_action', 'four'),
+	('number', 'green', 'no_action', 'five'),
+	('number', 'green', 'no_action', 'six'),
+	('number', 'green', 'no_action', 'seven'),
+	('number', 'green', 'no_action', 'eight'),
+	('number', 'green', 'no_action', 'nine'),
+	('number', 'green', 'no_action', 'one'),
+	('number', 'green', 'no_action', 'two'),
+	('number', 'green', 'no_action', 'three'),
+	('number', 'green', 'no_action', 'four'),
+	('number', 'green', 'no_action', 'five'),
+	('number', 'green', 'no_action', 'six'),
+	('number', 'green', 'no_action', 'seven'),
+	('number', 'green', 'no_action', 'eight'),
+	('number', 'green', 'no_action', 'nine'),
+	('number', 'blue', 'no_action', 'zero'),
+	('number', 'blue', 'no_action', 'one'),
+	('number', 'blue', 'no_action', 'two'),
+	('number', 'blue', 'no_action', 'three'),
+	('number', 'blue', 'no_action', 'four'),
+	('number', 'blue', 'no_action', 'five'),
+	('number', 'blue', 'no_action', 'six'),
+	('number', 'blue', 'no_action', 'seven'),
+	('number', 'blue', 'no_action', 'eight'),
+	('number', 'blue', 'no_action', 'nine'),
+	('number', 'blue', 'no_action', 'one'),
+	('number', 'blue', 'no_action', 'two'),
+	('number', 'blue', 'no_action', 'three'),
+	('number', 'blue', 'no_action', 'four'),
+	('number', 'blue', 'no_action', 'five'),
+	('number', 'blue', 'no_action', 'six'),
+	('number', 'blue', 'no_action', 'seven'),
+	('number', 'blue', 'no_action', 'eight'),
+	('number', 'blue', 'no_action', 'nine'),
+	('action', 'red', 'skip', 'none'),
+	('action', 'red', 'skip', 'none'),
+	('action', 'yellow', 'skip', 'none'),
+	('action', 'yellow', 'skip', 'none'),
+	('action', 'green', 'skip', 'none'),
+	('action', 'green', 'skip', 'none'),
+	('action', 'blue', 'skip', 'none'),
+	('action', 'blue', 'skip', 'none'),
+	('action', 'red', 'reverse', 'none'),
+	('action', 'red', 'reverse', 'none'),
+	('action', 'yellow', 'reverse', 'none'),
+	('action', 'yellow', 'reverse', 'none'),
+	('action', 'green', 'reverse', 'none'),
+	('action', 'green', 'reverse', 'none'),
+	('action', 'blue', 'reverse', 'none'),
+	('action', 'blue', 'reverse', 'none'),
+	('action', 'red', 'draw_two', 'none'),
+	('action', 'red', 'draw_two', 'none'),
+	('action', 'yellow', 'draw_two', 'none'),
+	('action', 'yellow', 'draw_two', 'none'),
+	('action', 'green', 'draw_two', 'none'),
+	('action', 'green', 'draw_two', 'none'),
+	('action', 'blue', 'draw_two', 'none'),
+	('action', 'blue', 'draw_two', 'none'),
+	('wild', 'none', 'wild', 'none'),
+	('wild', 'none', 'wild', 'none'),
+	('wild', 'none', 'wild', 'none'),
+	('wild', 'none', 'wild', 'none'),
+	('wild', 'none', 'wild_draw_four', 'none'),
+	('wild', 'none', 'wild_draw_four', 'none'),
+	('wild', 'none', 'wild_draw_four', 'none'),
+	('wild', 'none', 'wild_draw_four', 'none');
+	
