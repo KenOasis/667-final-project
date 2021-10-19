@@ -39,15 +39,7 @@ module.exports = {
           }
         }
       }
-    ).then(() => queryInterface.addConstraint('game_users', {
-      fields: ['points'],
-      type: 'check',
-      where: {
-        points: {
-          [Sequelize.Op.gte]: 0
-        }
-      }
-    }));
+    );
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('game_users');
