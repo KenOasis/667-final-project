@@ -54,30 +54,6 @@ module.exports = {
           allowNull: false
         }
       }
-    ).then(() => queryInterface.addConstraint('users', {
-      fields: ['game_play'],
-      type: 'check',
-      where: {
-        game_play: {
-          [Sequelize.Op.gte]: 0
-        }
-      }
-    })).then(() => queryInterface.addConstraint('users', {
-      fields: ['game_win'],
-      type: 'check',
-      where: {
-        game_win: {
-          [Sequelize.Op.gte]: 0
-        }
-      }
-    })).then(() => queryInterface.addConstraint('users', {
-      fields: ['points'],
-      type: 'check',
-      where: {
-        points: {
-          [Sequelize.Op.gte]: 0
-        }
-      }})
     );
   },
 

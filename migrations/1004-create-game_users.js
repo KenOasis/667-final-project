@@ -27,6 +27,14 @@ module.exports = {
           onDelete: 'RESTRICT',
           unique: 'game_user_unique'
         },
+        current_player: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+        },
+        initial_order: {
+          type: Sequelize.INTEGER,
+          allowNull: false
+        },
         points: {
           type: Sequelize.INTEGER,
           allowNull: false,
@@ -35,7 +43,7 @@ module.exports = {
       }, {
         uniqueKeys: {
           game_user_unique: {
-            fields: ['game_id', 'user_id']
+            fields: ['game_id', 'user_id', 'initial_order']
           }
         }
       }

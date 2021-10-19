@@ -1,16 +1,15 @@
-DROP TABLE IF EXISTS deck_cards;
-DROP TABLE IF EXISTS decks;
-DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS game_cards;
 DROP TABLE IF EXISTS game_users;
+DROP TABLE IF EXISTS games;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS cards;
 
-DROP TYPE IF EXISTS card_face_values;
-DROP TYPE IF EXISTS card_types;
-DROP TYPE IF EXISTS card_actions;
-DROP TYPE IF EXISTS card_colors;
+DROP TYPE IF EXISTS enum_card_face_values;
+DROP TYPE IF EXISTS enum_card_types;
+DROP TYPE IF EXISTS enum_card_actions;
+DROP TYPE IF EXISTS enum_card_colors;
 
-CREATE TYPE card_face_values AS ENUM(
+CREATE TYPE enum_card_face_values AS ENUM(
 	'zero',
 	'one',
 	'two',
@@ -23,12 +22,12 @@ CREATE TYPE card_face_values AS ENUM(
 	'nine',
 	'none'
 );
-CREATE TYPE card_types AS ENUM(
+CREATE TYPE enum_card_types AS ENUM(
 	'number',
 	'action',
 	'wild'
 );
-CREATE TYPE card_actions AS ENUM(
+CREATE TYPE enum_card_actions AS ENUM(
 	'no_action',
 	'skip',
 	'reverse',
@@ -36,7 +35,7 @@ CREATE TYPE card_actions AS ENUM(
 	'wild',
 	'wild_draw_four'
 );
-CREATE TYPE card_colors AS ENUM(
+CREATE TYPE enum_card_colors AS ENUM(
 	'red',
 	'yellow',
 	'green',
@@ -47,51 +46,51 @@ CREATE TYPE card_colors AS ENUM(
 CREATE TABLE users(
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(20) UNIQUE NOT NULL,
-	password VARCHAR(50) NOT NULL,
-	profile_url VARCHAR(255) NOT NULL DEFAULT '',
+  	email VARCHAR(65) UNIQUE NOT NULL,
+	password VARCHAR(255) NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	game_play INTEGER NOT NULL DEFAULT 0 CHECK(game_play >= 0),
-	game_win INTEGER NOT NULL DEFAULT 0 CHECK(game_play >= game_win),
-	points INTEGER NOT NULL DEFAULT 300 CHECK(points >= 0)
+  CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
 
 
 CREATE TABLE cards(		
 	id SERIAL PRIMARY KEY,
-	type card_types NOT NULL,
-	color card_colors NOT NULL,
-	action card_actions NOT NULL,
-	face_value card_face_values NOT NULL
+	type enum_card_types NOT NULL,
+	color enum_card_colors NOT NULL,
+	action enum_card_actions NOT NULL,
+	face_value enum_card_face_values NOT NULL
 );
 
 CREATE TABLE games(
 	id SERIAL PRIMARY KEY,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	finished_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	finished_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  name VARCHAR(20) NOT NULL,
+	direction INTEGER NOT NULL CHECK(direction IN (-1, 1))
 );
 
 CREATE TABLE game_users(
 	id SERIAL PRIMARY KEY,
 	game_id INTEGER REFERENCES games(id) ON DELETE RESTRICT,
 	user_id INTEGER REFERENCES users(id) ON DELETE RESTRICT,
+	current_player boolean NOT NULL,
+	initial_order INTEGER NOT NULL,
 	points INTEGER NOT NULL DEFAULT 0,
-	UNIQUE(game_id, user_id)
+	UNIQUE(game_id, user_id, initial_order)
 );
 
-CREATE TABLE decks(
+CREATE TABLE game_cards(
 	id SERIAL PRIMARY KEY,
 	game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
 	user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-	UNIQUE(game_id, user_id)
+	card_id INTEGER REFERENCES cards(id) ON DELETE RESTRICT,
+	draw_order INTEGER NOT NULL CHECK(draw_order >= 1 AND draw_order <= 108),
+	in_deck BOOLEAN NOT NULL DEFAULT true,
+	discarded BOOLEAN NOT NULL DEFAULT false,
+	UNIQUE(game_id, user_id, card_id)
 );
 
-CREATE TABLE deck_cards (
-	id SERIAL PRIMARY KEY,
-	deck_id INTEGER REFERENCES decks(id) ON DELETE CASCADE,
-	card_id integer REFERENCES cards(id) ON DELETE RESTRICT,
-	UNIQUE(deck_id, card_id)
-);
 
 
 

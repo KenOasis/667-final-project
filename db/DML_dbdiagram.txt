@@ -2,11 +2,7 @@ table users{
   id serial [pk, increment]
   username varchar(20) [unique, not null]
   password varchar(50) [not null]
-  profile_url varchar(255) [not null, default: ""]
   created_at timestamp
-  game_play integer [not null, default: 0]
-  game_win integer [not null, default: 0]
-  points integer [not null, default: 300]
 }
 
 table cards{
@@ -19,30 +15,33 @@ table cards{
 
 table games{
   id serial [pk, increment]
+  // check direction = 1 or -1
+  name varchar(20) [not null]
+  direction integer [not null, default: 1]
   created_at timestamp [not null, default: 'current']
   finished_at timestamp [not null, default: 'current']
 }
 
 table game_users{
-  // unique(game_id, user_id)
+  // unique(game_id, user_id, initial_order)
   id serial [pk, increment]
   game_id integer [ref: > games.id]
   user_id integer [ref: > users.id]
+  current_player boolean [not null]
+  initial_order integer [not null]
   points integer [not null, default: 0]
 }
 
-table decks{
-// unique(game_id, user_id)
+table game_cards{
+// unique (game_id, user_id, card_id)
   id serial [pk, increment]
   game_id integer [ref: > games.id]
   user_id integer [ref: > users.id]
-}
-
-table deck_cards{
-// unique (deck_id, card_id)
-  id serial [pk, increment]
-  deck_id integer [ref: > decks.id]
   card_id integer [ref: > cards.id]
+//check (1 <= draw_order <= 108)
+  draw_order integer [not null]
+  in_deck boolean [not null, default: true]
+  discarded boolean [not null, default: false]
 }
 
 enum card_face_values{
