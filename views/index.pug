@@ -1,7 +1,29 @@
 extends layout/main-layout.pug
 
 block title
-  title #{title}
+  title Let's play Uno
 
 block content
-  h1 #{message}
+  div(
+    class="container" 
+    style="min-height: 594px; background-image: url('/images/unoWelcomeimage.jpg'); background-size: 1200px; width: 1200px; height: 300px; "
+    )
+    div(class="jumbotron text-center")
+      br
+      br
+      br
+      br
+      br
+      br
+      br
+      h1(class="display-1 font-weight-bold ")
+        b Welcome !
+      br
+      br
+      br
+      br
+      br
+      br
+      br
+      a(class="btn btn-success btn-lg" href="#" role="button") Start the game
+  hr
