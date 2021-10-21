@@ -20,5 +20,5 @@ exports.orderGenerator = (start, end) => {
 }
 
 // test code
-const array = this.orderGenerator(1, 108);
-console.log(array);
+// const array = this.orderGenerator(1, 108);
+// console.log(array);

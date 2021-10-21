@@ -3,7 +3,15 @@ const db = require('../../models')
 const Games = db['games'];
 const Game_users = db['game_users'];
 const Game_cards = db['game_cards'];
-exports.initialGame = (req, res, next) => {
+const Cards = db['cards'];
+const orderGenerator = require('../../util/order_generator').orderGenerator;
+exports.showAllCards = async (req, res, next) => {
+  Cards.findAll({raw: true})
+    .then(cards => res.json({cards}))
+    .catch(error => res.json({error}));
+}
+
+exports.testGame = (req, res, next) => {
   const game_name = "Uno Camp";
   Games.create({name: game_name})
     .then(results => {
@@ -19,7 +27,7 @@ exports.initialGame = (req, res, next) => {
     })
 }
 
-exports.initialGameUsers = (req, res, next) => {
+exports.testGameUsers = (req, res, next) => {
   const game_id = 1;
   const users_ids = [1,2,3,4];
   const users_initial_orders = [4,2,1,3];
@@ -67,4 +75,61 @@ exports.testGameCards = (req, res, next) => {
     console.log(error);
     res.json({error: error});
   })
+}
+
+exports.initialGame = async (req, res, next) => {
+
+  let game_name = "new Game";
+  let players = [1,2,3,4];
+  let players_order = orderGenerator(1, 4);
+  let draw_order = orderGenerator(1, 108);
+  let rows_bulk_gu = [];
+  let rows_bulk_gc = [];
+  let cards;
+  let game;
+  let game_users;
+  let game_cards;
+
+
+  try {
+    cards = await Cards.findAll({raw:true});
+    game = await Games.create({
+      name: game_name
+    });
+
+    for (let i = 0; i < players.length; ++i) {
+      rows_bulk_gu.push({
+        game_id: game.id,
+        user_id: players[i],
+        current_player: true,
+        initial_order: players_order[i]
+      });
+    }
+    game_users = await Game_users.bulkCreate(rows_bulk_gu);
+
+    for (let i = 0; i < cards.length; ++i) {
+      rows_bulk_gc.push({
+        game_id: game.id,
+        user_id: players[0],
+        card_id: cards[i].id,
+        draw_order: draw_order[i]
+      });
+    }
+
+    game_cards = await Game_cards.bulkCreate(rows_bulk_gc);
+
+    res.status(200).json({
+      status: 200,
+      message: "Successfully create a game!",
+      game_id: game.id
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      error: error
+    })
+  }
+  
+  // create a game table
+ 
 }
