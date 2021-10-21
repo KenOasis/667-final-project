@@ -20,6 +20,7 @@ exports.signUp = async (req, res, next) => {
       email: result.email
     }
   )).catch(error => {
-    console.log(error); 
+    console.log(error);
+    res.json({error: error});
   });
 }
