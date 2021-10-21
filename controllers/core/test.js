@@ -8,7 +8,7 @@ const orderGenerator = require('../../util/order_generator').orderGenerator;
 exports.showAllCards = async (req, res, next) => {
   Cards.findAll({raw: true})
     .then(cards => res.json({cards}))
-    .catch(error => res.json({error}));
+    .catch(error => res.json({error})); 
 }
 
 exports.testGame = (req, res, next) => {
