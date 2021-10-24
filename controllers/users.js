@@ -29,3 +29,18 @@ exports.signUp = async (req, res, next) => {
     res.json({error: error});
   });
 }
+
+exports.signUpPut = async (req, res, next) => {
+  console.log("PUT REqUEST")
+  this.signUp(req, res, next)
+}
+
+exports.signUpPost = async (req, res, next) => {
+  console.log("POST REqUEST")
+  this.signUp(req, res, next)
+}
+
+exports.signUpGet = async (req, res, next) => {
+  console.log("GET REqUEST")
+  this.signUp(req, res, next)
+}
