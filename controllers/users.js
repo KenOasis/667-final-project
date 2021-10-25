@@ -19,3 +19,16 @@ exports.signUp = async (req, res, next) => {
   });
 }
 
+exports.login = async (req, res, next) => {
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //TODO fetch data from db -> validate parameters -> redirect to lobby if correct
+  res.json({
+    username: username,
+    email: email,
+    password: password
+  })
+}
+

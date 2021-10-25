@@ -9,7 +9,7 @@ block content
       div(class="col-md-9 col-lg-6 col-xl-5")
         img(src="/images/logo.png" class="img-fluid" alt="Sample image")
       div(class="col-md-8 col-lg-6 col-xl-4 offset-xl-1")
-        form
+        form(action="/users/login" method="POST")
           h1 Log in 
           div(class="form-outline mb-3")
             input(
@@ -17,6 +17,7 @@ block content
               id="username"
               class="form-control form-control-lg"
               placeholder="Enter a valid username"
+              name="username"
               )
             label(class="form-label" for="username") Username 
           div(class="form-outline mb-3")
@@ -25,6 +26,7 @@ block content
               id="email"
               class="form-control form-control-lg"
               placeholder="Enter a valid email address"
+              name="email"
               )
             label(class="form-label" for="login") Email address 
           div(class="form-outline mb-3")
@@ -33,11 +35,12 @@ block content
               id="password" 
               class="form-control form-control-lg"
               placeholder="Enter password"
+              name="password"
               )
             label(class="form-label" for="password") Password
           div(lass="text-center text-lg-start mt-4 pt-2")
             button(
-              type="button" 
+              type="submit" 
               class="btn btn-primary btn-lg"
               style="padding-left: 2.5rem padding-right: 2.5rem;"
             ) Login 
