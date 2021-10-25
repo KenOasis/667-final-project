@@ -58,6 +58,9 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('cards');
+    return queryInterface.dropTable('cards').then(() => queryInterface.sequelize.query(`DROP TYPE IF EXISTS enum_cards_action;
+    DROP TYPE IF EXISTS enum_cards_color; 
+    DROP TYPE IF EXISTS enum_cards_face_value; 
+    DROP TYPE IF EXISTS enum_cards_type`));
   }
 }

@@ -6,23 +6,21 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const errorController = require('./controllers/errors');
-const testRoutes = require('./routes/testMain');
-const testDBRoutes = require('./routes/testdb');
-const loginTest = require('./controllers/test');
-const registerTest = require('./controllers/test');
-const showCardsRoutes = require('./routes/showCards');
 
+const usersRoutes = require('./routes/users');
+const homeRoutes = require('./routes/home');
+const gameTestRoutes = require('./routes/core');
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(testRoutes.routes);
-app.use('/tests', testDBRoutes.routes);
-app.use('/login', loginTest.login);
-app.use('/register', registerTest.register)
-app.use('/showCards', showCardsRoutes.routes);
+
+app.use('/', homeRoutes.routes);
+app.use('/users', usersRoutes.routes);
+app.use('/tests', gameTestRoutes.routes);
+
 app.use(errorController.Error404);
 
 let port_number = process.env.PORT || 3000;

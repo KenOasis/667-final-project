@@ -2,12 +2,18 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Cards = sequelize.define("cards", {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     type: {
       type: DataTypes.ENUM(
         'number',
         'action',
         'wild'
       ),
+      allowNull: false
     },
     color: {
       type: DataTypes.ENUM(
@@ -16,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
         'green',
         'blue',
         'none',
-      )
+      ),
+      allowNull: false
     },
     action: {
       type: DataTypes.ENUM(
@@ -26,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
         'draw_two',
         'wild',
         'wild_draw_four'
-      )
+      ),
+      allowNull: false
     },
     face_value: {
       type: DataTypes.ENUM(
@@ -41,7 +49,8 @@ module.exports = (sequelize, DataTypes) => {
         'eight',
         'nine',
         'none'
-      )
+      ),
+      allowNull: false
     }
   }, {
     timestamps: false
