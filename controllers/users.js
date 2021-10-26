@@ -3,12 +3,10 @@ const db = require('../models/');
 const Users = db['users'];
 
 exports.signUp = async (req, res, next) => {
-  // const username = req.body.username;
-  // const email = req.body.email;
-  // const password = req.body.password;
-  const username = "new user";
-  const email = "test@test.com";
-  const password = "Nu123456789";
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+  console.log(req.body);
   Users.create({
     username: username,
     email: email,
