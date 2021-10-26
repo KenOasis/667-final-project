@@ -1,6 +1,6 @@
-const { raw } = require('body-parser');
-const { response } = require('express');
-const { result } = require('../db');
+// const { raw } = require('body-parser');
+// const { response } = require('express');
+// const { result } = require('../db');
 const db = require('../models/');
 const Users = db['users'];
 
@@ -37,7 +37,6 @@ exports.login = async (req, res, next) => {
 }
 
 function checkLogin(req, res, result) {
-  console.log("HEYyyyYYYYyYyYY")
   if (result != null) {
     if (result.email == req.body.email && result.password == req.body.password) {
       res.status(200).redirect("/unolobby")
