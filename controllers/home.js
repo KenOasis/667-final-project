@@ -1,11 +1,14 @@
 exports.getHomepage = (req, res, next) => {
-  res.status(200).render('index');
+    res.status(200).render('index');
 }
 
 exports.login = (req, res, next) => {
-  res.status(200).render('login');
+    res.status(200).render('login');
 }
 
 exports.signup = (req, res, next) => {
-  res.status(200).render('signup');
+    res.status(200).render('signup');
+}
+exports.game_lobby = (req, res, next) => {
+    res.status(200).render('lobby')
 }
