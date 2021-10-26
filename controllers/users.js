@@ -1,3 +1,5 @@
+const { raw } = require('body-parser');
+const { response } = require('express');
 const { result } = require('../db');
 const db = require('../models/');
 const Users = db['users'];
@@ -20,15 +22,29 @@ exports.signUp = async (req, res, next) => {
 }
 
 exports.login = async (req, res, next) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
+  const reqUsername = req.body.username;
+  const reqEmail = req.body.email;
+  const reqPassword = req.body.password;
 
-  //TODO fetch data from db -> validate parameters -> redirect to lobby if correct
-  res.json({
-    username: username,
-    email: email,
-    password: password
+  Users.findOne({
+    where: {username: reqUsername}
+  }).then( (result) =>
+      checkLogin(req, res, result)
+  ).catch(error => {
+    console.log(error);
+    res.json({error: error})
   })
 }
 
+function checkLogin(req, res, result) {
+  console.log("HEYyyyYYYYyYyYY")
+  if (result != null) {
+    if (result.email == req.body.email && result.password == req.body.password) {
+      res.status(200).redirect("/unolobby")
+    } else {
+      res.status(401).redirect("/login")
+    }
+  } else {
+    res.status(401).redirect("/login");
+  }
+}
