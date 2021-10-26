@@ -3,16 +3,21 @@
 // const { result } = require('../db');
 const db = require('../models/');
 const Users = db['users'];
+const crypto = require('../util/crypto').crypto;
 
 
 exports.signUp = async (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
+
+  //TODO fix import
+  const passwordEncrypted = crypto.encrypt(password)
+
   Users.create({
     username: username,
     email: email,
-    password: password,
+    password: passwordEncrypted,
   }).then( results => 
     res.redirect('/login')
   ).catch(error => {
@@ -23,8 +28,6 @@ exports.signUp = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const reqUsername = req.body.username;
-  const reqEmail = req.body.email;
-  const reqPassword = req.body.password;
 
   Users.findOne({
     where: {username: reqUsername}
@@ -38,7 +41,7 @@ exports.login = async (req, res, next) => {
 
 function checkLogin(req, res, result) {
   if (result != null) {
-    if (result.email == req.body.email && result.password == req.body.password) {
+    if (result.email == req.body.email && crypto.encrypt(result.password) == req.body.password) {
       res.status(200).redirect("/unolobby")
     } else {
       res.status(401).redirect("/login")
