@@ -4,7 +4,10 @@ const Games = db['games'];
 const Game_users = db['game_users'];
 const Game_cards = db['game_cards'];
 const Cards = db['cards'];
-const orderGenerator = require('../../util/order_generator').orderGenerator;
+const orderGenerator = require('../../util/random_generator').orderGenerator;
+const randomSequenceGenerator = require('../../util/random_generator').randomSequenceGenerator;
+const cardURIGenerator = require('../../util/card_img_uri');
+const { Op } = require('sequelize');
 exports.showAllCards = async (req, res, next) => {
   Cards.findAll({raw: true})
     .then(cards => res.json({cards}))
@@ -130,6 +133,34 @@ exports.initialGame = async (req, res, next) => {
     })
   }
   
-  // create a game table
- 
+}
+
+exports.showRandomCards = (req, res, next) => {
+    const random_seq = randomSequenceGenerator(1, 108, 4);
+    const filters = [];
+    while (random_seq.length > 0) {
+        let index = random_seq.pop();
+        filters.push({
+            id: index
+        });
+    }
+    Cards.findAll({
+        raw: true,
+        where: {
+            [Op.or]: filters 
+        }
+    })
+    .then(results => {
+        results.forEach(element => {
+            let uri = '/images/uno_cards/';
+            let image_type = '.jpg';
+            uri += cardURIGenerator(element.type, element.color, element.face_value, element.action) + image_type;
+            element.uri = uri;
+        });
+        res.status(200).render('random_cards', {cards: results })
+    })
+    .catch(error => {
+        console.log(error);
+        res.json({error: error});
+    });
 }
