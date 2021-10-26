@@ -1,7 +1,12 @@
 extends layout/main-layout.pug
 
 block title
-  title Login 
+  title Login
+block navbar
+  li(class="nav-item")
+    a(class="nav-link" href="/login") Login
+  li(class="nav-item")
+    a(class="nav-link" href="/signup") Register 
 
 block content
   div(class="container fluid ")
@@ -9,11 +14,12 @@ block content
       div(class="col-md-9 col-lg-6 col-xl-5")
         img(src="/images/logo.png" class="img-fluid" alt="Sample image")
       div(class="col-md-8 col-lg-6 col-xl-4 offset-xl-1")
-        form
+        form(action="/users/login" method="POST" enctype="application/x-www-form-urlencoded" )
           h1 Log in 
           div(class="form-outline mb-3")
             input(
               type="text" 
+              name="username"
               id="username"
               class="form-control form-control-lg"
               placeholder="Enter a valid username"
@@ -22,6 +28,7 @@ block content
           div(class="form-outline mb-3")
             input(
               type="email" 
+              name="email"
               id="email"
               class="form-control form-control-lg"
               placeholder="Enter a valid email address"
@@ -30,14 +37,15 @@ block content
           div(class="form-outline mb-3")
             input(
               type="password" 
-              id="password" 
+              name="password" 
+              id= "password"
               class="form-control form-control-lg"
               placeholder="Enter password"
               )
             label(class="form-label" for="password") Password
           div(lass="text-center text-lg-start mt-4 pt-2")
             button(
-              type="button" 
+              type="submit" 
               class="btn btn-danger btn-lg"
               style="padding-left: 2.5rem padding-right: 2.5rem;"
             ) Login 
