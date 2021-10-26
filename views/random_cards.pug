@@ -1,0 +1,18 @@
+extends layout/main-layout.pug
+
+block title
+  title four random cards
+
+block styles
+  link(rel="stylesheet", href="/css/card.css")
+block scripts
+  script(type="text/javascript").
+    var cards = !{JSON.stringify(cards)}
+
+block content
+  div(class="container")
+    div(class="d-flex justify-content-center row-hl")
+      each card in cards
+        div(class="p-4 item-hl")
+          img(src=card.uri class="rounded unocard") 
+
