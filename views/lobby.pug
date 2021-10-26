@@ -2,6 +2,19 @@ extends layout/main-layout.pug
 
 block title 
     title Lobby
+block navbar
+  li(class="nav-item dropdown")
+    a(href="#" 
+      class="nav-link dropdown-toggle" 
+      data-toggle="dropdown" 
+      aria-haspopup="true" 
+      aria-expanded="false"
+      id="navbarDropdownMenuLink"
+      ) playername
+    div(class="dropdown-menu")
+        a(href="#" class="dropdown-item") point: 10000
+        a(href="#" class="dropdown-item") logout
+
 
 block content 
   div(class="container" style="height:100%")
