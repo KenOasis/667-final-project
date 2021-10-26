@@ -45,17 +45,15 @@ block content
                         class="btn btn-danger btn-block"
                         type="button"
                         ) Ready
-            br
-            br
-            br
+          
 
 
         div(class="col-8")
             h2 Chat
             div(
-                class="col overflow-auto"
+                class="col"
                 id="messages"
-                style="border:2px solid #dedede"
+                style="border:2px solid #dedede; height:400px; overflow-y:auto"
             )
                 div(class="car border-danger mb-3")
                     div(class="card-body")
@@ -68,6 +66,10 @@ block content
                 div(class="car border-danger mb-3")
                     div(class="card-body")
                         span(class="badge") player3
+                        p(class="card-text") hi
+                div(class="car border-danger mb-3")
+                    div(class="card-body")
+                        span(class="badge") player4
                         p(class="card-text") hi
                 div(class="car border-danger mb-3")
                     div(class="card-body")
@@ -86,7 +88,7 @@ block content
                         type="button"
                         class="btn btn-outline-danger"
                     ) send
-
+            
 
 
         
