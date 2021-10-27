@@ -1,0 +1,25 @@
+
+html 
+    header 
+        link(rel="stylesheet", href="/css/authen.css")
+        h1 Register
+    body 
+        form(action="/register" method= "POST" id = "registerForm")
+            label(for="username") Create User Name:  
+            input(id ="username" type = "text" name = "username" required)
+            
+            label(for="email") Email:  
+            input(id ="email" type = "text" name = "email" required)
+
+            label(for="password") Create Password:
+            input(type="text" id = "password" name = "createpw" required)
+
+            label(for="confirmpw") Re-enter Password:  
+            input(type="text" id = "confirmpw" name = "confirmpw" required)
+
+            div
+                input(type="submit" value = "Register")
+            
+            div(class = "loginOption")
+                p Already have an account?
+                a(href="/login") Login 

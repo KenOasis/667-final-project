@@ -3,12 +3,17 @@ extends layout/main-layout.pug
 block title
   title Let's play Uno
 
+block navbar
+  li(class="nav-item")
+    a(class="nav-link" href="/login") Login
+  li(class="nav-item")
+    a(class="nav-link" href="/signup") Register 
+
 block content
   div(
-    class="container" 
-    style="min-height: 594px; background-image: url('/images/unoWelcomeimage.jpg'); background-size: 1200px; width: 1200px; height: 300px; "
+    class="container"
     )
-    div(class="jumbotron text-center")
+    div(class="jumbotron text-center" style="background-image: url('/images/unoWelcomeimage.jpg');")
       br
       br
       br
@@ -16,8 +21,8 @@ block content
       br
       br
       br
-      h1(class="display-1 font-weight-bold ")
-        b Welcome !
+      h1(class="display-4")
+        b Let's play UNO
       br
       br
       br

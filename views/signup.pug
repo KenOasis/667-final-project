@@ -1,7 +1,13 @@
 extends layout/main-layout.pug
 
 block title
-  title Login 
+  title Login
+
+block navbar
+  li(class="nav-item")
+    a(class="nav-link" href="/login") Login
+  li(class="nav-item")
+    a(class="nav-link" href="/signup") Register 
 
 block content
   div(class="container fluid")
@@ -14,7 +20,8 @@ block content
           div(class="form-outline mb-2") 
             input(
               type="text" 
-              id="username" 
+              id="username"
+              name="username"
               class="form-control form-control-lg"
               placeholder="Enter a valid username" 
               name="username"
@@ -24,7 +31,8 @@ block content
           div(class="form-outline mb-2") 
             input(
               type="email" 
-              id="email" 
+              id="email"
+              name="email" 
               class="form-control form-control-lg"
               placeholder="Enter a valid email address" 
               name="email"
@@ -34,7 +42,8 @@ block content
           div(class="form-outline mb-2")
             input(
               type="password" 
-              id="password" 
+              id="password"
+              name="password"
               class="form-control form-control-lg"
               placeholder="Enter password"
               name="password"
@@ -43,7 +52,9 @@ block content
             label(class="form-label" for="password") Password 
             input(
               type="password"
-              id="confirmPassword" class="form-control form-control-lg"
+              id="confirmPassword"
+              name="confirm_password" 
+              class="form-control form-control-lg"
               placeholder="Confirm password"
               )
             label(class="form-label" for="confirmPassword") Confirm Password 
@@ -52,8 +63,8 @@ block content
               input(
                 class="form-check-input me-2"
                 type="checkbox" 
-                value="" 
-                id="checkbox" 
+                id="checkbox"
+                name="accpetRules"
                 required
                 )
               label(class="form-check-label" for="checkbox") Accept 
