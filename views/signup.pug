@@ -9,12 +9,13 @@ block content
       div(class="col-md-9 col-lg-6 col-xl-5")
         img(src="/images/logo.png" class="img-fluid" alt="Sample image")
       div(class="col-md-8 col-lg-6 col-xl-4 offset-xl-1")
-        form(action="")
+        form(action="/users/signup", method="POST")
           h1 Register
           div(class="form-outline mb-2") 
             input(
               type="text" 
               id="username" 
+              name="username"
               class="form-control form-control-lg"
               placeholder="Enter a valid username" 
               required
@@ -23,7 +24,8 @@ block content
           div(class="form-outline mb-2") 
             input(
               type="email" 
-              id="email" 
+              id="email"
+              name="email" 
               class="form-control form-control-lg"
               placeholder="Enter a valid email address" 
               required
@@ -32,7 +34,8 @@ block content
           div(class="form-outline mb-2")
             input(
               type="password" 
-              id="password" 
+              id="password"
+              name="password" 
               class="form-control form-control-lg"
               placeholder="Enter password"
               required
@@ -40,7 +43,9 @@ block content
             label(class="form-label" for="password") Password 
             input(
               type="password"
-              id="confirmPassword" class="form-control form-control-lg"
+              id="confirmPassword"
+              name="confirm_password" 
+              class="form-control form-control-lg"
               placeholder="Confirm password"
               )
             label(class="form-label" for="confirmPassword") Confirm Password 
