@@ -22,3 +22,17 @@ exports.signUp = async (req, res, next) => {
     res.json({error: error});
   });
 }
+
+exports.LoggedIn = (req, res, next) => {
+  // validation
+  req.session.isLogIn = true;
+  req.session.userId = 1;
+  console.log(req.session);
+  res.status(200).render('index');
+}
+
+exports.LoggedOut = (req, res, next) => {
+  let sessionId = req.session.id;
+  req.session.destroy(sessionId);
+  res.status(200).render('index');
+}
