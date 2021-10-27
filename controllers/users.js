@@ -1,9 +1,5 @@
-// const { raw } = require('body-parser');
-// const { response } = require('express');
-// const { result } = require('../db');
 const db = require('../models/');
 const Users = db['users'];
-const crypto = require('../util/crypto').crypto;
 
 
 exports.signUp = async (req, res, next) => {
@@ -11,8 +7,7 @@ exports.signUp = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  //TODO fix import
-  const passwordEncrypted = crypto.encrypt(password)
+  const passwordEncrypted = Buffer.from(password).toString('base64')
 
   Users.create({
     username: username,
@@ -40,8 +35,10 @@ exports.login = async (req, res, next) => {
 }
 
 function checkLogin(req, res, result) {
+  reqPasswordEncrypted = Buffer.from(req.body.password).toString('base64')
+
   if (result != null) {
-    if (result.email == req.body.email && crypto.encrypt(result.password) == req.body.password) {
+    if (result.email == req.body.email && result.password == reqPasswordEncrypted) {
       res.status(200).redirect("/unolobby")
     } else {
       res.status(401).redirect("/login")
