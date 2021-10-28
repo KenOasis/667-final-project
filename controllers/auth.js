@@ -8,8 +8,9 @@ exports.signUp = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const passwordEncrypted = Buffer.from(password).toString('base64');
-  let existedUser = null;
 
+  let existedUser = null;
+  
   try {
     // checked whether the username already existed in db
 
@@ -21,7 +22,7 @@ exports.signUp = async (req, res, next) => {
 
    if (existedUser !== null) {
      // TODO feedback to frontend validation
-     res.status(409).render('error', { title: 'username or email existed', errorcode: ""})
+     res.status(409).render('error', { title: 'username or email existed', errorcode: "409 Conflict"})
      return;
    }
 
@@ -35,7 +36,7 @@ exports.signUp = async (req, res, next) => {
 
     if (existedUser !== null) {
       // TODO feedback to frontend validation
-      res.status(409).render('error', { title: 'username or email existed', errorcode: ""})
+      res.status(409).render('error', { title: 'username or email existed', errorcode: "409 Conflict"})
       return;
     }
 
@@ -46,7 +47,7 @@ exports.signUp = async (req, res, next) => {
     });
     
     // TODO add JWT Auth
-    res.status(200).render('index');
+    res.status(200).render('login');
   } catch (error) {
     // TODO standarize error ouput
     console.log(error)
@@ -63,19 +64,19 @@ exports.login = async (req, res, next) => {
     let reqPasswordEncrypted = Buffer.from(req.body.password).toString('base64')
     if (user != null) {
       if (user.password === reqPasswordEncrypted) {
-        req.session.isLogIn = true;
+        req.session.isLoggedIn = true;
         req.session.userId = user.id;
         // TODO feedback to user as login successfully
-        res.status(200).redirect("/lobby")
+        res.status(200).render("lobby", { isLoggedIn: true })
       } else {
         // TODO feedback to user as password wrong 
         console.log("Wrong password");
-        res.status(401).redirect("/login");
+        res.status(401).render("login");
       }
     } else {
       // TODO feedback to user as username wrong
       console.log("username does not existed");
-      res.status(401).redirect("/login");
+      res.status(401).render("login");
     }
   } catch (error) {
     // TODO standarize error ouput
@@ -84,8 +85,9 @@ exports.login = async (req, res, next) => {
 }
 
 exports.logout = (req, res, next) => {
-  let sessionId = req.session.id;
-  req.session.destroy(sessionId);
+  req.session.destroy(() => {
+    res.clearCookie('connect.sid').status(200).render('index', { isLoggedIn: false });
+  });
   // TODO notify user successfully logout
-  res.status(200).render('index');
+  // res.status(200).render('index', { removeSession: true, sessionId: sessionId });
 }

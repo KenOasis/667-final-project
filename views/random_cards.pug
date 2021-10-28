@@ -5,9 +5,17 @@ block title
 
 block styles
   link(rel="stylesheet", href="/css/card.css")
+
 block scripts
   script(type="text/javascript").
     var cards = !{JSON.stringify(cards)}
+
+block navbar
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
 
 block content
   div(class="container")

@@ -3,10 +3,11 @@ extends layout/main-layout.pug
 block title
   title Login
 block navbar
-  li(class="nav-item")
-    a(class="nav-link" href="/login") Login
-  li(class="nav-item")
-    a(class="nav-link" href="/signup") Register 
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
 
 block content
   div(class="container fluid ")
@@ -25,15 +26,6 @@ block content
               placeholder="Enter a valid username"  
               )
             label(class="form-label" for="username") Username 
-          //- div(class="form-outline mb-3")
-          //-   input(
-          //-     type="email" 
-          //-     name="email"
-          //-     id="email"
-          //-     class="form-control form-control-lg"
-          //-     placeholder="Enter a valid email address"
-          //-     )
-          //-   label(class="form-label" for="login") Email address 
           div(class="form-outline mb-3")
             input(
               type="password" 

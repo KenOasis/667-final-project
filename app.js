@@ -32,6 +32,7 @@ const errorController = require('./controllers/static/errors');
 const authRoutes = require('./routes/api/auth');
 const staticRoutes = require('./routes/static/static-routes');
 const gameTestRoutes = require('./routes/tests/core');
+const routerFilter = require('./middleware/router-filter');
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
@@ -49,7 +50,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.use(routerFilter);
 
 app.use('/', staticRoutes.routes);
 app.use('/auth', authRoutes.routes);
