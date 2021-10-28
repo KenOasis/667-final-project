@@ -1,5 +1,7 @@
 const loggeInFilter = ['/login', '/signup','/auth/login', '/auth/signup'];
-const loggedOutFilter = ['/auth/logout', '/lobby'];
+const loggedOutFilter = ['/auth/logout'];
+
+// NOTE: if you are not filter the route here, you have to check the filter condition in the routes/controllers
 
 const routerFilter = (req, res, next) => {
   const path = req.url;
@@ -8,9 +10,9 @@ const routerFilter = (req, res, next) => {
   if (isForbidden) {
     // TODO redirect after errorpage
     res.status(403).render('error', {
-      title: "Error 403",
       errorcode: "403 Forbidden",
-      isLoggedIn: isLoggedIn === true ? true : false
+      description: "Forbidden action due to your auth status",
+      isLoggedIn: isLoggedIn === true ? true : false,
     });
   } else {
     next();

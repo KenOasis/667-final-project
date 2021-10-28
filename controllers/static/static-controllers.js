@@ -1,5 +1,6 @@
 exports.getHomepage = (req, res, next) => {
-    res.status(200).render('index');
+    const isLoggedIn = (req.session.isLoggedIn === true ? true : false);
+    res.status(200).render('index', {isLoggedIn});
 }
 
 exports.getLogin = (req, res, next) => {
@@ -10,5 +11,11 @@ exports.getSignup = (req, res, next) => {
     res.status(200).render('signup');
 }
 exports.getLobby = (req, res, next) => {
-    res.status(200).render('lobby')
+    let isLoggedIn = (req.session.isLoggedIn === true ? true : false);
+    if (isLoggedIn) {
+      res.status(200).render('lobby');
+    } else {
+      res.status(401).render('login');
+    }
+
 }

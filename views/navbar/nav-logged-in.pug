@@ -1,11 +1,11 @@
 li(class="nav-item dropdown")
-  a(href="#"
-    class="nav-link dropdown-toggle"
+  button(
+    class="btn btn-danger dropdown-toggle"
     data-toggle="dropdown"
     aria-haspopup="true"
     aria-expanded="false"
-    id="navbarDropdownMenuLink"
+    id="dropdownMenuButton"
     ) playername
-  div(class="dropdown-menu")
-    a(href="#" class="dropdown-item") point: 10000
-    a(href="/auth/logout" class="dropdown-item") logout
+  div(class="dropdown-menu bg-danger"  aria-labelledby="dropdownMenuButton")
+    a(href="#" class="dropdown-item bg-danger text-light") point: 10000
+    a(href="/auth/logout" class="dropdown-item bg-danger text-light") logout

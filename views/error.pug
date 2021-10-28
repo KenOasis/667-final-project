@@ -1,7 +1,7 @@
 extends layout/main-layout.pug
 
 block title
-  title #{title}
+  title #{errorcode}
 
 block navbar
   case (isLoggedIn)
@@ -11,20 +11,18 @@ block navbar
       include navbar/nav-logged-out
 
 block content
-  h1 #{errorcode}
+  div(class="container")
+    div(class="row")
+      div(class="col-md-12")
+        div(class="error-template text-center")
+          h1 #{errorcode}
+          div(class="error-details text-center") 
+            h2 #{description}
+          div(class="error-actions")
+            a(
+              href="/"
+              class="btn btn-primary btn-lg"
+            ) Back to Home Page
+            
 
-  script(type="text/javascript").
-    let redirect_Page = () => {
-      let timer = setTimeout(() => {
-        fetch("/").
-        then(() => {})
-        .catch(error => console.log(error));
-        window.clearTimeout(timer);
-      }, 5000);
-    }
-    // not running ? cors ?
-    redirect_Page();
-    console.log("run");
-
-  //- TODO, redirect to the original page or .....
   
