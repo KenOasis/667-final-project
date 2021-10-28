@@ -1,0 +1,29 @@
+extends layout/main-layout.pug
+
+block title
+  title #{title}
+
+block navbar
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
+
+block content
+  div(class="jumbotron")
+    h5(class="text-center") #{description}
+    h5(class="text-center") In few seconds the page will redirect to #{redirectPageName}
+
+  script(type="text/javascript").
+    let path = !{JSON.stringify(redirectPath)};
+    let redirect_Page = () => {
+      let timer = setTimeout(() => {
+      let redirectPageURL = "http://" + location.host + path;
+        fetch(redirectPageURL).
+        then((response) => {window.location.assign(response.url)})
+        .catch(error => console.log(error));
+        window.clearTimeout(timer);
+      }, 3000);
+    }
+    redirect_Page();

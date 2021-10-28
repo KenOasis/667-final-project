@@ -22,7 +22,7 @@ exports.signUp = async (req, res, next) => {
 
    if (existedUser !== null) {
      // TODO feedback to frontend validation
-     res.status(409).render('error', { title: 'username or email existed', errorcode: "409 Conflict"})
+     res.status(409).render('signup')
      return;
    }
 
@@ -36,7 +36,7 @@ exports.signUp = async (req, res, next) => {
 
     if (existedUser !== null) {
       // TODO feedback to frontend validation
-      res.status(409).render('error', { title: 'username or email existed', errorcode: "409 Conflict"})
+      res.status(409).render('signup')
       return;
     }
 
@@ -67,7 +67,13 @@ exports.login = async (req, res, next) => {
         req.session.isLoggedIn = true;
         req.session.userId = user.id;
         // TODO feedback to user as login successfully
-        res.status(200).render("lobby", { isLoggedIn: true })
+        res.status(200).render("transition", { 
+          isLoggedIn: true,
+          title: "Successfully Logged In!",
+          description: "Congratulation! You have successfully logged in.",
+          redirectPath: "/",
+          redirectPageName: "Home" 
+        })
       } else {
         // TODO feedback to user as password wrong 
         console.log("Wrong password");

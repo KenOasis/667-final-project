@@ -32,6 +32,7 @@ const errorController = require('./controllers/static/errors');
 const authRoutes = require('./routes/api/auth');
 const staticRoutes = require('./routes/static/static-routes');
 const gameTestRoutes = require('./routes/tests/core');
+const errorRoutes = require('./routes/errors');
 const routerFilter = require('./middleware/router-filter');
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -56,7 +57,7 @@ app.use('/', staticRoutes.routes);
 app.use('/auth', authRoutes.routes);
 app.use('/tests', gameTestRoutes.routes);
 
-app.use(errorController.Error404);
+app.use(errorRoutes.routes);
 
 let port_number = process.env.PORT || 3000;
 app.listen(port_number);
