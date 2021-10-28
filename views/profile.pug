@@ -1,0 +1,32 @@
+extends layout/main-layout.pug
+
+block title 
+    title Lobby
+block navbar
+  li(class="nav-item dropdown")
+    a(href="#" 
+      class="nav-link dropdown-toggle" 
+      data-toggle="dropdown" 
+      aria-haspopup="true" 
+      aria-expanded="false"
+      id="navbarDropdownMenuLink"
+      ) playername
+    div(class="dropdown-menu")
+        a(href="#" class="dropdown-item") profile
+        a(href="#" class="dropdown-item") point: 1000
+        a(href="#" class="dropdown-item") logout
+
+block content
+    div(class="container" style="height:100%")
+        div(class="d-flex justify-content-center flex-column row-h1")
+            div(class="p-4 item-h1")
+                img(src="/images/icon/sheep.jpg", alt="")
+            div(class="p-4 item-h1")
+                p username
+                p emailaddress
+                p gamespoint 
+            div(class="p-4 item-h1")
+                a(href="#") change your password 
+    
+    br
+
