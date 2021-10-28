@@ -27,11 +27,11 @@ const store = new sequelizeStore({
 });
 
 // end of setup session
-const errorController = require('./controllers/errors');
+const errorController = require('./controllers/static/errors');
 
-const usersRoutes = require('./routes/users');
-const homeRoutes = require('./routes/home');
-const gameTestRoutes = require('./routes/core');
+const authRoutes = require('./routes/api/auth');
+const staticRoutes = require('./routes/static/static-routes');
+const gameTestRoutes = require('./routes/tests/core');
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
@@ -51,8 +51,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.use('/', homeRoutes.routes);
-app.use('/users', usersRoutes.routes);
+app.use('/', staticRoutes.routes);
+app.use('/auth', authRoutes.routes);
 app.use('/tests', gameTestRoutes.routes);
 
 app.use(errorController.Error404);
