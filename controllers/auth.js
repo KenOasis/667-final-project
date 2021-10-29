@@ -45,12 +45,16 @@ exports.signUp = async (req, res, next) => {
       email: email,
       password: passwordEncrypted,
     });
-    
-    // TODO add JWT Auth
-    res.status(200).render('login');
+    res.status(200).render("transition", { 
+      isLoggedIn: true,
+      title: "Successfully signup!",
+      description: "Congratulation! You have successfully signup.",
+      redirectPath: "/login",
+      redirectPageName: "Login" 
+    });
   } catch (error) {
     // TODO standarize error ouput
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -62,14 +66,13 @@ exports.login = async (req, res, next) => {
       where: {username: reqUsername}
     });
     let reqPasswordEncrypted = Buffer.from(req.body.password).toString('base64')
-    if (user != null) {
+    if (user !== null) {
       if (user.password === reqPasswordEncrypted) {
         req.session.isLoggedIn = true;
         req.session.userId = user.id;
-        // TODO feedback to user as login successfully
         res.status(200).render("transition", { 
           isLoggedIn: true,
-          title: "Successfully Logged In!",
+          title: "Successfully logged in!",
           description: "Congratulation! You have successfully logged in.",
           redirectPath: "/",
           redirectPageName: "Home" 
@@ -86,14 +89,48 @@ exports.login = async (req, res, next) => {
     }
   } catch (error) {
     // TODO standarize error ouput
-    console.log(error)
+    console.error(error)
   }
 }
 
 exports.logout = (req, res, next) => {
   req.session.destroy(() => {
-    res.clearCookie('connect.sid').status(200).render('index', { isLoggedIn: false });
+    res.clearCookie('connect.sid').status(200).render("transition", { 
+      isLoggedIn: false,
+      title: "Successfully logged out!",
+      description: " You have successfully logged out.",
+      redirectPath: "/",
+      redirectPageName: "Home" 
+    });
   });
-  // TODO notify user successfully logout
-  // res.status(200).render('index', { removeSession: true, sessionId: sessionId });
+}
+
+exports.changePassword = async (req, res, next) => {
+  const userId = req.session.userId;
+  let reqPasswordEncrypted = Buffer.from(req.body.password).toString('base64')
+  const newPasswordEncrypted = Buffer.from(req.body.new_password).toString('base64')
+  try {
+    const user = await Users.findOne({
+      where: {
+        id: userId
+      }
+    })
+
+    if (user !== null) {
+      if(user.password === reqPasswordEncrypted) {
+        user.password = newPasswordEncrypted;
+        user.save();
+        res.status(200).json({status: "success"})
+      } else {
+      // TODO feedback to user password wrong 
+      console.log("Wrong Password");
+      return;
+      }
+    } else {
+      throw new Error("db error!");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
 }
