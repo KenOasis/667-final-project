@@ -8,6 +8,13 @@ block navbar
 
 block content
   script(type="text/javascript" src="/script/validation-change-password.js" defer)
+  div(class="position-fixed top-0 end-0 p-3" style="z-index: 2000")
+    div(id="profileToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000")
+      div(class="toast-header")
+        strong(class="me-auto") Message 
+        small(class="text-muted") Change Password
+        button(type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close")
+      div(class="toast-body" id="errors_message")
   div(class="container d-flex justify-content-center")
     div(class="card text-center" style="width: 20rem;;")
       img(class="card-img-top" style="width: 10rem; position: relative; left: 5rem;" src=(profile === undefined ? "/images/profile/default.png" : profile) alt="Card img top")
@@ -15,7 +22,7 @@ block content
       div(class="card-body")
         h5(class="card-title") #{username}
         h5 account email: #{email}
-        button(type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#changePasswordModal") change password
+        button(type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal") change password
         // Modal change password
         div(class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="CPModalLabel" aria-hidden="true")
           div(class="modal-dialog" role="ducoment")
@@ -23,12 +30,12 @@ block content
               div(class="modal-header")
                 h5(class="modal-title" id="CPModalLabel") Change Password
               div(class="modal-body")
-                form(action="/auth/change_password" method="POST" onsubmit="onSubmitPasswordChange()") 
+                form 
                   div(class="form-outline mb-3")
                     input(
                       type="password" 
-                      name="password"
-                      id="password"
+                      name="current_password"
+                      id="current_password"
                       class="form-control form-control-lg"
                       placeholder="Current password"  
                       )
@@ -52,11 +59,12 @@ block content
                       )
                     div(class="invalid-feedback" id="feedback_confirm")
                   button( 
-                    type="submit" 
+                    type="button" 
                     class="btn btn-primary p-1"
+                    onclick="onSubmitPasswordChange()"
                   ) submit 
               div(class="modal-footer")
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
             // End of change password modal
         script(type="text/javascript").
           let winrate = !{JSON.stringify(winrate)};

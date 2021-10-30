@@ -107,7 +107,7 @@ exports.logout = (req, res, next) => {
 
 exports.changePassword = async (req, res, next) => {
   const userId = req.session.userId;
-  let reqPasswordEncrypted = Buffer.from(req.body.password).toString('base64')
+  let reqPasswordEncrypted = Buffer.from(req.body.current_password).toString('base64')
   const newPasswordEncrypted = Buffer.from(req.body.new_password).toString('base64')
   try {
     const user = await Users.findOne({
@@ -122,9 +122,12 @@ exports.changePassword = async (req, res, next) => {
         user.save();
         res.status(200).json({status: "success"})
       } else {
-      // TODO feedback to user password wrong 
-      console.log("Wrong Password");
-      return;
+      res.status(401).json({
+        errors: [{
+          msg: "Your current password is not corrected",
+          param: "current_password"
+        }]
+      })
       }
     } else {
       throw new Error("db error!");

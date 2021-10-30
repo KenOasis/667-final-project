@@ -2,12 +2,14 @@ li(class="nav-item dropdown")
   button(
     class="btn btn-danger dropdown-toggle"
     style="padding-top: 0.5rem"
-    data-toggle="dropdown"
-    aria-haspopup="true"
+    data-bs-toggle="dropdown"
     aria-expanded="false"
+    aria-haspopup="true"
     id="dropdownMenuButton"
     ) Welcome
-  div(class="dropdown-menu bg-danger"  aria-labelledby="dropdownMenuButton")
-    a(href="/profile" class="dropdown-item bg-danger text-light") dashboard
-    a(href="/auth/logout" class="dropdown-item bg-danger text-light") logout
+  ul(class="dropdown-menu bg-danger"  aria-labelledby="dropdownMenuButton")
+    li
+      a(href="/profile" class="dropdown-item bg-danger text-light") dashboard
+    li
+      a(href="/auth/logout" class="dropdown-item bg-danger text-light") logout
 
