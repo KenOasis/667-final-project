@@ -1,5 +1,5 @@
-const loggeInFilter = ['/login', '/signup','/auth/login', '/auth/signup'];
-const loggedOutFilter = ['/auth/logout', '/auth/change_password' ,'/profile'];
+const loggeInFilter = ['/login', '/signup','/user/login', '/user/signup'];
+const loggedOutFilter = ['/user/logout', '/user/change_password' ,'/user/profile'];
 
 // NOTE: if you are not filter the route here, you have to check the filter condition in the routes/controllers
 

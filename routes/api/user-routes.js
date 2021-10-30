@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../../controllers/auth');
+const userController = require('../../controllers/user-controller');
+const fileUpload = require('../../middleware/file-upload')
 const { check, validationResult } = require('express-validator');
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-router.post('/signup', authController.signUp);
+router.post('/signup', userController.signUp);
 
-router.post('/login', authController.login);
+router.post('/login', userController.login);
 
-router.get('/logout', authController.logout);
-
+router.get('/logout', userController.logout);
+router.get('/profile', userController.getProfile);
 router.post('/change_password', 
     check('current_password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character"),
     check('new_password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character"),
@@ -35,5 +36,7 @@ router.post('/change_password',
         next()
     }
   },
-  authController.changePassword);
+  userController.changePassword);
+
+router.post('/profile', fileUpload.single("profile_img"), userController.profileImageUpload)
 exports.routes = router;

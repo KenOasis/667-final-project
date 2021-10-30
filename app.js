@@ -16,7 +16,8 @@ const extendDefaultFields = (defaults , session) => {
   return {
     data: defaults.data,
     expires: defaults.expires,
-    userId: session.userId
+    userId: session.userId,
+    userName: session.userName
   };
 };
 
@@ -29,7 +30,7 @@ const store = new sequelizeStore({
 // end of setup session
 const errorController = require('./controllers/static/errors');
 
-const authRoutes = require('./routes/api/auth');
+const userRoutes = require('./routes/api/user-routes');
 const staticRoutes = require('./routes/static/static-routes');
 const gameTestRoutes = require('./routes/tests/core');
 const errorRoutes = require('./routes/errors');
@@ -54,7 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(routerFilter);
 
 app.use('/', staticRoutes.routes);
-app.use('/auth', authRoutes.routes);
+app.use('/user', userRoutes.routes);
 app.use('/tests', gameTestRoutes.routes);
 
 app.use(errorRoutes.routes);
