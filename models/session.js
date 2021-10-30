@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     userId: DataTypes.INTEGER,
     expires: DataTypes.DATE,
-    data: DataTypes.TEXT
+    data: DataTypes.TEXT,
+    userName: DataTypes.STRING(20)
   }, {
     timestamps: false
   });

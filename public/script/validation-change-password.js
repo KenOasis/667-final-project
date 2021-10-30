@@ -42,13 +42,14 @@ const newValidation = (event) => {
 
 
 
-const loadEventListeners = () => {
+const mountEventListeners = () => {
   input_current.addEventListener('input', currentValidation);
   input_new.addEventListener('input', newValidation);
   input_confirm.addEventListener('input', confirmValidation);
 }
 
-loadEventListeners();
+// mounted all the event listeners
+mountEventListeners();
 
 
 const onSubmitValidation = () => {
@@ -65,7 +66,7 @@ const onSubmitValidation = () => {
 
 const onSubmitPasswordChange = () => {
 
-  const url = "http://" + location.host + "/auth/change_password"
+  const url = "http://" + location.host + "/user/change_password"
   const body = {
     current_password: input_current.value,
     new_password: input_new.value,
