@@ -1,11 +1,15 @@
 li(class="nav-item dropdown")
   button(
     class="btn btn-danger dropdown-toggle"
-    data-toggle="dropdown"
-    aria-haspopup="true"
+    style="padding-top: 0.5rem"
+    data-bs-toggle="dropdown"
     aria-expanded="false"
+    aria-haspopup="true"
     id="dropdownMenuButton"
-    ) playername
-  div(class="dropdown-menu bg-danger"  aria-labelledby="dropdownMenuButton")
-    a(href="#" class="dropdown-item bg-danger text-light") point: 10000
-    a(href="/auth/logout" class="dropdown-item bg-danger text-light") logout
+    ) Welcome
+  ul(class="dropdown-menu bg-danger"  aria-labelledby="dropdownMenuButton")
+    li
+      a(href="/profile" class="dropdown-item bg-danger text-light") dashboard
+    li
+      a(href="/auth/logout" class="dropdown-item bg-danger text-light") logout
+
