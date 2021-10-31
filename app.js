@@ -61,4 +61,8 @@ app.use('/tests', gameTestRoutes.routes);
 app.use(errorRoutes.routes);
 
 let port_number = process.env.PORT || 3000;
-app.listen(port_number);
+const server = app.listen(port_number);
+const io = require('./socket').init (server);
+io.on('connection', socket => {
+  console.log("client connectted " + socket.id );
+})

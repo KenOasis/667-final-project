@@ -12,7 +12,7 @@ const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))
 const pw_regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
 const username_validation = ()=>{
-    if(username_regex.test(username)){
+    if(username_regex.test(username.value)){
         feedback_username.style.display = "none";
     }
     else{
@@ -21,7 +21,7 @@ const username_validation = ()=>{
     }
 }
 const email_validation = ()=>{
-    if(email_regex.test(email)){
+    if(email_regex.test(email.value)){
         feedback_email.style.display = "none";
     }
     else{
@@ -31,7 +31,7 @@ const email_validation = ()=>{
     }
 }
 const pw_validation = ()=>{
-    if(pw_regex.test(pw)){
+    if(pw_regex.test(pw.value)){
         feedback_pw.style.display = "none";
     }
     else{
