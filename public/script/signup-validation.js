@@ -52,5 +52,46 @@ const mountEventListeners = ()=>{
     username.addEventListener('input', username_validation);
     email.addEventListener('input', email_validation);
     pw.addEventListener('input', pw_validation);
+    confirmPW.addEventListener('input', confirmPW_validation);
 }
 mountEventListeners();
+
+const onSubmitValidation= ()=>{
+    let validateUsername = username_regex.test(username.value);
+    let validateEmail = email_regex.test(email.value);
+    let validatePW = pw_regex.test(pw.value);
+    let validateConfirmPW = pw.value === confirmPW.value;
+
+    if(validateUsername && validateEmail && validatePW && validateConfirmPW){
+        return true;
+    }
+    else return false;
+}
+const onSubmit = ()=>{
+    const url = "http://" + location.host + "/user/signup"
+    const body = {
+        username:username.value,
+        email:email.value,
+        password:pw.value,
+        confirmPassword:confirmPW.value
+    };
+    if(onSubmitValidation()){
+        fetch(url, {
+            method:"POST",
+            body:JSON.stringify(body),
+            credentials:"include",
+            headers: new Headers({
+                "content-type":"application/json"
+            })
+        }).then(response=>response.json())
+        .then(results=>{
+            if(results.errors){
+                console.log(results.errors);
+            }
+            else{
+                // success
+            }
+        })
+        .catch(err=> console.log(err))
+    }
+}
