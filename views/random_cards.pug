@@ -8,11 +8,99 @@ block styles
 block scripts
   script(type="text/javascript").
     var cards = !{JSON.stringify(cards)}
+  
 
 block content
-  div(class="container")
-    div(class="d-flex justify-content-center row-hl")
-      each card in cards
-        div(class="p-4 item-hl")
-          img(src=card.uri class="rounded unocard") 
+  div(class="container fluid")
+    div(class="row")
+      div(class="col-md-3") Space
+      div(class="col-md-6")
+        div(class="d-flex justify-content-center flex-nowrap row-hl" id ="player1" )
+          img(src = "/images/uno_cards/backcol.jpg" class = "rounded showCard item-hl p-0")
+          img(src = "/images/uno_cards/backcol.jpg" class = "rounded showCard item-hl p-0")
+          img(src = "/images/uno_cards/backcol.jpg" class = "rounded showCard item-hl p-0")
+          img(src = "/images/uno_cards/backcol.jpg" class = "rounded showCard item-hl p-0")
+
+      div(class="col-md-3") space
+    div(class ="row")
+      div(class=" d-flex justify-content-center flex-column flex-nowrap row-hl " id="player2")
+        img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0 position-relative")
+        img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0 position-relative")
+        img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0 position-relative")
+        img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0 position-relative")
+      div(class="col-md-6")
+        div(class = "row")
+          div(class = "col" id = "dicardPile")
+
+
+
+
+      div(class="col-md-3")
+        div(class=" d-flex justify-content-center flex-column flex-nowrap row-hl " id="player3")
+          img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0")
+          img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0")
+          img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0")
+          img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0")
+    br
+    div(class = "row p-0")
+      div(class="col-md-3")
+        div(
+          class="col"
+          id="messages"
+          style="border:2px solid #dedede; height:300px; overflow-y:auto"
+      )
+          div(class="car border-danger mb-3")
+              div(class="card-body")
+                  span(class="badge") player1
+                  p(class="card-text") Hello
+          div(class="car border-danger mb-3")
+              div(class="card-body")
+                  span(class="badge") player2
+                  p(class="card-text") hi
+          div(class="car border-danger mb-3")
+              div(class="card-body")
+                  span(class="badge") player3
+                  p(class="card-text") hi
+          div(class="car border-danger mb-3")
+              div(class="card-body")
+                  span(class="badge") player4
+                  p(class="card-text") hi
+          div(class="car border-danger mb-3")
+              div(class="card-body")
+                  span(class="badge") player4
+                  p(class="card-text") hi
+        br
+        div(class="input-group mb-4")
+            input(type="text "
+                  class="form-control"
+                  id="message"
+                  )
+            div(class="input-group-append")
+                button(
+                    type="button"
+                    class="btn btn-outline-danger"
+                ) send
+      div(class="col-md-6 p-0")
+          div(class="d-flex justify-content-center row-hl" id="game_control")
+            botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="draw_card") DRAW
+            botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="uno") UNO
+            botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="play" onclick="playCard(event)") PLAY
+          br
+          div(class="d-flex justify-content-center row-hl flex-nowrap" id="card_container")
+            each card in cards
+                img(src=card.uri class="item-hl p-0 rounded showCard" onclick="showWholeCard(event)" id=card.id) 
+
+  script
+    include ../public/js/frontend.js
+
+
+
+
+
+
+
+
+
+
+ 
 

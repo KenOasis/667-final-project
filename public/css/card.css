@@ -1,4 +1,35 @@
-.unocard {
-  height: 200px;
-  width: auto;
+.showCard {
+    height: 200px;
+    width: auto;
+    position: relative;
+    left: 0;
+    z-index: 0;
+    border-radius: 100px;
+    border: 3px solid #800000;
+    filter: brightness(95%);
 }
+
+.showColCard {
+    width: 200px;
+    height: auto;
+    position: relative;
+    top: 0;
+    z-index: 0;
+}
+
+#flash-message {
+    position: fixed;
+    left: 50%;
+    top: 25%;
+    transform: translate(-50%, 0);
+    color: black;
+    background-color: rgb(243, 243, 7);
+    border: 2px solid #cccccc;
+    box-shadow: 0 3px 3px #888888;
+}
+  
+#flash-message div {
+    text-align: center;
+    
+}
+  
