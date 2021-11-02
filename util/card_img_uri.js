@@ -1,5 +1,5 @@
 const getNumber = (face_value) => {
-    switch (face_value){
+    switch (face_value) {
         case 'zero':
             return 0;
         case 'one':
@@ -26,12 +26,12 @@ const getNumber = (face_value) => {
 }
 
 const cardURIGenerator = (type, color, face_value, action) => {
-    switch (type){
+    switch (type) {
         case 'wild':
             return action;
         case 'action':
             return type + '-' + color + '-' + action;
-        case 'number': 
+        case 'number':
             return type + '-' + color + '-' + getNumber(face_value);
         default:
             return 'back';
