@@ -24,3 +24,7 @@ exports.getLobby = (req, res, next) => {
     }
 }
 
+exports.getAbout = (req, res, next) => {
+  const isLoggedIn = (req.session.isLoggedIn === true ? true : false);
+  res.status(200).render('about', {isLoggedIn});
+}
