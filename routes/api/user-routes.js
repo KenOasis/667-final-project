@@ -37,4 +37,5 @@ router.post('/change_password',
   userController.changePassword);
 
 router.get('/profile', userController.getProfile);
+
 exports.routes = router;

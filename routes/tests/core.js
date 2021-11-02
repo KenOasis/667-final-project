@@ -9,4 +9,5 @@ router.get('/test_game', gameTestController.testGame);
 router.get('/test_gu', gameTestController.testGameUsers);
 router.get('/test_gc', gameTestController.testGameCards);
 router.get('/initial_game', gameTestController.initialGame);
+router.get('/game/:1', gameTestController.getGame);
 exports.routes = router;

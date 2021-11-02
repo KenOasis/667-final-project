@@ -164,3 +164,6 @@ exports.showRandomCards = (req, res, next) => {
         res.json({error: error});
     });
 }
+exports.getGame = (req, res,next )=>{
+  res.render("game")
+}

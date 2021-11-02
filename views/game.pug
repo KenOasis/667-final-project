@@ -1,0 +1,17 @@
+extends layout/main-layout.pug
+
+block title
+    title Game State 
+block styles 
+     link(rel="stylesheet", href="/css/card.css")
+
+block content 
+    script(type="text/javascript" src="/js/card.js" defer)
+    div(class = "cards")
+        div(class = "card red zero")
+        div(class = "card yellow one")
+        div(class = "card green two")
+        div(class = "card wild")
+        div(class = "card drawFour")
+
+
