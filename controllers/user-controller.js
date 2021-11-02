@@ -5,8 +5,7 @@ const bcrpyt = require('bcrypt');
 const saltround = 11;
 const Game_Users = db['game_users'];
 const path = require('path');
-const jimp = require('jimp');
-const fs = require('fs');
+const { randomInt } = require('crypto');
 Users.hasMany(Game_Users, {foreignKey: "user_id"});
 
 exports.signUp = async (req, res, next) => {
@@ -163,11 +162,7 @@ exports.getProfile = async (req, res, next) => {
         required: true
       }]
     });
-    let profileImg = undefined;
-    let filePath =  path.join(__dirname, "..", "public", "images", "profile", Buffer.from(req.session.userName).toString("base64") + ".jpeg");
-    if ((fs.existsSync(filePath))) {
-      profileImg = "/images/profile/" + Buffer.from(req.session.userName).toString("base64") + ".jpeg";
-    }
+    let profileImg = `/images/profile/profile${Math.floor(Math.random() * 3) + 1}.gif`;
     console.log(profileImg);
     if (results && results.length) {
       const gamePlayed = results.length;
@@ -209,34 +204,3 @@ exports.getProfile = async (req, res, next) => {
   }
 }
 
-
-exports.profileImageUpload = (req, res, next) => {
-  const filePath = req.file.path;
-  const fileDir = filePath.slice(0, filePath.lastIndexOf('/'));
-  // tranfer profile image to jpeg format
-  if (filePath.slice(filePath.lastIndexOf(".")) !== "jpeg") {
-    const newfilePath = fileDir + "/" + Buffer.from(req.session.userName).toString('base64') + ".jpeg";
-    jimp.read(filePath)
-    .then(lenna => {
-      return lenna
-        .quality(60)
-        .write(newfilePath);
-    })
-    .catch(error => console.error(error));
-    fs.unlink(filePath, err => {
-      if(err) {
-        console.log(err)
-      } else {
-        console.log("successfully delete " + filePath);
-      }
-    });
-  }
-
-  if (filePath) {
-    res.status(200).redirect("/user/profile");
-  } else {
-    res.status(400).json({
-      errors: "file upload failed"
-    })
-  }
-}
