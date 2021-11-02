@@ -16,7 +16,7 @@ const username_validation = ()=>{
         feedback_username.style.display = "none";
     }
     else{
-        feedback_username.innerHTML = "Username must be atleast 3 alphanumerical characters long"
+        feedback_username.innerHTML = "Username must be at least 3 alphanumerical characters long"
         feedback_username.style.display = "inherit";
     }
 }
