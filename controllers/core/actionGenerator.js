@@ -1,3 +1,11 @@
+/*
+  this helper classs use to generate the action object for the update.actions (see below) to update the
+  game_state of the frontend (and backend?)
+*/
+
+
+
+
 const game_state = {  // this is the game_state hold at the front-end
   cards_deck: 45,    // how many cards still in the deck
 
@@ -44,6 +52,7 @@ const game_state = {  // this is the game_state hold at the front-end
 // remember, this is the action trigger {{{AFTER}}} you send the request to the backend
 const update = {
   game_id: 5,
+  user_id: 6,
   // the order of action is their performed-order
   actions: [
     {  // action need to perform in front end (caused by )
