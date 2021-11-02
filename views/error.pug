@@ -1,0 +1,28 @@
+extends layout/main-layout.pug
+
+block title
+  title #{errorcode}
+
+block navbar
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
+
+block content
+  div(class="container")
+    div(class="row")
+      div(class="col-md-12")
+        div(class="error-template text-center")
+          h1 #{errorcode}
+          div(class="error-details text-center") 
+            h2 #{description}
+          div(class="error-actions")
+            a(
+              href="/"
+              class="btn btn-primary btn-lg"
+            ) Back to Home Page
+            
+
+  

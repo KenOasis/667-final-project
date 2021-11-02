@@ -7,18 +7,19 @@ block styles
   link(rel="stylesheet", href="/css/icon.css")
 
 block navbar
-  li(class="nav-item")
-    a(class="nav-link" href="/login") Login
-  li(class="nav-item")
-    a(class="nav-link" href="/signup") Register 
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
 
 block content
-  div(class="container fluid ")
+  div(class="container fluid")
     div(class="row d-flex justify-content-center align-items-center h-100")
       div(class="col-md-5")
         img(src="/images/logo.png" class="img-fluid" alt="Sample image")
-      div(class="col-md-7")
-        form(action="/users/signup", method="POST")
+      div(class="col-md-8 col-lg-6 col-xl-4 offset-xl-1")
+        form(action="/auth/signup" method="POST")
           h1 Register
           div(class="form-outline mb-2") 
             input(

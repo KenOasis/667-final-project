@@ -4,10 +4,11 @@ block title
   title Let's play Uno
 
 block navbar
-  li(class="nav-item")
-    a(class="nav-link" href="/login") Login
-  li(class="nav-item")
-    a(class="nav-link" href="/signup") Register 
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
 
 block content
   div(
@@ -30,5 +31,5 @@ block content
       br
       br
       br
-      a(class="btn btn-success btn-lg" href="#" role="button") Start the game
+      a(class="btn btn-success btn-lg" href="/lobby" role="button") Start the game
   hr
