@@ -32,7 +32,6 @@ const errorController = require('./controllers/static/errors');
 
 const userRoutes = require('./routes/api/user-routes');
 const staticRoutes = require('./routes/static/static-routes');
-const gameTestRoutes = require('./routes/tests/core');
 const errorRoutes = require('./routes/errors');
 const routerFilter = require('./middleware/router-filter');
 app.set('view engine', 'pug');
@@ -56,7 +55,6 @@ app.use(routerFilter);
 
 app.use('/', staticRoutes.routes);
 app.use('/user', userRoutes.routes);
-app.use('/tests', gameTestRoutes.routes);
 
 app.use(errorRoutes.routes);
 
