@@ -324,7 +324,7 @@ let cardModule = {
         let loca = "/images/uno_cards/";
         switch (type) {
             case 'wild':
-                return loca + action + ".jpg";
+                return loca + value + ".jpg";
             case 'action':
                 return loca + type + '-' + color + '-' + value + ".jpg";
             case 'number':

@@ -15,6 +15,7 @@
     position: relative;
     top: 0;
     z-index: 0;
+    border: 3px solid #800000;
 }
 
 #flash-message {
@@ -30,4 +31,14 @@
 
 #flash-message div {
     text-align: center;
+}
+
+div[id^="container_"] {
+    padding: 0;
+    margin: 0;
+    border: 1px solid blue;
+}
+
+div[id^="[]"] {
+    border: 1px solid blue;
 }
