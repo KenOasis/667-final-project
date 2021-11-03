@@ -1,0 +1,13 @@
+extends layout/main-layout.pug
+
+block title
+  title About
+block navbar
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
+
+block content
+    <h1> In construction.......

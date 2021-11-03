@@ -2,7 +2,6 @@ extends layout/main-layout.pug
 
 block title 
   title Lobby
-
 block navbar
   include navbar/nav-logged-in
 
@@ -10,46 +9,24 @@ block content
   div(class="container" style="height:100%")
     div(class="row")
         div(class="col-4")
+            div(class="row")
+              h3(class="col-3") Games
+              button(class="col-1 badge bg-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Create a game") +
+              div(class="col-8")
+            ul(class="list-group" style="border:2px solid #dedede; height:200px; overflow-y:auto")
+              li(class = "list-group-item d-flex justify-content-between align-items-center") game1
+                span(class="badge bg-primary rounded-spill") waiting
+               
+        
             br
-            br
-            ul(class="list-group")
-                li(
-                    class = "list-group-item d-flex justify-content-between align-items-center"
-                    ) player1
-                    span(
-                        class="badge badge-danger badge-pill"
-                        ) Ready
-                li(
-                    class = "list-group-item d-flex justify-content-between align-items-center"
-                    ) player2
-                    span(
-                        class="badge badge-danger badge-pill"
-                        ) Ready
-                li(
-                    class = "list-group-item d-flex justify-content-between align-items-center"
-                    ) player3
-                li(
-                    class = "list-group-item d-flex justify-content-between align-items-center"
-                    ) player4
-                    span(
-                        class="badge badge-danger badge-pill"
-                        ) Ready
-            br
+            h3 Folks
+            ul(class="list-group" style="border:2px solid #dedede; height:200px; overflow-y:auto")
+              li(class = "list-group-item d-flex justify-content-between align-items-center") player1
+                span(class="badge bg-primary rounded-spill") in game
+           
 
-            div(class="row") 
-                div(class="col-6")
-                        button(
-                        class="btn btn-danger btn-block"
-                        type="button"
-                        ) Cancel
-                
-                div(class="col-6")
-                    button(
-                        class="btn btn-danger btn-block"
-                        type="button"
-                        ) Ready
+            
           
-
 
         div(class="col-8")
             h2 Chat
@@ -58,25 +35,13 @@ block content
                 id="messages"
                 style="border:2px solid #dedede; height:400px; overflow-y:auto"
             )
-                div(class="car border-danger mb-3")
+                div(class="car border-danger mb-1")
                     div(class="card-body")
-                        span(class="badge") player1
+                        span(class="badge bg-light") player1
                         p(class="card-text") Hello
                 div(class="car border-danger mb-3")
                     div(class="card-body")
-                        span(class="badge") player2
-                        p(class="card-text") hi
-                div(class="car border-danger mb-3")
-                    div(class="card-body")
-                        span(class="badge") player3
-                        p(class="card-text") hi
-                div(class="car border-danger mb-3")
-                    div(class="card-body")
-                        span(class="badge") player4
-                        p(class="card-text") hi
-                div(class="car border-danger mb-3")
-                    div(class="card-body")
-                        span(class="badge") player4
+                        span(class="badge bg-light") player2
                         p(class="card-text") hi
             br
 
