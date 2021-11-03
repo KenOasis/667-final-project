@@ -83,7 +83,6 @@ const onSubmitPasswordChange = () => {
     }).then(response => response.json())
     .then(results => {
       if(results.errors) {
-        console.log(results.errors);
         /* under validation failed, it returns an json object
           errors: [{
             value: "..",
@@ -94,7 +93,7 @@ const onSubmitPasswordChange = () => {
         */
         if(liveToast) {
           let errors = results.errors;
-          let errorMsg = `Field: ${errors[0].param} ;${errors[0].msg}`;
+          let errorMsg = `<b class="text-danger">Error in Field: {${errors[0].param}} : ${errors[0].msg} </b>`;
           document.getElementById('errors_message').innerHTML = errorMsg
           var toast = new bootstrap.Toast(liveToast);
           toast.show()

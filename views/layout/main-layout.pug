@@ -27,19 +27,21 @@ html(lang="en")
           a(
             class="navbar-brand btn btn-danger"
             style="font-family: cursive "
-            href="/"
+            href="/lobby"
+             data-bs-toggle="tooltip" data-bs-placement="top" title="Let's UNO!"
             ) 
             b='UNO'
           ul(class="navbar-nav")
             li(class="nav-items")
-              a(class="nav-link btn btn-danger text-light" href="/") Home
+              a(class="nav-link btn btn-danger text-light" href="/"  data-bs-toggle="tooltip" data-bs-placement="top" title="Back to home page") Home
             li(class="nav-item")
-              a(class="nav-link btn btn-danger text-light" href="#") About
+              a(class="nav-link btn btn-danger text-light" href="#"  data-bs-toggle="tooltip" data-bs-placement="top" title="About the game") About
             block navbar
       hr
     block content
     hr
-    script(script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous")
+    script(type="text/javascript" src="/js/main.js")
 
   footer(class=" flex-shrink-0 py-4 bg-danger footer")
     a(href="#")
