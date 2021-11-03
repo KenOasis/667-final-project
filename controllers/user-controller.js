@@ -174,7 +174,6 @@ exports.getProfile = async (req, res, next) => {
       }]
     });
     let profileImg = `/images/profile/profile${Math.floor(Math.random() * 3) + 1}.gif`;
-    console.log(profileImg);
     if (results && results.length) {
       const gamePlayed = results.length;
       const game_won = (results.filter((element) => element.points > 0)).length;
