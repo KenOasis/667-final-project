@@ -1,73 +1,123 @@
-const cardmodule = require("./card");
-
-
 const simple_game_state = {
-    current_play: 9,
     current_color: "green",
-    player_a: {
+    current_player: {
         player_id: 9,
         cards: [80, 90, 100, 22]
     },
     player_b: {
         player_id: 10,
-        cards: [80, 90, 100, 22]
+        card_num: 4
     },
     player_c: {
         player_id: 11,
-        cards: [80, 90, 100, 22]
+        card_num: 6
     },
     player_d: {
         player_id: 12,
-        cards: [80, 90, 100, 22]
+        card_num: 7
     }
 }
 
 function card_img_element(card_id) {
     const card_img = document.createElement("img")
-    card_img.src = cardmodule.card_url_generator(card_id);
-    card_img.id = card_id;
+    card_img.src = cardModule.card_url_generator(card_id);
+    card_img.id = "card_" + card_id.toString();
+    card_img.className = "item-hl p-0 rounded showCard";
+    // card_img.addEventListener("click", showWholeCard(card_id))
+    return card_img;
+}
+
+// function showWholeCard(card_id) {
+//     const card = document.getElementById("card_" + card_id.toString());
+//     const div = simple_game_state.current_player.player_id;
+//     const current_cards = "player_" + div.toString();
+//     if (card_zIndex == 1000) {
+//         cardRowStyle(current_cards)
+//     } else {
+//         card.style.zIndex = 1000;
+//         card.style.top = "-30px"
+//         card.style.border = "3px solid #0000FF"
+//     }
+// }
+
+
+
+function opp_card_col_show() {
+    const card_img = document.createElement("img")
+    card_img.src = "/images/uno_cards/backcol.jpg"
+    card_img.className = "item-hl p-0 rounded showColCard";
+    return card_img;
+}
+
+function opp_card_rol_show() {
+    const card_img = document.createElement("img")
+    card_img.src = "/images/uno_cards/backrow.jpg"
     card_img.className = "item-hl p-0 rounded showCard";
     return card_img;
-
 }
 
-function opp_card_show() {
+function create_parent_col_div(player_id) {
+    const div = document.createElement("div")
+    div.id = "player_" + player_id.toString();
+    div.className = "d-flex justify-content-center flex-column flex-nowrap row-hl";
+    return div;
+}
 
-
+function create_parent_row_div(player_id) {
+    const div = document.createElement("div");
+    div.id = "player_" + player_id.toString();
+    div.className = "d-flex justify-content-center row-hl flex-nowrap";
+    return div;
 }
 
 
+function read_game_state(simple_game_state) {
+    let current_player = simple_game_state.current_player.player_id;
+    let current_div = document.getElementById("current_player");
+    let div = create_parent_row_div(current_player);
+    let player_card = simple_game_state.current_player.cards;
+
+    for (let i in player_card) {
+        let img = card_img_element(player_card[i]);
+        console.log(img.)
+        div.appendChild(img)
+    }
+    current_div.appendChild(div);
+    cardRowStyle(div);
+    return current_div;
+}
+
+console.log(read_game_state(simple_game_state))
 
 
-// let cardRowStyle = (id) => {
-//     console.log(id)
-//     const cardevent = document.getElementById(id);
-//     const cards = cardevent.querySelectorAll(".showCard");
-//     let zindex = 0;
-//     let left = 0;
-//     for (let i = 0; i < cards.length; i++) {
-//         let leftstring = "-" + left.toString() + "px";
-//         cards[i].style.left = leftstring;
-//         cards[i].style.zIndex = zindex;
-//         cards[i].style.border = "3px solid #800000";
-//         cards[i].style.top = "0px";
-//         zindex++;
-//         left = 50 + left;
-//     }
 
-// }
-// let cardColStyle = (id) => {
-//     const cardevent = document.getElementById(id);
-//     const cards = cardevent.querySelectorAll(".showColCard");
-//     let zindex = 0;
-//     let top = 0;
-//     for (let i = 0; i < cards.length; i++) {
-//         let topstring = "-" + top.toString() + "px";
-//         cards[i].style.top = topstring;
-//         cards[i].style.zIndex = zindex;
-//         zindex++;
-//         top = 50 + top;
-//     }
+let cardRowStyle = (div) => {
+        const cards = cardevent.querySelectorAll(".showCard");
+        let zindex = 0;
+        let left = 0;
+        for (let i = 0; i < cards.length; i++) {
+            let leftstring = "-" + left.toString() + "px";
+            cards[i].style.left = leftstring;
+            cards[i].style.zIndex = zindex;
+            cards[i].style.border = "3px solid #800000";
+            cards[i].style.top = "0px";
+            zindex++;
+            left = 50 + left;
+        }
+
+    }
+    // let cardColStyle = (id) => {
+    //     const cardevent = document.getElementById(id);
+    //     const cards = cardevent.querySelectorAll(".showColCard");
+    //     let zindex = 0;
+    //     let top = 0;
+    //     for (let i = 0; i < cards.length; i++) {
+    //         let topstring = "-" + top.toString() + "px";
+    //         cards[i].style.top = topstring;
+    //         cards[i].style.zIndex = zindex;
+    //         zindex++;
+    //         top = 50 + top;
+    //     }
 
 // }
 
@@ -85,24 +135,6 @@ function opp_card_show() {
 
 // }
 // let cardid = 0;
-
-// function showWholeCard(event) {
-//     event.preventDefault();
-//     cardid = event.target.id;
-//     const card = document.getElementById(cardid);
-//     const card_zIndex = card.style.zIndex;
-//     if (card_zIndex == 1000) {
-//         cardRowStyle("card_container")
-//         console.log(card.style.zIndex);
-//         cardid = 0;
-//     } else {
-//         card.style.zIndex = 1000;
-//         card.style.top = "-30px"
-//         card.style.border = "3px solid #0000FF"
-//     }
-//     console.log("checker")
-//     console.log(cardSelectChecker("card_container"));
-// }
 
 // function discard_pile(element) {
 //     let img = document.createElement("img")

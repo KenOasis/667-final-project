@@ -22,7 +22,7 @@ block content
   div(class="container fluid")
     div(class="row")
       div(class="col-md-3") Space
-      div(class="col-md-6")
+      div(class="col-md-6" id="player_top")
         div(class="d-flex justify-content-center flex-nowrap row-hl" id ="player1" )
           img(src = "/images/uno_cards/backcol.jpg" class = "rounded showCard item-hl p-0")
           img(src = "/images/uno_cards/backcol.jpg" class = "rounded showCard item-hl p-0")
@@ -31,7 +31,7 @@ block content
 
       div(class="col-md-3") space
     div(class ="row")
-      div(class="col-md-3")
+      div(class="col-md-3" id="player_left")
         div(class=" d-flex justify-content-center flex-column flex-nowrap row-hl " id="player2")
           img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0 position-relative")
           img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0 position-relative")
@@ -41,10 +41,10 @@ block content
         div(class="row")
           div(class="col-md-3")
           div(class="col-md-6" id="discard_pile")
-
+            
           div(class="col-md-3")
 
-      div(class="col-md-3")
+      div(class="col-md-3" id="player_right")
         div(class=" d-flex justify-content-center flex-column flex-nowrap row-hl " id="player3")
           img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0")
           img(src = "/images/uno_cards/backrow.jpg" class = "rounded showColCard item-hl p-0")
@@ -90,14 +90,17 @@ block content
                     class="btn btn-outline-danger"
                 ) send
       div(class="col-md-6 p-0")
-          div(class="d-flex justify-content-center row-hl" id="game_control")
-            botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="draw_card") DRAW
-            botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="uno") UNO
-            botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="play" onclick="playCard(event)") PLAY
-          br
-          div(class="d-flex justify-content-center row-hl flex-nowrap" id="card_container")
+        div(class="row")
+          div(class="col")
+            div(class="d-flex justify-content-center row-hl" id="game_control")
+              botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="draw_card") DRAW
+              botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="uno") UNO
+              botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="play" onclick="playCard(event)") PLAY
+          div(class="col" id ="current_player")
             
 
+  script 
+    include ../public/js/card.js
   script
     include ../public/js/frontend.js
 
