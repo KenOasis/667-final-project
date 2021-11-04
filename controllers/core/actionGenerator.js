@@ -149,6 +149,7 @@ exports.uno = (performer_id) => {
     action_type: "skip"
   }
 */
+
 exports.skip = (performer_id) => {
   const action = {};
   action.performer = performer_id;
@@ -235,6 +236,7 @@ challenge process;
     action_type: "wild",
   }
 */
+
 exports.challenge = (performer_id) => {
   const action = {};
   action.performer = performer_id;
