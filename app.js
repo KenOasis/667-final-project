@@ -33,17 +33,19 @@ const errorController = require('./controllers/static/errors');
 const userRoutes = require('./routes/api/user-routes');
 const staticRoutes = require('./routes/static/static-routes');
 const errorRoutes = require('./routes/errors');
+const lobbyRoutes = require('./routes/api/lobby-routes');
+
 const routerFilter = require('./middleware/router-filter');
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
-
-app.use(session({
+const sessionMiddleware = session({
   secret: "This is the secret",
   store: store,
   resave: false,
   saveUninitialized: false
-}));
+})
+app.use(sessionMiddleware);
 
 store.sync();
 
@@ -55,12 +57,20 @@ app.use(routerFilter);
 
 app.use('/', staticRoutes.routes);
 app.use('/user', userRoutes.routes);
-
+app.use('/lobby', lobbyRoutes.routes);
 app.use(errorRoutes.routes);
 
 let port_number = process.env.PORT || 3000;
 const server = app.listen(port_number);
-const io = require('./socket').init (server);
-io.on('connection', socket => {
-  console.log("client connectted " + socket.id );
+
+const io = require('./socket/socket').init(server);
+// @references: https://github.com/socketio/socket.io/blob/master/examples/passport-example/index.js
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+io.use(wrap(sessionMiddleware));
+io.use((socket, next) => {
+  if (socket.request.session.userId) {
+    next();
+  } else {
+    next(new Error("Unauthorize"));
+  }
 })

@@ -8,7 +8,6 @@ exports.initGame = (req, res, next) => {
 exports.drawCard = (req, res, next) => {
   const game_id = req.body.game_id;
   const users_id = req.body.user_id;
-
 }
 exports.playCard = (req, res, next) => {
   const game_id = req.body.game_id;
@@ -24,4 +23,8 @@ exports.challenge = (req, res, next) => {
   const challenge = req.body.challenge;   // Boolean status as whether to do the challenge
   const wild_color = req.body.card_id; // The color picked by the user to do the challenge (if they try to do the challenge)
   // TODO updated the game state as the result of the challenge
+}
+
+exports.sayUno = (req, res, next) => {
+  
 }
