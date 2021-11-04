@@ -20,7 +20,7 @@ block content
         
             br
             h3 Folks
-            ul(class="list-group" id="userList" style="border:2px solid #dedede; height:200px; overflow-y:auto")
+            ul(class="list-group" id="user_list" style="border:2px solid #dedede; height:200px; overflow-y:auto")
               li(class = "list-group-item d-flex justify-content-between align-items-center") player1
                 span(class="badge bg-primary rounded-spill") in game
            
@@ -32,29 +32,26 @@ block content
             h2 Chat
             div(
                 class="col"
-                id="messages"
+                id="lobby_chat"
                 style="border:2px solid #dedede; height:400px; overflow-y:auto"
             )
-                div(class="car border-danger mb-1")
+                div(class="card border-danger mb-1 border-0")
                     div(class="card-body")
-                        span(class="badge bg-light") player1
-                        p(class="card-text") Hello
-                div(class="car border-danger mb-3")
-                    div(class="card-body")
-                        span(class="badge bg-light") player2
-                        p(class="card-text") hi
+                        span(class="badge bg-light text-primary") player1
+                        p(class="card-text text-info") Hello
             br
 
                 
             div(class="input-group mb-3")
                 input(type="text "
                       class="form-control"
-                      id="message"
+                      id="chat_input"
                       )
                 div(class="input-group-append")
                     button(
                         type="button"
                         class="btn btn-outline-danger"
+                        onClick="sendChat()"
                     ) send
   script(src="/socket.io/socket.io.js")
   script(type="text/javascript" src="/js/lobby.js")
