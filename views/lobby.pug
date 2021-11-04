@@ -20,7 +20,7 @@ block content
         
             br
             h3 Folks
-            ul(class="list-group" style="border:2px solid #dedede; height:200px; overflow-y:auto")
+            ul(class="list-group" id="userList" style="border:2px solid #dedede; height:200px; overflow-y:auto")
               li(class = "list-group-item d-flex justify-content-between align-items-center") player1
                 span(class="badge bg-primary rounded-spill") in game
            
@@ -56,6 +56,8 @@ block content
                         type="button"
                         class="btn btn-outline-danger"
                     ) send
+  script(src="/socket.io/socket.io.js")
+  script(type="text/javascript" src="/js/lobby.js")
             
 
 
