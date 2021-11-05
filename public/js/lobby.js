@@ -16,17 +16,14 @@ const DUMMY_GAME_LIST = [{
     user_id: 4,
     username: "Lusd1",
     status: "ready",  // in game status: "playing"
-    owner: true
   }, {
     user_id: 6,
     username: "kaka",
     status: "ready",
-    owner: false
   }, {
     user_id: 8,
     username: "Jacky234",
     status: "ready",
-    owner: false
   }],
   capacity: 4,
   status: "waiting"
@@ -37,12 +34,10 @@ const DUMMY_GAME_LIST = [{
     user_id: 3,
     username: "KimJonEnn52",
     status: "ready",
-    owner: true
   }, {
     user_id: 7,
     username: "Lucas88",
     status: "ready",
-    owner: false
   }, {
     user_id: 11,
     username: "Optimus86",
@@ -51,7 +46,6 @@ const DUMMY_GAME_LIST = [{
     user_id: 9,
     username: "Savis84",
     status: "ready",
-    owner: false
   }],
   capacity: 4,
   status: "full"
@@ -150,15 +144,6 @@ const constructGameElement = (game) => {
       span_leave.id = "game-" + game.game_id + "-leave";
       // TODO add eventlistener
       span_leave.innerHTML = "leave";
-      if (user.owner !== false) {
-        // is the game owner
-        const span_start = document.createElement('span');
-        span_start.className = "badge bg-primary rounded-spill mx-1";
-        span_start.id = "game-" + game.game_id + "-start";
-        // TODO add eventlistener
-        span_start.innerHTML = "start";
-        buttons_div.appendChild(span_start);
-      }
       buttons_div.appendChild(span_leave);
     } else {
       // The game is playing

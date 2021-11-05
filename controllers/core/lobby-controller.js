@@ -1,10 +1,23 @@
-//TODO create a Game object/class and a lobby observer 
+const gameListManager = require('../../data/game-list-monitor');
 
-exports.createGame = (req, res, next) => {
-  const game_name = req.body.game_name;
-
+exports.createGame = async (req, res, next) => {
+  // const game_name = req.body.game_name;
   // TODO create an instance of Game object and create an row in game table
   // return a game_id
+
+  const game_name = "Uno's test";
+  const user = {
+    user_id: 8,
+    username: "David666"
+  }
+
+  try {
+    await gameListManager.createGame(game_name, user);
+    const gameList = gameListManager.getGameList();
+    res.status(200).json({game_list: gameList});
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 exports.joinGame = (req, res, next) => {
