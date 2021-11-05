@@ -23,7 +23,6 @@ exports.getLobby = async (req, res, next) => {
     let userList = [];
     io.on("connect", (socket) => {
       socket.join("lobby");
-      console.log(username + " joined the lobby!");
       io.in("lobby")
         .fetchSockets()
         .then((sockets) => {
@@ -41,7 +40,6 @@ exports.getLobby = async (req, res, next) => {
 
     io.on("connection", (socket) => {
       socket.on("disconnect", () => {
-        console.log("User leave");
         io.in("lobby")
           .fetchSockets()
           .then((sockets) => {
