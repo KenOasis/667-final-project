@@ -1,44 +1,55 @@
-.showCard {
-    height: 200px;
-    width: auto;
-    position: relative;
-    left: 0;
-    z-index: 0;
-    border-radius: 100px;
-    border: 3px solid #800000;
-    filter: brightness(95%);
-}
-
-.showColCard {
-    width: 200px;
-    height: auto;
-    position: relative;
-    top: 0;
-    z-index: 0;
-    border: 3px solid #800000;
-}
-
-#flash-message {
-    position: fixed;
-    left: 50%;
-    top: 25%;
-    transform: translate(-50%, 0);
-    color: black;
-    background-color: rgb(243, 243, 7);
-    border: 2px solid #cccccc;
-    box-shadow: 0 3px 3px #888888;
-}
-
-#flash-message div {
-    text-align: center;
-}
-
-div[id^="container_"] {
-    padding: 0;
-    margin: 0;
-    border: 1px solid blue;
-}
-
-div[id^="[]"] {
-    border: 1px solid blue;
-}
+    .showCard {
+        height: 130px;
+        width: auto;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        border: 3px solid #800000;
+        filter: brightness(95%);
+    }
+    
+    .showColCard {
+        width: 130px;
+        height: auto;
+        position: relative;
+        top: 0;
+        z-index: 0;
+        border: 3px solid #800000;
+    }
+    
+    #flash-message {
+        position: fixed;
+        left: 50%;
+        top: 25%;
+        transform: translate(-50%, 0);
+        color: black;
+        background-color: rgb(243, 243, 7);
+        border: 2px solid #cccccc;
+        box-shadow: 0 3px 3px #888888;
+    }
+    
+    #flash-message div {
+        text-align: center;
+    }
+    
+    #container_left {
+        height: 300px;
+        border: 1px solid blue;
+    }
+    
+    #container_right {
+        height: 300px;
+        border: 1px solid blue;
+    }
+    
+    li {
+        margin: auto;
+    }
+    
+    #container_top {
+        border: 1px solid blue;
+    }
+    
+    #container_bottom {
+        border: 1px solid blue;
+    }

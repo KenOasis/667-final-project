@@ -21,37 +21,40 @@ block navbar
 block content
   div(class="container fluid")
     div(class="row")
-      div(class="col-md-3") Space
-      div(class="col-md-6" id="container_top")
-
-      div(class="col-md-3") space
+      div(class="col-md-2") Top_player Avatar
+      div(class="col-md-2") Space2
+      div(class="col-md-4" id="container_top")
+      div(class="col-md-2") Space3
+      div(class="col-md-2") right_player Avatar
     div(class ="row")
-      div(class="col-md-3" id="container_left" style="height: auto")
+      div(class="col-md-2") Space5
+      div(class="col-md-2" id="container_left")
        
-      div(class="col-md-6" )
+      div(class="col-md-4" )
         div(class="row")
           div(class="col-md-3")
-          div(class="col-md-6" id="discard_pile")
+          div(class="col-md-6" id="discard_pile") discard_pile
             
           div(class="col-md-3")
 
-      div(class="col-md-3" id="container_right" style="height: auto")
+      div(class="col-md-2" id="container_right" )
+      div(class="col-md-2") Space6
         
     br
-    div(class = "row p-0")
-      div(class="col-md-3")
-        div(
-          class="col"
-      )
-
-      div(class="col-md-6 p-0")
+    div(class = "row")
+      div(class="col-md-4") left_player Avatar
+        div(class="col")
+      div(class="col-md-4")
+        div(class="row" id ="container_bottom")
+      div(class="col-md-2") Space8
         div(class="row")
-          div(class="col")
-            div(class="d-flex justify-content-center row-hl" id="game_control")
-              botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="draw_card") DRAW
-              botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="uno") UNO
-              botton(class="btn btn-outline-danger item-hl p-4" type="botton" id="play" onclick="playCard(event)") PLAY
-          div(class="col" id ="container_bottom")
+          div(class="" id="game_controller" style="display:inline-block; text-align: center;")
+            botton(class="btn btn-outline-danger " type="botton" id="draw_card") DRAW
+            botton(class="btn btn-outline-danger " type="botton" id="uno") UNO
+            botton(class="btn btn-outline-danger " type="botton" id="play" onclick="playCard(event)") PLAY
+      div(class="col-md-2") current_player Avatar
+
+
 
 
   script 
