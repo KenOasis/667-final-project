@@ -3,11 +3,12 @@ const socket = io(host);
 
 const userListContainer = document.getElementById('user_list');
 const gameListContainer = document.getElementById('game_list');
-const lobbyChat = document.getElementById('lobby_chat')
-const chatInput = document.getElementById('chat_input')
-
-let username;
-let userList = [];
+const lobbyChat = document.getElementById('lobby_chat');
+const chatInput = document.getElementById('chat_input');
+const gameNameInput = document.getElementById('game_name');
+const lobbyToast = document.getElementById('lobbyToast');
+const lobbyMessage = document.getElementById('lobby_message');
+let whoami = document.getElementById('whoami').value;;
 let gameList = [];
 const DUMMY_GAME_LIST = [{
   game_id: 1,
@@ -51,12 +52,11 @@ const DUMMY_GAME_LIST = [{
   status: "full"
 }];
 
-
 // update the user_list in lobby
 const constructUserElement = (user) => {
   const li = document.createElement('li');
   li.className = "list-group-item d-flex justify-content-between align-items-center";
-  li.id = user.user_id;
+  li.id = "user-" + user.username + user.socket;
   const userNameDiv = document.createElement('div');
   userNameDiv.className ="badge bg-light text-primary"
   userNameDiv.innerHTML = user.username;
@@ -67,7 +67,7 @@ const constructUserElement = (user) => {
   li.appendChild(span);
   return li;
 }
-const updateUserList = (list) => {
+const initialUserList = (list) => {
   userListContainer.innerHTML = "";
   list.forEach(user => {
     const li = constructUserElement(user);
@@ -131,16 +131,13 @@ const constructGameElement = (game) => {
   
   const buttons_div = document.createElement('div');
   const userList = game.users.map(user => user.username);
-  console.log(username);
-  console.log(userList);
-  console.log(userList.indexOf(username));
   // check whether the user is in this game
   let indexOfUser = -1;
   if ((indexOfUser = userList.indexOf(username))!== -1) {
     const user = game.users[indexOfUser];
     if(user.status === "ready"){
       const span_leave = document.createElement('span');
-      span_leave.className = "badge bg-warning rounded-spill mx-1";
+      span_leave.className = "btn badge bg-warning rounded-spill mx-1";
       span_leave.id = "game-" + game.game_id + "-leave";
       // TODO add eventlistener
       span_leave.innerHTML = "leave";
@@ -148,7 +145,7 @@ const constructGameElement = (game) => {
     } else {
       // The game is playing
       const span_join = document.createElement('span');
-      span_join.className = "badge bg-primary rounded-spill mx-1";
+      span_join.className = "btn badge bg-primary rounded-spill mx-1";
       span_join.id = "game-" + game.game_id + "-join";
       // TODO add eventlistener
       span_join.innerHTML = "join";
@@ -159,7 +156,7 @@ const constructGameElement = (game) => {
     if (game.users.length < game.capacity) {
       // not full
       const span_join = document.createElement('span');
-      span_join.className = "badge bg-warning rounded-spill mx-1";
+      span_join.className = "btn badge bg-warning rounded-spill mx-1";
       span_join.id = "game-" + game.game_id + "-join";
       // TODO add eventlistener
       span_join.innerHTML = "join";
@@ -194,24 +191,108 @@ const updateGameList = (gamelist) => {
   })
 }
 
+const createGame = () => {
+  const url = "http://" + location.host + "/lobby/createGame";
+  const game_name = gameNameInput.value;
+  // TODO add validation to game_name
+  const body = {
+    game_name: game_name
+  };
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      'content-type' : 'application/json'
+    })
+  }).then(response => response.json())
+  .then(results => {
+    if (lobbyToast) {
+      lobbyMessage.innerHTML = results.message;
+      let toast = new bootstrap.Toast(lobbyToast);
+      toast.show(); 
+    }
+  }).catch(err => console.log(err));
+}
+
+const joinGame = () => {
+
+}
+
+const leaveGame = () => {
+
+}
+
+const startGame = () => {
+
+}
+
 // socket event monitor
-socket.on('userJoin', (data) => {
+socket.on('userListInitial', (data) => {
   // move current user in the first position
-  userList = data.filter((element) => element.username !== username);
-  let user = data.filter((element) => element.username === username)[0];
-  userList.unshift(user);
-  updateUserList(userList);
+  // if (whoami === data.username) { 
+    // const userList = data.user_list.filter((element) => element.username !== whoami);
+    // let user = data.user_list.filter((element) => element.username === whoami)[0];
+    // userList.unshift(user);
+    const userList = data.user_list;
+    initialUserList(userList);
+  // }
 })
 
-socket.on('userName', (data) => {
-  console.log('run');
-  username = data;
-  // TODO put in gameUpdate event
-  updateGameList(DUMMY_GAME_LIST);
+socket.on('updateUserStatus', (data) => {
+  if (data.status === "join") {
+    if (lobbyToast) {
+      lobbyMessage.innerHTML = data.username + " has joined the lobby!";
+      let toast = new bootstrap.Toast(lobbyToast);
+      toast.show(); 
+    }
+    if (data.username !== whoami) {
+      const queryPattern = `[id^="user-${data.username}"]`;
+      let userLi = document.querySelector(queryPattern);
+      console.log(userLi);
+      const newUser = {
+        username: data.username,
+        status: "free",
+        socket: data.socket
+      }
+      const li = constructUserElement(newUser);
+      if(userLi === null) {
+        userListContainer.appendChild(li)
+      } else {
+        userListContainer.insertBefore(li, userLi);
+        userListContainer.removeChild(userLi);
+      }
+    }
+  } else if (data.status === "leave") {
+    if (lobbyToast) {
+      lobbyMessage.innerHTML = data.username + " has left the lobby!";
+      let toast = new bootstrap.Toast(lobbyToast);  
+      toast.show(); 
+    }
+    if (data.username !== whoami) {
+      console.log(data.socket);
+      let userLi = document.getElementById('user-' + data.username + data.socket);
+      if (userLi !== null) {
+        userListContainer.removeChild(userLi);
+      }
+    }
+  }
 })
 
 socket.on('lobbyChat', (data) => {
-  console.log('run');
   updateChat(data);
 })
 
+socket.on('gameListUpdate', (data) => {
+  gameList = data;
+  updateGameList(gameList);
+})
+
+// test code for socket handshake.
+// socket.on('Hello', (data) => {
+//   if (lobbyToast) {
+//     lobbyMessage.innerHTML = "Hello!"
+//     let toast = new bootstrap.Toast(lobbyToast);
+//     toast.show(); 
+//   }
+// })

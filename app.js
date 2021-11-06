@@ -17,7 +17,8 @@ const extendDefaultFields = (defaults , session) => {
     data: defaults.data,
     expires: defaults.expires,
     userId: session.userId,
-    userName: session.userName
+    userName: session.userName,
+    userStatus: session.userStatus // for tracking user activity (free/ingame)
   };
 };
 

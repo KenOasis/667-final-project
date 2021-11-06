@@ -6,9 +6,6 @@ const findGameById = (game_id) => {
      game.game_id === game_id);
 }
 
-const getGameId = () => {
-
-}
 const gameListManager = {
   /*
   * @user = {
