@@ -21,28 +21,31 @@ block navbar
 block content
   div(class="container fluid")
     div(class="row")
-      div(class="col-md-2") Top_player Avatar
-      div(class="col-md-2") Space2
+      div(class="col-md-2") Space1
+      div(class="col-md-2")
+        div(class ="col" style="text-align: right;")
+          img(src="/images/uno_cards/cards_desk.png" height="142px")
       div(class="col-md-4" id="container_top")
-      div(class="col-md-2") Space3
-      div(class="col-md-2") right_player Avatar
+      div(class="col-md-2") Top_player Avatar
+      div(class="col-md-2") Space4
     div(class ="row")
-      div(class="col-md-2") Space5
+      div(class="col-md-2") left_player Avatar
       div(class="col-md-2" id="container_left")
        
       div(class="col-md-4" )
         div(class="row")
           div(class="col-md-3")
-          div(class="col-md-6" id="discard_pile") discard_pile
+          div(class="col-md-6") discard_pile
+            ul(class="list-group list-group-horizontal " id="discard_pile" style="margin-top:60px")
             
           div(class="col-md-3")
 
       div(class="col-md-2" id="container_right" )
-      div(class="col-md-2") Space6
+      div(class="col-md-2") right_player Avatar
         
     br
     div(class = "row")
-      div(class="col-md-4") left_player Avatar
+      div(class="col-md-4") Space7
         div(class="col")
       div(class="col-md-4")
         div(class="row" id ="container_bottom")

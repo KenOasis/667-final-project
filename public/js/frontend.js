@@ -25,7 +25,7 @@ const game_state = { // this is the game_state hold at the front-end
         }, {
             user_id: 9,
             uno: false,
-            card_players: [8, 1, 22, 3, 4, 5, 6],
+            card_players: [108, 1, 22, 3, 4, 5, 6],
             number_of_cards: 7
         },
         {
@@ -36,10 +36,9 @@ const game_state = { // this is the game_state hold at the front-end
         }
     ],
 
-    discards: [94, 25, 28],
+    discards: [9, 12, 4, 56],
     // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
 }
-
 
 /**
  *  fund_state_player is used for get the player cards detail information
@@ -96,7 +95,7 @@ function sitting_players() {
 function card_img_element(card_id) {
     const li = document.createElement('li');
     li.id = "card_" + card_id.toString();
-    li.className = "list-group-item p-2";
+    li.className = "list-group-item p-1";
     const card_img = document.createElement("img")
     card_img.src = cardModule.card_url_generator(card_id);
     card_img.id = card_id;
@@ -121,10 +120,10 @@ function showWholeCard(card_id) {
         card.style.zIndex = 0;
         card.style.top = 0;
         card.style.border = 0;
-        // cardRowStyle("player_" + game_state.current_player.toString())
+        card_current_Style("player_" + game_state.current_player.toString())
     } else {
         card.style.zIndex = 1000;
-        card.style.top = "-30px"
+        card.style.top = "-40px"
         card.style.border = "3px solid #0000FF"
     }
 
@@ -141,7 +140,7 @@ function showWholeCard(card_id) {
 
 function opp_card_col_show() {
     const li = document.createElement('li');
-    li.className = "list-group-item p-2";
+    li.className = "list-group-item p-1";
     const card_img = document.createElement("img")
     card_img.src = "/images/uno_cards/backrow.jpg"
     card_img.className = "showColCard";
@@ -159,7 +158,7 @@ function opp_card_col_show() {
  */
 function opp_card_rol_show() {
     const li = document.createElement('li');
-    li.className = "list-group-item p-2";
+    li.className = "list-group-item p-1";
     const card_img = document.createElement("img")
     card_img.src = "/images/uno_cards/backcol.jpg"
     card_img.className = "showCard";
@@ -249,7 +248,7 @@ function read_current_card(player_id) {
         let img = card_img_element(play_cards_state[i]);
         img.style.left = "-" + left.toString() + "px"
         current_div.appendChild(img);
-        left = left + 50;
+        left = left + 40;
     }
 }
 /**
@@ -268,7 +267,7 @@ function read_opp_card(player_id) {
         let img = opp_card_col_show();
         img.style.top = "-" + top.toString() + "px"
         current_div.appendChild(img)
-        top = top + 65;
+        top = top + 55;
     }
 }
 /**
@@ -285,11 +284,36 @@ function read_opp_top_card(player_id) {
     let number_of_card = player_game_state[0].number_of_cards;
     for (let i = 0; i < number_of_card; i++) {
         let img = opp_card_rol_show();
-        img.style.left = left.toString() + "px"
-        current_div.appendChild(img)
-        left = left - 50;
+        img.style.left = left.toString() + "px";
+        current_div.appendChild(img);
+        left = left - 40;
     }
+
 }
+
+function place_discard_pile() {
+    const discard_pile = document.getElementById("discard_pile")
+    let discard_list = game_state.discards;
+    console.log(discard_list)
+    let left = 0;
+    if (discard_list.length > 3) {
+        const last_three = discard_list.length - 3;
+        discard_list = discard_list.slice(last_three, discard_list.length);
+    }
+    console.log(discard_list)
+    for (let i in discard_list) {
+        let discard = card_img_element(discard_list[i])
+        discard.id = "draw"
+        discard.style.left = "-" + left.toString() + "px";
+        discard_pile.appendChild(discard)
+        left = left + 50
+    }
+
+}
+
+
+
+
 
 
 /**
@@ -308,15 +332,185 @@ function init_game_table() {
     read_opp_card(sitting_order[1]);
     read_opp_top_card(sitting_order[2]);
     read_opp_card(sitting_order[3]);
+    place_discard_pile()
 }
+
+
+
+
+
 
 init_game_table()
 
-//Todo: To solve when player  7< cards < 30 or 20 , these cards can be keep in the blue border
-//Todo: To show the discard pile  in  div(class="col-md-6" id="discard_pile") /random_cards.pug
-//Todo: To show the chat box in left side of 
+
+/** 
+ * add_card_to_current_player()
+ * 
+ * Testing function for adding card and style again the cards
+ *@param player_id and card_list
+ * 
+ * 
+ */
+
+
+function add_card_to_current_player(player_id, card_list) {
+    const card_container = document.getElementById("player_" + player_id.toString())
+    for (let i in card_list) {
+        const new_card = card_img_element(card_list[i]);
+        card_container.appendChild(new_card);
+    }
+    card_current_Style(player_id);
+}
+/**
+ * 
+ * this function user for when any action or event happend, using this function 
+ * to style the current player's card again
+ * 
+ * 
+ * 
+ */
+let card_current_Style = (id) => {
+    const cardevent = document.getElementById("player_" + id.toString());
+    const cards = cardevent.getElementsByClassName("list-group-item")
+    let incremnt = 0;
+    let left = 0;
+    let number_cards = cards.length;
+    let rotate_left = 0;
+    let rotate_right = 0;
+    let rotate_imcrement = 0;
+    let top_left = 0;
+    let top_right = 0
+    let top_imcrement = 0;
+    const divide = Math.round(number_cards / 2);
+    if (number_cards <= 7) {
+        incremnt = 40;
+    } else if (number_cards < 10) {
+        incremnt = 50;
+    } else if (number_cards <= 15) {
+        incremnt = 60;
+        rotate_left = 60;
+        rotate_right = rotate_left / divide;
+        rotate_imcrement = rotate_left / divide;
+        top_imcrement = 5;
+        top_right = 5 * divide - 5;
+    } else {
+        incremnt = 75;
+        rotate_left = 60;
+        rotate_right = rotate_left / divide;
+        rotate_imcrement = rotate_left / divide;
+        top_imcrement = 5;
+        top_right = 5 * divide - 5;
+    }
+    for (let i = 0; i < number_cards; i++) {
+        let leftstring = "-" + left.toString() + "px";
+        cards[i].style.left = leftstring;
+        if (i < divide) {
+            cards[i].style.transform = "rotate(-" + rotate_left + "deg)";
+            cards[i].style.top = "-" + top_left.toString() + "px";
+            top_left = top_left + top_imcrement;
+            rotate_left = rotate_left - rotate_right;
+        } else {
+            cards[i].style.transform = "rotate( " + rotate_right + "deg)";
+            cards[i].style.top = "-" + top_right.toString() + "px";
+            rotate_right = rotate_right + rotate_imcrement;
+            top_right = top_right - top_imcrement;
+        }
+        left = incremnt + left;
+    }
+
+}
+
+/**
+ * 
+ * this function user for when any action or event happend, using this function 
+ * to style the left and right player's card again
+ * 
+ * only can handle the card container has less than 20
+ */
+
+
+let card_col_style = (id) => {
+    const cardevent = document.getElementById("player_" + id.toString());
+    const cards = cardevent.getElementsByClassName("list-group-item");
+    let top = 0;
+    let increment = 0;
+    let number_card = cards.length;
+    if (number_card < 7) {
+        increment = 40;
+    } else if (number_card <= 10) {
+        increment = 55;
+    } else if (number_card <= 15) {
+        increment = 60
+    } else {
+        increment = 75
+    }
+
+    for (let i = 0; i < cards.length; i++) {
+        let topstring = "-" + top.toString() + "px";
+        cards[i].style.top = topstring;
+        top = increment + top;
+    }
+
+}
+
+/**
+ * 
+ * this function user for when any action or event happend, using this function 
+ * to style the top player's card again
+ * 
+ * only can handle the card container has less than 20
+ * 
+ */
+
+
+let card_top_style = () => {
+    const cardevent = document.getElementById("container_top");
+    const cards = cardevent.getElementsByClassName("list-group-item");
+    console.log(cards)
+    let left = 0;
+    let increment = 0;
+    let number_card = cards.length;
+    if (number_card <= 7) {
+        increment = 40;
+    } else if (number_card <= 10) {
+        increment = 52;
+    } else if (number_card <= 15) {
+        increment = 66
+    } else {
+        increment = 76
+    }
+
+    for (let i = 0; i < cards.length; i++) {
+        cards[i].style.left = "-" + left.toString() + "px";
+        left = increment + left;
+    }
+
+}
+
+
+/**
+ * testing function:
+ * may be we use the way to add card to left right 
+ * 
+ * 
+ * 
+ */
+
+// function add_card_to_left_right(player_id, number_of_card) {
+
+//     const card_container = document.getElementById("player_" + player_id.toString());
+//     for (let i = 0; i < number_of_card; i++) {
+//         const cards = opp_card_col_show()
+//         card_container.appendChild(cards)
+//     }
+//     card_col_style(player_id);
+// }
+// add_card_to_left_right(6, 2)
+
+
+//Todo: To show the chat box in left side of current player space7
 //Todo: To show the players avatar
-//Todo: show the cards_desk, may but put the backside card img as cards_desk on some space, idk
+//Todo: this js script file is too long, make one more
 /**
  * Todo: To create the game control bottoms
  * button 1: Uno
@@ -331,22 +525,24 @@ init_game_table()
  *  
  */
 
-const update = {
-    game_id: 5,
-    user_id: 6,
-    // the order of action is their performed-order
-    actions: [{ // action need to perform in front end (caused by )
-        performer: 9,
-        action_type: "play_card",
-        card: 94,
-    }, {
-        performer: 6,
-        action_type: "draw_two", // draw_two should be include the action which skip user's turn,
-        cards: [77, 49] // the card drew from the 
-    }]
+//update example??
+// const update = {
+//     game_id: 5,
+//     user_id: 6,
+//     // the order of action is their performed-order
+//     actions: [{ // action need to perform in front end (caused by )
+//         performer: 9,
+//         action_type: "play_card",
+//         card: 94,
+//     }, {
+//         performer: 6,
+//         action_type: "draw_two", // draw_two should be include the action which skip user's turn,
+//         cards: [77, 49] // the card drew from the 
+//     }]
 
-    // If no challenge happen, after all the action triggered, next player in the order start its own round
-}
+//     // If no challenge happen, after all the action triggered, next player in the order start its own round
+// }
+
 
 
 
@@ -489,4 +685,7 @@ const update = {
 //             return "result"
 //         })
 
+//         })
+
+//
 //

@@ -1,6 +1,5 @@
     .showCard {
         height: 130px;
-        width: auto;
         position: relative;
         margin-left: auto;
         margin-right: auto;
@@ -34,22 +33,19 @@
     
     #container_left {
         height: 300px;
-        border: 1px solid blue;
     }
     
     #container_right {
         height: 300px;
-        border: 1px solid blue;
     }
     
     li {
         margin: auto;
     }
     
-    #container_top {
-        border: 1px solid blue;
-    }
+    #container_top {}
     
     #container_bottom {
-        border: 1px solid blue;
+        height: 180px;
+        width: 400px;
     }
