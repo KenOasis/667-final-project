@@ -34,6 +34,7 @@ const gameListManager = {
       status: "waiting" 
     }
     gameList.push(new_game);
+    return new_game
   },
 
   joinGame: (game_id, user) => {

@@ -9,4 +9,5 @@ router.post('/createGame', lobbyController.createGame);
 router.post('/joinGame', lobbyController.joinGame);
 router.post('/leaveGame', lobbyController.leaveGame);
 router.post('/startGame', lobbyController.startGame);
+
 exports.routes = router;
