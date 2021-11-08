@@ -1,12 +1,12 @@
 const host = location.host;
 const socket = io(host);
 
+const toastContainer = document.getElementById('toast_container');
 const userListContainer = document.getElementById('user_list');
 const gameListContainer = document.getElementById('game_list');
 const lobbyChat = document.getElementById('lobby_chat');
 const chatInput = document.getElementById('chat_input');
 const gameNameInput = document.getElementById('game_name');
-const lobbyToast = document.getElementById('lobbyToast');
 const lobbyMessage = document.getElementById('lobby_message');
 let whoami = document.getElementById('whoami').value;;
 
@@ -24,7 +24,7 @@ const DUMMY_GAME_LIST = [{
   }, {
     user_id: 8,
     username: "Jacky234",
-    status: "ready"
+    status: "ready" 
   }],
   capacity: 4,
   status: "waiting"
@@ -51,6 +51,44 @@ const DUMMY_GAME_LIST = [{
   capacity: 4,
   status: "full"
 }];
+
+
+// a constructor to construct a Toast with given message
+const addToast = (message) => {
+  const toastDiv = document.createElement('div');
+  toastDiv.className = "toast";
+  toastDiv.setAttribute('role', "alert");
+  toastDiv.setAttributeNode
+  toastDiv.ariaLive = "assertive";
+  toastDiv.ariaAtomic = true;
+  toastDiv.setAttribute("data-bs-delay", "2000");
+
+  const headerDiv = document.createElement('div');
+  headerDiv.className = "toast-header";
+
+  const strongElement = document.createElement('strong');
+  strongElement.className = "me-auto";
+  strongElement.innerHTML = "Lobby";
+
+  const closeButton = document.createElement('button');
+  closeButton.type = "button";
+  closeButton.className = "btn-close";
+  closeButton.setAttribute('data-bs-dismiss', "toast");
+  closeButton.ariaLabel = "Close"
+
+  const messageDiv = document.createElement('div');
+  messageDiv.className = "toast-body";
+  messageDiv.innerHTML = message;
+
+  headerDiv.appendChild(strongElement);
+  headerDiv.appendChild(closeButton);
+  toastDiv.appendChild(headerDiv);
+  toastDiv.appendChild(messageDiv);
+
+  toastContainer.appendChild(toastDiv);
+
+  return toastDiv;
+}
 
 // update the user_list in lobby
 const constructUserElement = (user) => {
@@ -209,9 +247,9 @@ const createGame = () => {
     })
   }).then(response => response.json())
   .then(results => {
-    if (lobbyToast) {
-      lobbyMessage.innerHTML = results.message;
-      let toast = new bootstrap.Toast(lobbyToast);
+    if (toastContainer) {
+      const newTaost = addToast(results.message);
+      let toast = new bootstrap.Toast(newTaost);
       toast.show(); 
     }
   }).catch(err => console.log(err));
@@ -264,9 +302,9 @@ socket.on('userListInitial', (data) => {
 });
 
 socket.on('userJoinLobby', data => {
-  if (lobbyToast) {
-    lobbyMessage.innerHTML = data.username + " has joined the lobby!";
-    let toast = new bootstrap.Toast(lobbyToast);
+  if (toastContainer) {
+    const newToast = addToast(data.username + " has joined the lobby!");
+    let toast = new bootstrap.Toast(newToast);
     toast.show(); 
   }
   if (data.username !== whoami) {
@@ -288,9 +326,9 @@ socket.on('userJoinLobby', data => {
 });
 
 socket.on('userLeaveLobby', user => {
-  if (lobbyToast) {
-    lobbyMessage.innerHTML = user.username + " has left the lobby!";
-    let toast = new bootstrap.Toast(lobbyToast);  
+  if (toastContainer) {
+    const newToast = addToast(user.username + " has left the lobby!");
+    let toast = new bootstrap.Toast(newToast);  
     toast.show(); 
   }
   if (user.username !== whoami) {
