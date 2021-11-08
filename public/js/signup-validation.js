@@ -9,18 +9,18 @@ const feedback_email = document.getElementById("feedback_email");
 const feedback_pw = document.getElementById("feedback_pw");
 const feedback_confirmPW = document.getElementById("feedback_confirmPW");
 
-const username_regex = /^(?=.*\d)(|.*[a-z])(|.*[A-Z])[0-9+a-zA-Z]{3,}$/; // atleast 3 alphanumerical chars
+const username_regex = /^(?=.*\d)(|.*[a-z])(|.*[A-Z])[0-9+a-zA-Z]{3,20}$/; // atleast 3 alphanumerical chars
 const email_regex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const pw_regex =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,256}$/;
 
 const username_validation = () => {
   if (username_regex.test(username.value)) {
     feedback_username.style.display = "none";
   } else {
     feedback_username.innerHTML =
-      "Username must be at least 3 alphanumerical characters long";
+      "Username must be at least 3 alphanumerical characters long max-length 20";
     feedback_username.style.display = "inherit";
   }
 };

@@ -1,7 +1,3 @@
-const db = require("../../models/");
-const Users = db["users"];
-const Game_Users = db["game_users"];
-Users.hasMany(Game_Users, { foreignKey: "user_id" });
 exports.getHomepage = (req, res, next) => {
   const isLoggedIn = req.session.isLoggedIn === true ? true : false;
   res.status(200).render("index", { isLoggedIn });
@@ -13,53 +9,6 @@ exports.getLogin = (req, res, next) => {
 
 exports.getSignup = (req, res, next) => {
   res.status(200).render("signup");
-};
-
-exports.getLobby = async (req, res, next) => {
-  let isLoggedIn = req.session.isLoggedIn === true ? true : false;
-  if (isLoggedIn) {
-    const io = require("../../socket/socket").getIO();
-    const username = req.session.userName;
-    let userList = [];
-    io.on("connect", (socket) => {
-      socket.join("lobby");
-      console.log(username + " joined the lobby!");
-      io.in("lobby")
-        .fetchSockets()
-        .then((sockets) => {
-          userList = sockets.map((socket) => {
-            return {
-              username: socket.request.session.userName,
-              user_id: socket.request.session.userId,
-              status: "free", //TODO status should be change as join/start the game
-            };
-          });
-          io.to(socket.id).emit("userName", username);
-          io.to("lobby").emit("userJoin", userList);
-        });
-    });
-
-    io.on("connection", (socket) => {
-      socket.on("disconnect", () => {
-        console.log("User leave");
-        io.in("lobby")
-          .fetchSockets()
-          .then((sockets) => {
-            userList = sockets.map((socket) => {
-              return {
-                username: socket.request.session.userName,
-                user_id: socket.request.session.userId,
-                status: "free",
-              };
-            });
-            io.to("lobby").emit("userJoin", userList);
-          });
-      });
-    });
-    res.status(200).render("lobby");
-  } else {
-    res.status(401).render("login");
-  }
 };
 
 exports.getAbout = (req, res, next) => {
