@@ -105,6 +105,7 @@ const constructUserElement = (user) => {
   li.appendChild(span);
   return li;
 }
+
 const initialUserList = (list) => {
   userListContainer.innerHTML = "";
   list.forEach(user => {
@@ -177,7 +178,7 @@ const constructGameElement = (game) => {
     const user = game.users[indexOfUser];
     if(user.status === "ready"){
       const span_leave = document.createElement('span');
-      span_leave.className = "btn badge bg-warning rounded-spill mx-1";
+      span_leave.className = "btn badge bg-danger rounded-spill mx-1";
       span_leave.id = "game-" + game.game_id + "-leave";
       span_leave.onclick = leaveGame;
       span_leave.innerHTML = "leave";
@@ -191,8 +192,16 @@ const constructGameElement = (game) => {
       span_reconnect.onclick = reconnectGame;
       buttons_div.appendChild(span_reconnect);
     }
+    // user list toggle button
+    const span_users = document.createElement('span');
+    span_users.className = "btn badge bg-primary rounded-spill mx-1 has-popover";
+    span_users.setAttribute('title', `Use(s) in the room ${game.name}`);
+    span_users.setAttribute('data-bs-html', "true");
+    span_users.setAttribute('data-bs-content', `${game.users.map(user => user.username).join('<br/>')}`)
+    span_users.innerHTML = "userList";
+    buttons_div.appendChild(span_users);
   } else {
-    // The user is not in this game
+    // The user is not in this game 
     if (game.users.length < game.capacity) {
       // not full
       const span_join = document.createElement('span');
@@ -223,6 +232,7 @@ const constructGameElement = (game) => {
 
   return game_li;
 }
+
 const initialGameList = (gamelist) => {
   gameListContainer.innerHTML = "";
   gamelist.forEach(game => {
@@ -292,7 +302,7 @@ const leaveGame = (event) => {
 }
 
 const reconnectGame = () => {
-
+  // TODO
 }
 // socket event listener
 socket.on('userListInitial', (data) => {
@@ -363,7 +373,7 @@ socket.on('gameListInitial', (data) => {
 socket.on('createGame', new_game => {
   const gameElement = document.getElementById('game-' + new_game.game_id);
   if (gameElement === null) {
-    newGameElement = constructGameElement(new_game);
+    const newGameElement = constructGameElement(new_game);
     gameListContainer.appendChild(newGameElement);
   }
   gameListManager.createGame(new_game);

@@ -42,12 +42,19 @@ const gameListManager = {
     }
   },
   startGame: (game_id) => {
-    const gameIndex = findGameById(game_id);
+    const gameIndex = findGameById(gameList, game_id);
     const game = gameList[gameIndex];
     game.users.forEach(user => {
       user.status = "playing"
     });
     game.status = "in game"
+  },
+  getUserList: (game_id) => {
+    const gameIndex = findGameById(gameList, game_id);
+    if (gameIndex >= 0) {
+      return gameList[gameIndex].users;
+    }
+    return [];
   },
   getGameList: () => {
     return gameList;
