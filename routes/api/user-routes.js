@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../../controllers/user-controller');
+<<<<<<< HEAD
 const { check, validationResult } = require('express-validator');
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 router.post('/signup', userController.signUp);
+=======
+const backendValidator = require('../../middleware/backend-validator');
+
+router.post('/signup', backendValidator.signupValidation, userController.signUp);
+>>>>>>> origin/dev
 
 router.post('/login', userController.login);
 
 router.get('/logout', userController.logout);
+<<<<<<< HEAD
 router.post('/change_password', 
     check('current_password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character"),
     check('new_password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character"),
@@ -37,4 +44,11 @@ router.post('/change_password',
   userController.changePassword);
 
 router.get('/profile', userController.getProfile);
+=======
+
+router.post('/change_password', backendValidator.changePWValidation, userController.changePassword);
+
+router.get('/profile', userController.getProfile);
+
+>>>>>>> origin/dev
 exports.routes = router;

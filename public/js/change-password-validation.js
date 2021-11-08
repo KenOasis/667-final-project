@@ -6,6 +6,7 @@ const input_current = document.getElementById('current_password');
 const input_new = document.getElementById('new_password');
 const input_confirm = document.getElementById('confirm_password');
 const liveToast = document.getElementById('profileToast');
+const errorsMessage = document.getElementById('errors_message');
 
 // Minimum eight characters, at least one letter, one number and one special character
 const regexPassword = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/);
@@ -83,7 +84,6 @@ const onSubmitPasswordChange = () => {
     }).then(response => response.json())
     .then(results => {
       if(results.errors) {
-        console.log(results.errors);
         /* under validation failed, it returns an json object
           errors: [{
             value: "..",
@@ -94,15 +94,15 @@ const onSubmitPasswordChange = () => {
         */
         if(liveToast) {
           let errors = results.errors;
-          let errorMsg = `Field: ${errors[0].param} ;${errors[0].msg}`;
-          document.getElementById('errors_message').innerHTML = errorMsg
+          let errorMsg = `<b class="text-danger">Error in Field: {${errors[0].param}} : ${errors[0].msg} </b>`;
+          errorsMessage.innerHTML = errorMsg
           var toast = new bootstrap.Toast(liveToast);
           toast.show()
         }
       } else {
         // success!
-        document.getElementById('errors_message').innerHTML = "Successfully change the password!"
-          var toast = new bootstrap.Toast(liveToast);
+        errorsMessage.innerHTML = "Successfully change the password!"
+          let toast = new bootstrap.Toast(liveToast);
           toast.show()
       }
     })

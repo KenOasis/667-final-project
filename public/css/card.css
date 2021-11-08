@@ -1,3 +1,4 @@
+<<<<<<< HEAD
     .showCard {
         height: 130px;
         position: relative;
@@ -49,3 +50,122 @@
         height: 180px;
         width: 400px;
     }
+=======
+.showCard {
+    height: 200px;
+    width: auto;
+    position: relative;
+    left: 0;
+    z-index: 0;
+    border-radius: 100px;
+    border: 3px solid #800000;
+    filter: brightness(95%);
+}
+
+.showColCard {
+    width: 200px;
+    height: auto;
+    position: relative;
+    top: 0;
+    z-index: 0;
+}
+
+#flash-message {
+    position: fixed;
+    left: 50%;
+    top: 25%;
+    transform: translate(-50%, 0);
+    color: black;
+    background-color: rgb(243, 243, 7);
+    border: 2px solid #cccccc;
+    box-shadow: 0 3px 3px #888888;
+}
+
+#flash-message div {
+    text-align: center;
+}
+/* ----------------------------------------------------------- */
+.card{
+    height:100px; 
+    width:68px;
+    border-radius:10px;
+    background-image:url('../images/uno_cards/cards.png');
+
+}
+.cards {
+display:flex;
+}
+.red{
+    background-position-y:0px;
+}
+
+.yellow{
+    background-position-y:-100px;
+}
+.green{
+    background-position-y:-200px;
+}
+.blue{
+    background-position-y:-300px;
+}
+.zero{
+    background-position-x:0px;
+    
+}
+.one{
+    background-position-x:-66px;
+   
+}
+.two{
+    background-position-x:-134px;
+   
+}
+.three{
+    background-position-x:-200px;
+    
+}
+.four{
+    background-position-x:-266px;
+    
+}
+.five{
+    background-position-x:-332px;
+  
+}
+.six{
+    background-position-x:-398px;
+}
+   
+.seven{
+    background-position-x:-465px;
+   
+}
+.yellow-eight{
+    background-position-x:-532px;
+   
+}
+.nine{
+    background-position-x:-599px;
+   
+}
+.skip{
+    background-position-x:-665px;
+   
+}
+.reverse{
+    background-position-x:-731px;
+   
+}
+.drawTwo{
+    background-position-x:-797px;
+    
+}
+
+.wild{
+    background-position-x:-863px;
+}
+.drawFour{
+    background-position-x:-863px;
+    background-position-y:-400px;
+} 
+>>>>>>> origin/dev

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
       validate: {
-        len: [6, 20]
+        len: [3, 20]
       }
     },
     email: {

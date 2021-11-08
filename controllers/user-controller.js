@@ -7,6 +7,7 @@ const Game_Users = db['game_users'];
 const path = require('path');
 const { randomInt } = require('crypto');
 Users.hasMany(Game_Users, {foreignKey: "user_id"});
+const url = require('url');
 
 exports.signUp = async (req, res, next) => {
   const username = req.body.username;
@@ -24,9 +25,10 @@ exports.signUp = async (req, res, next) => {
     });
 
    if (existedUser !== null) {
-     // TODO feedback to frontend validation
-     res.status(409).render('signup')
-     return;
+     return res.status(409).json({errors: [{
+       param: "username",
+       msg: username + " is already exist!"
+     }]});
    }
 
     // checked whether the email already existed in db
@@ -38,9 +40,10 @@ exports.signUp = async (req, res, next) => {
     });
 
     if (existedUser !== null) {
-      // TODO feedback to frontend validation
-      res.status(409).render('signup')
-      return;
+      return res.status(409).json({errors: [{
+        param: "email",
+        msg: "Email is already exist!"
+      }]});
     }
     let hashPassword = await bcrpyt.hash(password, saltround);
 
@@ -49,13 +52,16 @@ exports.signUp = async (req, res, next) => {
       email: email,
       password: hashPassword,
     });
-    res.status(200).render("transition", { 
-      isLoggedIn: true,
-      title: "Successfully signup!",
-      description: "Congratulation! You have successfully signup.",
-      redirectPath: "/login",
-      redirectPageName: "Login" 
-    });
+
+    return res.status(200).json({url: url.format({
+      pathname:"/transition",
+      query: {
+         "title": "Successfully signup!",
+         "description": "Congratulation! You have successfully signup.",
+         "redirect_path": "/login",
+         "page_name": "Login" 
+       }
+    })});
   } catch (error) {
     // TODO standarize error ouput
     console.error(error)
@@ -68,7 +74,8 @@ exports.login = async (req, res, next) => {
   try {
     let user = await  Users.findOne({
       where: {
-        username: username}
+        username: username
+      }
     });
     if (user !== null) {
       let hashPassword = user.password;
@@ -77,22 +84,26 @@ exports.login = async (req, res, next) => {
         req.session.isLoggedIn = true;
         req.session.userId = user.id;
         req.session.userName = user.username;
-        res.status(200).render("transition", { 
-          isLoggedIn: true,
-          title: "Successfully logged in!",
-          description: "Congratulation! You have successfully logged in.",
-          redirectPath: "/",
-          redirectPageName: "Home" 
-        })
+        return res.status(200).json({url: url.format({
+          pathname:"/transition",
+          query: {
+             "title": "Successfully signup!",
+             "description": "Congratulation! You have successfully login.",
+             "redirect_path": "/lobby",
+             "page_name": "Game Lobby" 
+           }
+        })});
       } else {
-        // TODO feedback to user as password wrong 
-        console.log("Wrong password");
-        res.status(401).render("login");
+        return res.status(401).json({errors: [{
+          param: "password",
+          msg: "Entered password is wrong"
+        }]});
       }
     } else {
-      // TODO feedback to user as username wrong
-      console.log("username does not existed");
-      res.status(401).render("login");
+      return res.status(401).json({errors: [{
+        param: "username",
+        msg: "Username is not exist!"
+      }]});
     }
   } catch (error) {
     // TODO standarize error ouput
@@ -163,7 +174,10 @@ exports.getProfile = async (req, res, next) => {
       }]
     });
     let profileImg = `/images/profile/profile${Math.floor(Math.random() * 3) + 1}.gif`;
+<<<<<<< HEAD
     console.log(profileImg);
+=======
+>>>>>>> origin/dev
     if (results && results.length) {
       const gamePlayed = results.length;
       const game_won = (results.filter((element) => element.points > 0)).length;
