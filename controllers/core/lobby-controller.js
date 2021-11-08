@@ -1,4 +1,4 @@
-const gameListManager = require('../../data/game-list-manager');
+const gameListManager = require('../../volatile/game-list-manager');
 
 const eventsEmitter = require('../../socket/eventsEmitter');
 exports.createGame = async (req, res, next) => {
@@ -69,9 +69,13 @@ exports.getLobby = async (req, res, next) => {
   if (isLoggedIn) {
     const username = req.session.userName;
     const user_id = req.session.userId;
+    const user = {
+      username: username,
+      user_id: user_id
+    }
     const userStatus = gameListManager.getUserStatus(user_id);
     eventsEmitter.joinLobby(username, userStatus);
-    eventsEmitter.leaveLobby(username);
+    eventsEmitter.leaveLobby(user);
     return res.status(200).render("lobby", {whoami: username});
   } else {
     return res.status(401).render("login");

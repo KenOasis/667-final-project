@@ -335,18 +335,21 @@ socket.on('userJoinLobby', data => {
   }
 });
 
-socket.on('userLeaveLobby', user => {
+socket.on('userLeaveLobby', data => {
+  console.log(data);
   if (toastContainer) {
-    const newToast = addToast(user.username + " has left the lobby!");
+    const newToast = addToast(data.user.username + " has left the lobby!");
     let toast = new bootstrap.Toast(newToast);  
     toast.show(); 
   }
-  if (user.username !== whoami) {
-    const queryPattern = `[id^="user-${user.username}"]`;
+  if (data.user.username !== whoami) {
+    const queryPattern = `[id^="user-${data.user.username}"]`;
     let currentUser = document.querySelector(queryPattern);
     if (currentUser !== null) {
       userListContainer.removeChild(currentUser);
     }
+    const newGameList = gameListManager.userLeaveLobby(data.user.user_id);
+    const newGameListElement = initialGameList(newGameList);
   }
 });
 

@@ -1,4 +1,4 @@
-const gameListManager = require('../data/game-list-manager');
+const gameListManager = require('../volatile/game-list-manager');
 let socket_id;
 
 exports.joinLobby = (username, currentUserStatus) => {
@@ -41,12 +41,13 @@ exports.joinLobby = (username, currentUserStatus) => {
   });
 };
 
-exports.leaveLobby = (username) => {
+exports.leaveLobby = (user) => {
   const io = require('./socket').getIO();
   io.on("connection", (socket) => {
     socket.on("disconnect", () => {
+      gameListManager.userLeaveLobby(user.user_id);
       socket.volatile.to("lobby").emit("userLeaveLobby", {
-        username: username,
+        user: user,
         id: Buffer.from(socket.id).toString("base64")
       })
     });
@@ -55,6 +56,7 @@ exports.leaveLobby = (username) => {
 
 exports.userStatusUpdate = (username, status) => {
   const io = require('./socket').getIO();
+  console.log('socketid' + socket_id);
   io.in("lobby").emit("updateUserStatus", {
     username: username,
     status: status,

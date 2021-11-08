@@ -56,6 +56,20 @@ const gameListManager = {
     }
     return [];
   },
+  userLeaveLobby: (user_id) => {
+    let index = gameList.length;
+    while (index > 0) {
+      index--;
+      game = gameList[index];
+      console.log(index);
+      console.log(game);
+      game.users = game.users.filter(user => user.user_id !== user_id || user.status === "playing");
+      if (game.users.length <= 0) {
+        gameList.splice(index, 1);
+      }
+    }
+    return gameList;
+  },
   getGameList: () => {
     return gameList;
   }
