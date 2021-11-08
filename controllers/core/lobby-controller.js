@@ -1,4 +1,4 @@
-const gameListManager = require('../../data/game-list-monitor');
+const gameListManager = require('../../data/game-list-manager');
 
 const eventsEmitter = require('../../socket/eventsEmitter');
 exports.createGame = async (req, res, next) => {
@@ -12,8 +12,8 @@ exports.createGame = async (req, res, next) => {
   try {
     const new_game = await gameListManager.createGame(game_name, user);
     eventsEmitter.createGame(new_game);
-    req.session.userStatus = "ready";
-    eventsEmitter.userStatusUpdate(user.username, "ready");
+    const userStatus = gameListManager.getUserStatus(user.user_id);
+    eventsEmitter.userStatusUpdate(user.username, userStatus);
     res.status(200).json({ 
       status: "success",
       message: "Game: " + game_name + " is created!"
@@ -24,15 +24,38 @@ exports.createGame = async (req, res, next) => {
 }
 
 exports.joinGame = (req, res, next) => {
-  const game_id = req.body.game_id;
-
-  // TODO broadcast the join status to all users, update lobby state
+  const game_id = +req.body.game_id;
+  const user = {
+    username: req.session.userName,
+    user_id: req.session.userId
+  }
+  const isJoined = gameListManager.joinGame(game_id, user);
+  if (isJoined) {
+    const userStatus = gameListManager.getUserStatus(user.user_id);
+    eventsEmitter.userStatusUpdate(user.username, userStatus);
+    eventsEmitter.joinGame(game_id, user);
+    res.status(200).json({
+      status: "success Join the game." 
+    });
+  } else {
+    res.status(409).json({
+      status: "failed",
+      message: "The game is full."
+    })
+  }
 }
 
 exports.leaveGame = (req, res, next) => {
-  const game_id = req.body.game_id;  
-  // TODO broadcast the leave status to all users, update lobby state
-  // Get penalty inside the game.
+  const game_id = +req.body.game_id;  
+  const user = {
+    username: req.session.userName,
+    user_id: req.session.userId
+  }
+  gameListManager.leaveGame(game_id, user);
+  eventsEmitter.leaveGame(game_id, user);
+  const userStatus = gameListManager.getUserStatus(user.user_id);
+  eventsEmitter.userStatusUpdate(user.username, userStatus);
+  res.status(200).json({ status: "OK" });
 }
 
 exports.startGame = (req, res, next) => {
@@ -45,7 +68,8 @@ exports.getLobby = async (req, res, next) => {
   let isLoggedIn = req.session.isLoggedIn === true ? true : false;
   if (isLoggedIn) {
     const username = req.session.userName;
-    const userStatus = req.session.userStatus;
+    const user_id = req.session.userId;
+    const userStatus = gameListManager.getUserStatus(user_id);
     eventsEmitter.joinLobby(username, userStatus);
     eventsEmitter.leaveLobby(username);
     return res.status(200).render("lobby", {whoami: username});

@@ -84,7 +84,6 @@ exports.login = async (req, res, next) => {
         req.session.isLoggedIn = true;
         req.session.userId = user.id;
         req.session.userName = user.username;
-        req.session.userStatus = "free";
         return res.status(200).json({url: url.format({
           pathname:"/transition",
           query: {

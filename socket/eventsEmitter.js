@@ -1,4 +1,4 @@
-const gameListManager = require('../data/game-list-monitor');
+const gameListManager = require('../data/game-list-manager');
 let socket_id;
 
 exports.joinLobby = (username, currentUserStatus) => {
@@ -16,7 +16,7 @@ exports.joinLobby = (username, currentUserStatus) => {
         userList = userList.map((socket) => {
           return {
             username: socket.request.session.userName,
-            status: socket.request.session.userStatus,
+            status: gameListManager.getUserStatus(socket.request.session.userId),
             id: Buffer.from(socket.id).toString("base64"),
           };
         });
@@ -27,7 +27,6 @@ exports.joinLobby = (username, currentUserStatus) => {
           status: currentUserStatus,
           id: Buffer.from(socket.id).toString("base64")
         })
-        console.log(userList);
         io.to(socket.id).emit("userListInitial", {
           user_list: userList
         });
@@ -81,10 +80,18 @@ exports.createGame = (new_game) => {
   io.in("lobby").emit("createGame", new_game);
 }
 
-exports.joinGame = () => {
+exports.joinGame = (game_id, user) => {
   const io = require('./socket').getIO();
+  io.in("lobby").emit("joinGame", {
+    game_id: game_id,
+    user: user
+  })
 }
 
-exports.leaveGame = () => {
+exports.leaveGame = (game_id, user) => {
   const io = require('./socket').getIO();
+  io.in("lobby").emit("leaveGame", {
+    game_id: game_id,
+    user: user
+  })
 }

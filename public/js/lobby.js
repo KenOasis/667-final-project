@@ -9,20 +9,22 @@ const gameNameInput = document.getElementById('game_name');
 const lobbyToast = document.getElementById('lobbyToast');
 const lobbyMessage = document.getElementById('lobby_message');
 let whoami = document.getElementById('whoami').value;;
-let gameList = [];
+
 const DUMMY_GAME_LIST = [{
   game_id: 1,
   name: 'Uno',
   users: [{
     user_id: 4,
     username: "Lusd1",
+    status: "ready"
   }, {
     user_id: 6,
     username: "kaka",
-
+    status: "ready"
   }, {
     user_id: 8,
     username: "Jacky234",
+    status: "ready"
   }],
   capacity: 4,
   status: "waiting"
@@ -32,15 +34,19 @@ const DUMMY_GAME_LIST = [{
   users: [{
     user_id: 3,
     username: "KimJonEnn52",
+    status: "ready"
   }, {
     user_id: 7,
     username: "Lucas88",
+    status: "ready"
   }, {
     user_id: 11,
     username: "Optimus86",
+    status: "ready"
   }, {
     user_id: 9,
     username: "Savis84",
+    status: "ready"
   }],
   capacity: 4,
   status: "full"
@@ -140,13 +146,12 @@ const constructGameElement = (game) => {
       buttons_div.appendChild(span_leave);
     } else {
       // The game is playing
-      const span_join = document.createElement('span');
-      span_join.className = "btn badge bg-primary rounded-spill mx-1";
-      span_join.id = "game-" + game.game_id + "-join";
-      // TODO add eventlistener
-      span_join.innerHTML = "join";
-      span_join.onclick = joinGame;
-      buttons_div.appendChild(span_join);
+      const span_reconnect = document.createElement('span');
+      span_reconnect.className = "btn badge bg-primary rounded-spill mx-1";
+      span_reconnect.id = "game-" + game.game_id + "-reconnect";
+      span_reconnect.innerHTML = "";
+      span_reconnect.onclick = reconnectGame;
+      buttons_div.appendChild(span_reconnect);
     }
   } else {
     // The user is not in this game
@@ -214,14 +219,43 @@ const createGame = () => {
 
 const joinGame = (event) => {
   const game_id = event.target.parentNode.parentNode.dataset.game_id;
-  console.log(game_id);
+  const url = "http://" + location.host + "/lobby/joinGame";
+  const body = {
+    game_id
+  };
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      'content-type' : 'application/json'
+    })
+  }).then(response => response.json())
+  .then(result => console.log(result.status))
+  .catch(err => console.log(err));
 }
 
 const leaveGame = (event) => {
-
+  const game_id = event.target.parentNode.parentNode.dataset.game_id;
+  const url = "http://" + location.host + "/lobby/leaveGame";
+  const body = {
+    game_id
+  };
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      'content-type' : 'application/json'
+    })
+  }).then(response => response.json())
+  .then(result => console.log(result.status))
+  .catch(err => console.log(err));
 }
 
+const reconnectGame = () => {
 
+}
 // socket event listener
 socket.on('userListInitial', (data) => {
     const userList = data.user_list;
@@ -253,14 +287,15 @@ socket.on('userJoinLobby', data => {
   }
 });
 
-socket.on('userLeaveLobby', data => {
+socket.on('userLeaveLobby', user => {
   if (lobbyToast) {
-    lobbyMessage.innerHTML = data.username + " has left the lobby!";
+    lobbyMessage.innerHTML = user.username + " has left the lobby!";
     let toast = new bootstrap.Toast(lobbyToast);  
     toast.show(); 
   }
-  if (data.username !== whoami) {
-    let  currentUser = document.getElementById('user-' + data.username + data.id);
+  if (user.username !== whoami) {
+    const queryPattern = `[id^="user-${user.username}"]`;
+    let currentUser = document.querySelector(queryPattern);
     if (currentUser !== null) {
       userListContainer.removeChild(currentUser);
     }
@@ -268,9 +303,8 @@ socket.on('userLeaveLobby', data => {
 });
 
 
-socket.on('updateUserStatus', data => {
-  const user = data;
-  const queryPattern = `[id^="user-${data.username}"]`;
+socket.on('updateUserStatus', user => {
+  const queryPattern = `[id^="user-${user.username}"]`;
   let currentUser = document.querySelector(queryPattern);
   if (currentUser !== null) {
     const newUser = constructUserElement(user);
@@ -284,19 +318,47 @@ socket.on('lobbyChat', (data) => {
 });
 
 socket.on('gameListInitial', (data) => {
-  gameList = data;
-  initialGameList(gameList);
+  gameListManager.init(data);
+  initialGameList(data);
 });
 
-socket.on('createGame', data => {
-  const new_game = data;
+socket.on('createGame', new_game => {
   const gameElement = document.getElementById('game-' + new_game.game_id);
   if (gameElement === null) {
     newGameElement = constructGameElement(new_game);
     gameListContainer.appendChild(newGameElement);
   }
+  gameListManager.createGame(new_game);
 })
 
+socket.on('joinGame', data => {
+  const result = gameListManager.joinGame(data.game_id, data.user);
+  if (result !== null) {
+    const new_game = result;
+    const new_game_li = constructGameElement(new_game);
+    const current_game_li = document.getElementById(`game-${data.game_id}`);
+    gameListContainer.insertBefore(new_game_li, current_game_li);
+    gameListContainer.removeChild(current_game_li);
+  }
+  if (result.status === "full") {
+    // TODO trigger the start game action
+  }
+})
+
+socket.on('leaveGame', data => {
+  const result = gameListManager.leaveGame(data.game_id, data.user);
+  if (result !== null) {
+    const new_game = result;
+    const new_game_li = constructGameElement(new_game);
+    const current_game_li = document.getElementById(`game-${data.game_id}`);
+    gameListContainer.insertBefore(new_game_li, current_game_li);
+    gameListContainer.removeChild(current_game_li);
+  } else {
+    // game has no player, remove from the list
+    const game_li = document.getElementById(`game-${data.game_id}`);
+    gameListContainer.removeChild(game_li);
+  }
+})
 // test code for socket handshake.
 // socket.on('Hello', (data) => {
 //   // if (lobbyToast) {
