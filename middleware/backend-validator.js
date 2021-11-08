@@ -1,8 +1,8 @@
 const { check, validationResult } = require('express-validator');
 
 
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-const usernameRegex = /^(?=.*\d)(|.*[a-z])(|.*[A-Z])[0-9+a-zA-Z]{3,}$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,256}$/;
+const usernameRegex = /^(?=.*\d)(|.*[a-z])(|.*[A-Z])[0-9+a-zA-Z]{3,20}$/;
 
 
 exports.loginValidation = async (req, res, next) => {
@@ -11,13 +11,13 @@ exports.loginValidation = async (req, res, next) => {
 exports.signupValidation = async (req, res, next) => {
 
   // Validate username
-  await check('username').matches(usernameRegex).withMessage("Username must be at least 3 alphanumerical characters long").run(req);
+  await check('username').matches(usernameRegex).withMessage("Username must be at least 3 alphanumerical characters long and max length as 20").run(req);
 
   // Validate email
   await check('email').notEmpty().isEmail().run(req);
 
   // Validate password
-  await check('password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character").run(req);
+  await check('password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character and max length as 256").run(req);
   await check('password').custom((value, {req}) => {
     if (value !== req.body.confirm_password) {
       throw new Error('Password confirmation is not match with new password');
@@ -26,7 +26,7 @@ exports.signupValidation = async (req, res, next) => {
   }).run(req);
 
   // Validate confirm_password
-  await check('confirm_password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character").run(req);
+  await check('confirm_password').matches(passwordRegex).withMessage("Must be length >= 8, contain number, letter and special character and max length as 20").run(req);
   await check('confirm_password').custom((value, {req}) => {
     if (value !== req.body.password) {
       throw new Error('Password confirmation is not match with new password');

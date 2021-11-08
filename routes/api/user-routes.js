@@ -12,4 +12,5 @@ router.get('/logout', userController.logout);
 router.post('/change_password', backendValidator.changePWValidation, userController.changePassword);
 
 router.get('/profile', userController.getProfile);
+
 exports.routes = router;
