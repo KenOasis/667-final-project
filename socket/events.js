@@ -64,11 +64,12 @@ exports.userStatusUpdate = (username, status) => {
   });
 }
 
-exports.chatLobby = (username, message) => {
+exports.chatLobby = (username, timestamp, message) => {
   const io = require('./socket').getIO();
   io.in("lobby").emit("lobbyChat", {  
     username: username,
-    message: message
+    message: message,
+    timestamp: timestamp
     });
 }
 

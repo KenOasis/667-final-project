@@ -61,12 +61,12 @@ if (currentUser !== null) {
 });
 
 socket.on('lobbyChat', (data) => {
-updateChat(data);
+  updateChat(data);
 });
 
 socket.on('gameListInitial', (data) => {
-gameListManager.init(data);
-initialGameList(data);
+  gameListManager.init(data);
+  initialGameList(data);
 });
 
 socket.on('createGame', new_game => {

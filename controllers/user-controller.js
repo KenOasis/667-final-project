@@ -10,9 +10,7 @@ Users.hasMany(Game_Users, {foreignKey: "user_id"});
 const url = require('url');
 
 exports.signUp = async (req, res, next) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
+  const { username, email, password } = req.body;
   let existedUser = null;
   
   try {
@@ -69,8 +67,7 @@ exports.signUp = async (req, res, next) => {
 }
 
 exports.login = async (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  const { username, password } = req.body;
   try {
     let user = await  Users.findOne({
       where: {
@@ -124,9 +121,8 @@ exports.logout = (req, res, next) => {
 }
 
 exports.changePassword = async (req, res, next) => {
-  const userId = req.session.userId;
-  const current_password = req.body.current_password;
-  const new_password = req.body.new_password;
+  const { userId } = req.session;
+  const { current_password, new_password } = req.body;
   try {
     const user = await Users.findOne({
       where: {
@@ -159,7 +155,7 @@ exports.changePassword = async (req, res, next) => {
 }
 
 exports.getProfile = async (req, res, next) => {
-  const userId = req.session.userId;
+  const { userId } = req.session;
   try {
     let results = await Users.findAll({
       raw: true,

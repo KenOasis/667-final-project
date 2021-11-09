@@ -1,6 +1,6 @@
 const gameListManager = require('../../volatile/game-list-manager');
 
-const eventsEmitter = require('../../socket/eventsEmitter');
+const events = require('../../socket/events');
 
 
 exports.createGame = async (req, res, next) => {
@@ -13,9 +13,9 @@ exports.createGame = async (req, res, next) => {
 
   try {
     const new_game = await gameListManager.createGame(game_name, user);
-    eventsEmitter.createGame(new_game);
+    events.createGame(new_game);
     const userStatus = gameListManager.getUserStatus(user.user_id);
-    eventsEmitter.userStatusUpdate(user.username, userStatus);
+    events.userStatusUpdate(user.username, userStatus);
     res.status(200).json({ 
       status: "success",
       message: "Game: " + game_name + " is created!"
@@ -34,8 +34,8 @@ exports.joinGame = (req, res, next) => {
   const game_name = gameListManager.joinGame(game_id, user);
   if (game_name) {
     const userStatus = gameListManager.getUserStatus(user.user_id);
-    eventsEmitter.userStatusUpdate(user.username, userStatus);
-    eventsEmitter.joinGame(game_id, user);
+    events.userStatusUpdate(user.username, userStatus);
+    events.joinGame(game_id, user);
     res.status(200).json({
       status: "success",
       message: "You have joint the game " + game_name
@@ -55,9 +55,9 @@ exports.leaveGame = (req, res, next) => {
     user_id: req.session.userId
   }
   const game_name = gameListManager.leaveGame(game_id, user);
-  eventsEmitter.leaveGame(game_id, user);
+  events.leaveGame(game_id, user);
   const userStatus = gameListManager.getUserStatus(user.user_id);
-  eventsEmitter.userStatusUpdate(user.username, userStatus);
+  events.userStatusUpdate(user.username, userStatus);
   res.status(200).json({ 
     status: "success",
     message: "You have leave the game " + game_name
@@ -80,8 +80,8 @@ exports.getLobby = async (req, res, next) => {
       user_id: user_id
     }
     const userStatus = gameListManager.getUserStatus(user_id);
-    eventsEmitter.joinLobby(username, userStatus);
-    eventsEmitter.leaveLobby(user);
+    events.joinLobby(username, userStatus);
+    events.leaveLobby(user);
     return res.status(200).render("lobby", {whoami: username});
   } else {
     return res.status(401).render("login");

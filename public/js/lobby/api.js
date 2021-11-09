@@ -69,3 +69,28 @@ const leaveGame = (event) => {
 const reconnectGame = () => {
   // TODO
 }
+
+// send chat
+
+const sendChat = () => {
+  const msg = chatInput.value;
+  const url = "http://" + location.host + "/lobby/chat?id=0";
+  const body = {
+    message: msg
+  }
+  if (msg.trim().length > 0) {
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(body),
+      credentials: "include",
+      headers: new Headers({
+        'content-type' : 'application/json'
+      })
+    }).then(response => response.json())
+    .then(results => {
+      if (results.status === "success") {
+        chatInput.value = "";
+      }
+    }).catch(err => console.log(err));
+  }
+}
