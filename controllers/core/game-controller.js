@@ -1,8 +1,22 @@
 exports.initGame = (req, res, next) => {
   const game_id = req.body.game_id;
   const users_id = req.body.users_id; // This should be an array of all user's user_id for the game
-  // TODO initial a game (insert and update all necessary table)
-  // decide game order, draw initial cards, decide initial status (color, number) for the first round
+
+
+  // TODO
+  // 1. add users to game_user table in randomized order
+  //    - get all users id's into an array
+  //    - shuffle that array
+  //    - insert that array's users into the game_users table
+  // 2. insert all cards into game_cards table in random draw order
+  //    - get id's of all cards into an array
+  //    - shuffle that array
+  //    - insert that array's cards into the game_cards table
+  // 3. draw initial cards for the players
+  //    - assign the first cards in the game_cards table to the users in that order
+  // 4. draw the initial discard pile card
+  //    - tbd
+  // 5. set direction randomly (forward or backward)
 }
 
 exports.drawCard = (req, res, next) => {
