@@ -61,7 +61,7 @@ const addToast = (message) => {
   toastDiv.setAttributeNode
   toastDiv.ariaLive = "assertive";
   toastDiv.ariaAtomic = true;
-  toastDiv.setAttribute("data-bs-delay", "2000");
+  toastDiv.setAttribute("data-bs-delay", "2500");
 
   const headerDiv = document.createElement('div');
   headerDiv.className = "toast-header";
@@ -258,8 +258,8 @@ const createGame = () => {
   }).then(response => response.json())
   .then(results => {
     if (toastContainer) {
-      const newTaost = addToast(results.message);
-      let toast = new bootstrap.Toast(newTaost);
+      const newToast = addToast(results.errors[0].msg);
+      let toast = new bootstrap.Toast(newToast);
       toast.show(); 
     }
   }).catch(err => console.log(err));
