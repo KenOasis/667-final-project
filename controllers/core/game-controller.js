@@ -1,3 +1,5 @@
+const gameStateManager = require("../../volatile/game-state-manager");
+
 exports.initGame = (req, res, next) => {
   const game_id = req.body.game_id;
   // TODO initial a game (insert and update all necessary table)
@@ -26,4 +28,11 @@ exports.challenge = (req, res, next) => {
 
 exports.sayUno = (req, res, next) => {
   
+}
+
+exports.generateGameState = (req, res, next) => {
+  const game_state = gameStateManager.getGameState();
+  res.status(200).json({
+    game_state: game_state
+  })
 }
