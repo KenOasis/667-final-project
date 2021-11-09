@@ -1,6 +1,8 @@
 const gameListManager = require('../../volatile/game-list-manager');
 
 const eventsEmitter = require('../../socket/eventsEmitter');
+
+
 exports.createGame = async (req, res, next) => {
   const game_name = req.body.game_name;
 
@@ -29,13 +31,14 @@ exports.joinGame = (req, res, next) => {
     username: req.session.userName,
     user_id: req.session.userId
   }
-  const isJoined = gameListManager.joinGame(game_id, user);
-  if (isJoined) {
+  const game_name = gameListManager.joinGame(game_id, user);
+  if (game_name) {
     const userStatus = gameListManager.getUserStatus(user.user_id);
     eventsEmitter.userStatusUpdate(user.username, userStatus);
     eventsEmitter.joinGame(game_id, user);
     res.status(200).json({
-      status: "success Join the game." 
+      status: "success",
+      message: "You have joint the game " + game_name
     });
   } else {
     res.status(409).json({
@@ -51,11 +54,14 @@ exports.leaveGame = (req, res, next) => {
     username: req.session.userName,
     user_id: req.session.userId
   }
-  gameListManager.leaveGame(game_id, user);
+  const game_name = gameListManager.leaveGame(game_id, user);
   eventsEmitter.leaveGame(game_id, user);
   const userStatus = gameListManager.getUserStatus(user.user_id);
   eventsEmitter.userStatusUpdate(user.username, userStatus);
-  res.status(200).json({ status: "OK" });
+  res.status(200).json({ 
+    status: "success",
+    message: "You have leave the game " + game_name
+   });
 }
 
 exports.startGame = (req, res, next) => {

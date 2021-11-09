@@ -49,7 +49,7 @@ const gameListManager = {
       if (game.users.length === game.capacity) {
         game.status = "full";
       }
-      return true;
+      return game.name;
     }
   },
 
@@ -61,6 +61,7 @@ const gameListManager = {
       // remove the game without any player
       gameList.splice(gameIndex, 1);
     }
+    return game.name;
   },
   startGame: (game_id) => {
     const gameIndex = findGameById(game_id);
