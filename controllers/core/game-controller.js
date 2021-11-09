@@ -1,13 +1,31 @@
+const GameUsers = db['game_users'];
+
+
 exports.initGame = (req, res, next) => {
   const game_id = req.body.game_id;
-  const users_id = req.body.users_id; // This should be an array of all user's user_id for the game
+  const user_ids = req.body.users_id; // This should be an array of all user's user_id for the game
+
+  user_ids = shuffle(user_ids)
+
+  let orderCounter = 0
+
+  user_ids.array.forEach(element => {
+    GameUsers.create({
+      game_id: game_id,
+      user_id: element,
+      current_player: false,
+      initial_order: orderCounter,
+      points: 0
+    })
+    orderCounter += 1;
+  });
 
 
   // TODO
   // 1. add users to game_user table in randomized order
-  //    - get all users id's into an array
-  //    - shuffle that array
-  //    - insert that array's users into the game_users table
+  //    - get all users id's into an array - CHECK
+  //    - shuffle that array - CHECK
+  //    - insert that array's users into the game_users table - CHECK
   // 2. insert all cards into game_cards table in random draw order
   //    - get id's of all cards into an array
   //    - shuffle that array
@@ -17,6 +35,24 @@ exports.initGame = (req, res, next) => {
   // 4. draw the initial discard pile card
   //    - tbd
   // 5. set direction randomly (forward or backward)
+}
+
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle
+  while (currentIndex != 0) {
+
+    // Pick a remaining element
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
 }
 
 exports.drawCard = (req, res, next) => {

@@ -27,7 +27,7 @@ exports.signUp = async (req, res, next) => {
    if (existedUser !== null) {
      return res.status(409).json({errors: [{
        param: "username",
-       msg: username + " is already exist!"
+       msg: username + " already exists!"
      }]});
    }
 
@@ -42,7 +42,7 @@ exports.signUp = async (req, res, next) => {
     if (existedUser !== null) {
       return res.status(409).json({errors: [{
         param: "email",
-        msg: "Email is already exist!"
+        msg: "Email already exists!"
       }]});
     }
     let hashPassword = await bcrpyt.hash(password, saltround);
@@ -57,7 +57,7 @@ exports.signUp = async (req, res, next) => {
       pathname:"/transition",
       query: {
          "title": "Successfully signup!",
-         "description": "Congratulation! You have successfully signup.",
+         "description": "Congratulation! You have successfully signed up.",
          "redirect_path": "/login",
          "page_name": "Login" 
        }
@@ -88,7 +88,7 @@ exports.login = async (req, res, next) => {
           pathname:"/transition",
           query: {
              "title": "Successfully signup!",
-             "description": "Congratulation! You have successfully login.",
+             "description": "Congratulation! You have successfully logged in.",
              "redirect_path": "/lobby",
              "page_name": "Game Lobby" 
            }
@@ -102,7 +102,7 @@ exports.login = async (req, res, next) => {
     } else {
       return res.status(401).json({errors: [{
         param: "username",
-        msg: "Username is not exist!"
+        msg: "Username does not exist!"
       }]});
     }
   } catch (error) {
@@ -116,7 +116,7 @@ exports.logout = (req, res, next) => {
     res.clearCookie('connect.sid').status(200).render("transition", { 
       isLoggedIn: false,
       title: "Successfully logged out!",
-      description: " You have successfully logged out.",
+      description: " You have successfully been logged out.",
       redirectPath: "/",
       redirectPageName: "Home" 
     });
