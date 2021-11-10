@@ -1,24 +1,77 @@
 const GameUsers = db['game_users'];
+const GameCards = db['game_cards'];
+const Cards = db['cards'];
 
 
 exports.initGame = (req, res, next) => {
   const game_id = req.body.game_id;
   const user_ids = req.body.users_id; // This should be an array of all user's user_id for the game
 
-  user_ids = shuffle(user_ids)
+  // 1
 
-  let orderCounter = 0
+  userIdsShuffled = shuffle(user_ids)
 
-  user_ids.array.forEach(element => {
+  let userIdsOrderCounter = 0
+
+  userIdsShuffled.array.forEach(element => {
     GameUsers.create({
       game_id: game_id,
       user_id: element,
       current_player: false,
-      initial_order: orderCounter,
+      initial_order: userIdsOrderCounter,
       points: 0
     })
-    orderCounter += 1;
+    userIdsOrderCounter += 1;
   });
+
+  // 2
+
+  allCardsIds = await Cards.findAll().map((item) => {
+      return item.card_id
+  });
+
+  allCardsIdsShuffled = shuffle(allCardsIds)
+
+  let cardIdsOrderCounter = 0
+
+  allCardsIdsShuffled.forEach(element => {
+    GameCards.create({
+      game_id: game_id,
+      user_id: 0,
+      card_id: element,
+      draw_order: cardIdsOrderCounter,
+      in_deck: false,
+      discarded: false
+    })
+    cardIdsOrderCounter += 1;
+  })
+
+  // 3
+
+  initialCardsIds = await GameCards.findAll({
+    order: [
+      ['draw_order', 'ASC']
+    ],
+    attributes: ['id'],
+    limit: 28
+  })
+
+  let indexCounter = 0
+
+  initialCardsIds.forEach(element => {
+    GameCards.update(
+      { 
+        user_id: user_ids[indexCounter],
+        in_deck: true
+      },
+      { where: { id: element }}
+    )
+    indexCounter = (indexCounter + 1) % 4
+  })
+
+
+
+
 
 
   // TODO
@@ -27,11 +80,12 @@ exports.initGame = (req, res, next) => {
   //    - shuffle that array - CHECK
   //    - insert that array's users into the game_users table - CHECK
   // 2. insert all cards into game_cards table in random draw order
-  //    - get id's of all cards into an array
-  //    - shuffle that array
-  //    - insert that array's cards into the game_cards table
-  // 3. draw initial cards for the players
-  //    - assign the first cards in the game_cards table to the users in that order
+  //    - get id's of all cards into an array - CHECK
+  //    - shuffle that array - CHECK
+  //    - insert that array's cards into the game_cards table - CHECK
+  // 3. draw initial 7 cards for the players
+  //    - get ids of first 28 (7*4) cards from game_cards by draw_order - CHECK
+  //    - update these cards in game_cards with the corresponding user_id && update in_deck to true - CHECK
   // 4. draw the initial discard pile card
   //    - tbd
   // 5. set direction randomly (forward or backward)
