@@ -1,5 +1,6 @@
 const GameUsers = db['game_users'];
 const GameCards = db['game_cards'];
+const Games = db['games'];
 const Cards = db['cards'];
 
 
@@ -26,9 +27,9 @@ exports.initGame = (req, res, next) => {
 
   // 2
 
-  allCardsIds = await Cards.findAll().map((item) => {
-      return item.card_id
-  });
+  allCardsIds = await Cards.findAll({
+    attributes: ['card_id']
+  })
 
   allCardsIdsShuffled = shuffle(allCardsIds)
 
@@ -69,8 +70,35 @@ exports.initGame = (req, res, next) => {
     indexCounter = (indexCounter + 1) % 4
   })
 
+  // 4
 
+  potentialInitialCardsIds = await GameCards.findAll({
+    where: {
+      discarded: false,
+      in_deck: false,
+      user_id: 0
+    },
+    order: [
+      ['draw_order', 'ASC']
+    ],
+    attributes: ['id']
+  })
 
+  initialCardId = firstNonActionCard(potentialInitialCardsIds)
+
+  GameCards.update(
+    {discarded: true},
+    {where: { card_id: initialCardId }}
+  )
+
+  // 5
+
+  gameDirection = Math.round(Math.random())
+
+  Games.update(
+    {direction: gameDirection},
+    {where: { id: game_id }}
+  )
 
 
 
@@ -87,7 +115,7 @@ exports.initGame = (req, res, next) => {
   //    - get ids of first 28 (7*4) cards from game_cards by draw_order - CHECK
   //    - update these cards in game_cards with the corresponding user_id && update in_deck to true - CHECK
   // 4. draw the initial discard pile card
-  //    - tbd
+  //    - get first card that is not: -discarded -in_deck && has user_id=0 ordered by draw_order ASC where action=NULL CHECK
   // 5. set direction randomly (forward or backward)
 }
 
@@ -107,6 +135,19 @@ function shuffle(array) {
   }
 
   return array;
+}
+
+function firstNonActionCard(ids) {
+  for (i = 0; i < ids.length; i++) {
+    action = await Cards.findAll({
+      where: {id: ids[i]},
+      attributes: ['action']
+    })
+    //TODO correct data type 'card_actions.no_action' ???
+    if (action == card_actions.no_action) {
+      return ids[i]
+    }
+  }
 }
 
 exports.drawCard = (req, res, next) => {
