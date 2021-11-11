@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable(
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable(
       'game_cards', {
         id: {
           type: Sequelize.INTEGER,
@@ -46,9 +46,9 @@ module.exports = {
           defaultValue: true,
         },
         discarded: {
-          type: Sequelize.BOOLEAN,
+          type: Sequelize.INTEGER,
           allowNull: false,
-          defaultValue: false
+          defaultValue: 0
         }
       }, {
         uniqueKeys: {
@@ -57,17 +57,31 @@ module.exports = {
           }
         }
       }
-    ).then(() => queryInterface.addConstraint('game_cards', {
-      fields: ['draw_order'],
-      type: 'check',
-      where: {
-        draw_order: {
-          [Sequelize.Op.between]: [1,108]
+    ); 
+    await queryInterface.addConstraint(
+      'game_cards', {
+        fields: ['draw_order'],
+        type: 'check',
+        where: {
+          draw_order: {
+            [Sequelize.Op.between]: [1,108]
+          }
         }
       }
-    }));
+    );
+    await queryInterface.addConstraint(
+      'game_cards', {
+        fields: ['discarded'],
+        type: 'check',
+        where: {
+          discarded: {
+            [Sequelize.Op.between]: [0, 108]
+          }
+        }
+      }
+    );
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('game_cards');
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('game_cards');
   }
 }

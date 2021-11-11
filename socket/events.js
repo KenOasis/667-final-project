@@ -1,6 +1,7 @@
 const gameListManager = require('../volatile/game-list-manager');
 let socket_id;
 
+// TODO socket event when server restarted or stop ?
 exports.joinLobby = (username, currentUserStatus) => {
   const io = require('./socket').getIO();
   let userList = [];
@@ -56,7 +57,6 @@ exports.leaveLobby = (user) => {
 
 exports.userStatusUpdate = (username, status) => {
   const io = require('./socket').getIO();
-  console.log('socketid' + socket_id);
   io.in("lobby").emit("updateUserStatus", {
     username: username,
     status: status,

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable(
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable(
       'cards', {
         id: {
           type: Sequelize.INTEGER,
@@ -57,10 +57,10 @@ module.exports = {
     );
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('cards').then(() => queryInterface.sequelize.query(`DROP TYPE IF EXISTS enum_cards_action;
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('cards'); await queryInterface.sequelize.query(`DROP TYPE IF EXISTS enum_cards_action;
     DROP TYPE IF EXISTS enum_cards_color; 
     DROP TYPE IF EXISTS enum_cards_face_value; 
-    DROP TYPE IF EXISTS enum_cards_type`));
+    DROP TYPE IF EXISTS enum_cards_type`);
   }
 }

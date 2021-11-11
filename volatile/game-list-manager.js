@@ -1,6 +1,8 @@
 const gameList = [];
 const db = require('../models');
 const Games = db['games'];
+
+const gamesDriver = require('../db/drivers/games-driver');
 const findGameById = (game_id) => {
   return gameList.findIndex(game => 
      game.game_id === game_id);
@@ -13,10 +15,9 @@ const gameListManager = {
   },
   createGame: async (game_name, user) => {
     let gameCreated = null;
+    console.log(game_name);
     try {
-      gameCreated = await Games.create({
-        name: game_name
-      });
+      gameCreated = await gamesDriver.createGame(game_name);
     } catch (err) {
       console.log(err)
     }

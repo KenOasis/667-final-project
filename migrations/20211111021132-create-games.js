@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable(
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable(
       'games', {
         id: {
           type: Sequelize.INTEGER,
@@ -29,7 +29,8 @@ module.exports = {
           defaultValue: 1
         }
       }
-    ).then(() => queryInterface.addConstraint(
+    );
+    await queryInterface.addConstraint(
       'games', {
         fields: ['direction'],
         type: 'check',
@@ -39,10 +40,10 @@ module.exports = {
           }
         }
       }
-    ));
+    );
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('games');
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('games');
   }
 }

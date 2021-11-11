@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable(
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable(
       'users', {
         id: {
           type: Sequelize.INTEGER,
@@ -28,7 +28,8 @@ module.exports = {
           defaultValue: Sequelize.literal('NOW()')
         }
       }
-    ).then(() => queryInterface.addConstraint(
+    );
+    await queryInterface.addConstraint(
       'users', {
         type: 'check',
         fields: ['email'],
@@ -38,10 +39,10 @@ module.exports = {
           }
         }
       }
-    ));
+    );
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('users');
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('users');
   }
 };

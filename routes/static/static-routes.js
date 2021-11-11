@@ -7,4 +7,7 @@ router.get('/login', staticController.getLogin);
 router.get('/signup', staticController.getSignup);
 router.get('/about', staticController.getAbout);
 router.get('/transition', staticController.getTransition);
+router.get('/test', (req, res, next) => {
+  res.status(200).render('test');
+})
 exports.routes = router;

@@ -1,4 +1,4 @@
-const gameStateManager = {
+const gameStateDummy = {
   init: (game_state) => {
     gameState = game_state;
   },
@@ -51,5 +51,5 @@ const DUMMY_GAME_STATE = {  // this is the game_state hold at the front-end
   discards: [94, 25, 28], 
   // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
 }
-gameStateManager.init(DUMMY_GAME_STATE);
-module.exports = gameStateManager;
+gameStateDummy.init(DUMMY_GAME_STATE);
+module.exports = gameStateDummy;
