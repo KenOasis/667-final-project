@@ -1,6 +1,9 @@
 const gameUsersDriver = require('../../db/drivers/game-users-driver');
 const cardsDriver = require('../../db/drivers/card-drivers');
 const gameCardsDriver = require('../../db/drivers/game-cards-driver');
+const gamesDriver = require('../../db/drivers/games-driver');
+
+const gameState = require('../../dataObj/gameState');
 const shuffle = require('../../util/shuffle');
 
 const gameStateDummy = require('../../volatile/gameStateDummy');
@@ -10,9 +13,11 @@ exports.initGame = async (req, res, next) => {
   try {
   // Step 0 : check whether the game is initialed already.
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
-
+    
     if (game_users && game_users.length) {
-      // TODO retrive all data and save 
+      res.status(200).json({
+        status: "success"
+      })
     } else {
       // Step 1 : Generate the random sequence of starting order of user
       // referrence: async iteration https://2ality.com/2016/10/asynchronous-iteration.html
@@ -20,7 +25,10 @@ exports.initGame = async (req, res, next) => {
     let userIdsOrderCounter = 1;
   
       for await (const user_id of userIdsShuffled) {
-        await gameUsersDriver.createGameUsers(game_id, user_id, false, userIdsOrderCounter);
+        await gameUsersDriver.createGameUsers(
+          game_id, 
+          user_id,
+          userIdsOrderCounter === 1 ? true : false, userIdsOrderCounter);
         userIdsOrderCounter += 1;
       }
       // Stpe 2: Generate the 108 game_card rows and give them an random draw order. 
@@ -36,101 +44,54 @@ exports.initGame = async (req, res, next) => {
 
         cardIdsOrderCounter += 1;
       }
+
+      // Step 3: initial matching
+        await gamesDriver.initialMatching(game_id);
+      res.status(200).json({ status: "success" });
     }
- 
-    // 3 Generate the first 28 cards (4 for each player) for the initial game stage
+  } catch (err) {
+    console.error(err);
+    res.status(202).json({ status: "processing" });
+  }
 
-    // initialCardsIds = await GameCards.findAll({
-    //   where: {
-    //     in_deck: true,
-    //     discarded: false
-    //   },
-    //   order: [
-    //     ['draw_order', 'ASC']
-    //   ],
-    //   attributes: ['id'],
-    //   limit: 28
-    // });
-
-    // let indexCounter = 0;
-
-    // initialCardsIds.forEach(element => {
-    //   GameCards.update(
-    //     { 
-    //       user_id: users_id[indexCounter],
-    //       in_deck: true
-    //     },
-    //     { where: { id: element }}
-    //   )
-    //   indexCounter = (indexCounter + 1) % 4
-    // })
-
-    // // 4
-
-    // potentialInitialCardsIds = await GameCards.findAll({
-    //   where: {
-    //     discarded: false,
-    //     in_deck: false,
-    //     user_id: 0
-    //   },
-    //   order: [
-    //     ['draw_order', 'ASC']
-    //   ],
-    //   attributes: ['id']
-    // });
-
-    // initialCardId = firstNonActionCard(potentialInitialCardsIds);
-
-    // await GameCards.update(
-    //   {discarded: true},
-    //   {where: { card_id: initialCardId }}
-    // );
-
-    // // 5
-
-    // gameDirection = Math.round(Math.random());
-
-    // await Games.update(
-    //   {direction: gameDirection},
-    //   {where: { id: game_id }}
-    // );
-    
-    res.status(200).json({message: "666"});
-    
-    } catch (err) {
-      console.error(err);
-    }
-
-  // TODO
-  // 1. add users to game_user table in randomized order
-  //    - get all users id's into an array - CHECK
-  //    - shuffle that array - CHECK
-  //    - insert that array's users into the game_users table - CHECK
-  // 2. insert all cards into game_cards table in random draw order
-  //    - get id's of all cards into an array - CHECK
-  //    - shuffle that array - CHECK
-  //    - insert that array's cards into the game_cards table - CHECK
-  // 3. draw initial 7 cards for the players
-  //    - get ids of first 28 (7*4) cards from game_cards by draw_order - CHECK
-  //    - update these cards in game_cards with the corresponding user_id && update in_deck to true - CHECK
-  // 4. draw the initial discard pile card
-  //    - get first card that is not: -discarded -in_deck && has user_id=0 ordered by draw_order ASC where action=NULL CHECK
-  // 5. set direction randomly (forward or backward)
 }
 
+exports.loadGame = async (req, res, next) => {
+  const user_id = req.session.userId;
+  const { game_id } = req.query;
+  
+  try {
+    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
 
-// function firstNonActionCard(ids) {
-//   for (i = 0; i < ids.length; i++) {
-//     action = await Cards.findAll({
-//       where: {id: ids[i]},
-//       attributes: ['action']
-//     })
-//     //TODO correct data type 'card_actions.no_action' ???
-//     if (action == card_actions.no_action) {
-//       return ids[i]
-//     }
-//   }
-// }
+    if (isInGame) {
+      const card_deck = await gameCardsDriver.getCardDeck(game_id);
+
+      const direction = await gamesDriver.getDirection(game_id);
+
+      const game_order = await gameUsersDriver.getGameOrder(game_id);
+      
+      const current_player = await 
+      gameUsersDriver.getCurrentPlayer(game_id);
+
+      const matching = await gamesDriver.getMatching(game_id);
+
+    } else {
+
+      res.status(403).json({
+        status: "failed",
+        message: "Join game failed."
+      });
+
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Joined game failed."
+    }); 
+  }
+
+}
 
 exports.drawCard = (req, res, next) => {
   const game_id = req.body.game_id;

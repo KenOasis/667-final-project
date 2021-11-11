@@ -29,8 +29,10 @@ exports.getGameUsersByUserId = async (user_id) => {
 
  exports.getGameUsersByGameId = async (game_id) => {
   try {
-    const game_users = await Users.findAll({
-      game_id: game_id
+    const game_users = await GameUsers.findAll({
+      where: {
+        game_id: game_id
+      }
     });
 
     return game_users;
@@ -51,6 +53,66 @@ exports.createGameUsers = async (game_id, user_id, current_player, initial_order
       });
 
     return game_user;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+exports.checkUserInGame = async (game_id, user_id) => {
+  try {
+    const gameUser = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id
+      }
+    });
+
+    if (gameUser) {
+      return true;
+    } else {
+      return false;
+    }
+
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+exports.getGameOrder = async (game_id) => {
+  try {
+    const game_users = await GameUsers.findAll({
+      where : {
+        game_id
+      },
+      attributes: ['user_id'],
+      order: [['initial_order', 'ASC']]
+    });
+
+    const game_order = game_users.map(game_user => game_user.user_id);
+
+    return game_order;
+
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+
+exports.getCurrentPlayer = async (game_id) => {
+  try {
+    const game = await GameUsers.findOne({
+      where: {
+        game_id,
+        current_player: true
+      }
+    });
+    if (game) {
+      return game.user_id
+    }
+    return null;
   } catch (err) {
     console.error(err);
     return null;

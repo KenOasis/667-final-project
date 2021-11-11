@@ -9,4 +9,33 @@ class GameState {
     this.discards = game_state.discards;
   }
 
+  get cardDeck() {
+    return this.cardDeck;
+  }
+
+  get gameDirection() {
+    return this.game_direction;
+  }
+
+  get gameOrder() {
+    return this.game_order;
+  }
+
+  get currentPlayer() {
+    return this.current_player;
+  }
+
+  get matching() {
+    return this.matching;
+  }
+
+  get players() {
+    return this.players;
+  }
+
+  get discards() {
+    return this.discards;
+  }
 }
+
+module.exports = GameState;

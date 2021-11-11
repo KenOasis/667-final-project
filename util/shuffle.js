@@ -1,7 +1,7 @@
 const shuffle = (array) => {
   let currentIndex = array.length;
   let randomIndex;
-
+  let shuffleArray = array.slice(0);
   // While there remain elements to shuffle
   while (currentIndex != 0) {
 
@@ -10,11 +10,11 @@ const shuffle = (array) => {
     currentIndex--;
 
     // And swap it with the current element
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
+    [shuffleArray[currentIndex], shuffleArray[randomIndex]] = [
+      shuffleArray[randomIndex], shuffleArray[currentIndex]];
   }
 
-  return array;
+  return shuffleArray;
 }
 
 module.exports = shuffle;

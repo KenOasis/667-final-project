@@ -12,7 +12,6 @@ exports.createGame = async (req, res, next) => {
   }
 
   try {
-    console.log(user);
     const new_game = await gameListManager.createGame(game_name, user);
     events.createGame(new_game);
     const userStatus = gameListManager.getUserStatus(user.user_id);

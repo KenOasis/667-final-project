@@ -15,7 +15,6 @@ const gameListManager = {
   },
   createGame: async (game_name, user) => {
     let gameCreated = null;
-    console.log(game_name);
     try {
       gameCreated = await gamesDriver.createGame(game_name);
     } catch (err) {

@@ -31,6 +31,34 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isIn: [[-1,1]]
       }
+    },
+    matching_color: {
+      type: DataTypes.ENUM(
+        'red',
+        'yellow',
+        'green',
+        'blue',
+        'none',
+      ),
+      allowNull: false,
+      defaultValue: "none"
+    },
+    matching_number: {
+      type: DataTypes.ENUM(
+        'zero',
+        'one',
+        'two',
+        'three',
+        'four',
+        'five',
+        'six',
+        'seven',
+        'eight',
+        'nine',
+        'none'
+      ),
+      allowNull: false,
+      defaultValue: "none"
     }
   }, {
     timestamps: false

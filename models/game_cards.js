@@ -47,9 +47,13 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: true
     },
     discarded: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: false
+      defaultValue: 0,
+      validate: {
+        min: 0,
+        max: 108
+      }
     }
   }, {
     timestamps: false

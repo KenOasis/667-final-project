@@ -5,6 +5,7 @@ const Games = db['games'];
 const GameCards = db['game_cards']
 const Cards = db['cards'];
 const { Op } = require('sequelize');
+const shuffle = require('../../util/shuffle');
 
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 Games.hasMany(GameUsers, { foreignKey: "game_id" });
@@ -21,12 +22,27 @@ exports.initialGameCards = async (game_id, user_id, card_id, draw_order) => {
       game_id,
       user_id,
       card_id,
-      draw_order
+      draw_order,
     })
 
     return game_card;
   }
-  catch(error) {
+  catch(err) {
+    console.error(err);
+    return null;
+  }
+}
+
+exports.getCardDeck = async (game_id) => {
+  try {
+    const card_deck = await GameCards.findAll({
+      game_id,
+      in_deck: true,
+      discarded: 0 
+    });
+
+    return card_deck;
+  } catch (err) {
     console.error(err);
     return null;
   }

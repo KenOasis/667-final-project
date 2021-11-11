@@ -27,6 +27,34 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false,
           defaultValue: 1
+        },
+        matching_color: {
+          type: Sequelize.ENUM(
+            'red',
+            'yellow',
+            'green',
+            'blue',
+            'none',
+          ),
+          allowNull: false,
+          defaultValue: "none"
+        },
+        matching_number: {
+          type: Sequelize.ENUM(
+            'zero',
+            'one',
+            'two',
+            'three',
+            'four',
+            'five',
+            'six',
+            'seven',
+            'eight',
+            'nine',
+            'none'
+          ),
+          allowNull: false,
+          defaultValue: "none"
         }
       }
     );
