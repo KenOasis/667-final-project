@@ -44,8 +44,7 @@ if (data.user.username !== whoami) {
   if (currentUser !== null) {
     userListContainer.removeChild(currentUser);
   }
-  const newGameList = gameListManager.userLeaveLobby(data.user.user_id);
-  const newGameListElement = initialGameList(newGameList);
+  initialGameList(data.gameList);
 }
 });
 
@@ -65,7 +64,6 @@ socket.on('lobbyChat', (data) => {
 });
 
 socket.on('gameListInitial', (data) => {
-  gameListManager.init(data);
   initialGameList(data);
 });
 
@@ -74,7 +72,6 @@ const gameElement = document.getElementById('game-' + new_game.game_id);
 if (gameElement === null) {
   const newGameElement = constructGameElement(new_game);
   gameListContainer.appendChild(newGameElement);
-  gameListManager.createGame(new_game);
   if (toastContainer) {
     const newToast = addToast("Game " + new_game.name + " is created.");
     let toast = new bootstrap.Toast(newToast);
@@ -84,30 +81,25 @@ if (gameElement === null) {
 })
 
 socket.on('joinGame', data => {
-const result = gameListManager.joinGame(data.game_id, data.user);
-if (result !== null) {
-  const new_game = result;
-  const new_game_li = constructGameElement(new_game);
-  const current_game_li = document.getElementById(`game-${data.game_id}`);
-  gameListContainer.insertBefore(new_game_li, current_game_li);
-  gameListContainer.removeChild(current_game_li);
-}
-if (result.status === "full") {
-  // TODO trigger the start game action
-}
+  if (data.game !== null) {
+    const new_game = data.game;
+    const new_game_li = constructGameElement(new_game);
+    const current_game_li = document.getElementById(`game-${data.game.game_id}`);
+    gameListContainer.insertBefore(new_game_li, current_game_li);
+    gameListContainer.removeChild(current_game_li);
+  }
 })
 
 socket.on('leaveGame', data => {
-const result = gameListManager.leaveGame(data.game_id, data.user);
-if (result !== null) {
-  const new_game = result;
+if (data.game_status === "existed" ) {
+  const new_game = data.game;
   const new_game_li = constructGameElement(new_game);
-  const current_game_li = document.getElementById(`game-${data.game_id}`);
+  const current_game_li = document.getElementById(`game-${data.game.game_id}`);
   gameListContainer.insertBefore(new_game_li, current_game_li);
   gameListContainer.removeChild(current_game_li);
 } else {
   // game has no player, remove from the list
-  const game_li = document.getElementById(`game-${data.game_id}`);
+  const game_li = document.getElementById(`game-${data.game.game_id}`);
   gameListContainer.removeChild(game_li);
 }
 })

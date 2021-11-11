@@ -31,14 +31,14 @@ exports.joinGame = (req, res, next) => {
     username: req.session.userName,
     user_id: req.session.userId
   }
-  const game_name = gameListManager.joinGame(game_id, user);
-  if (game_name) {
+  const game = gameListManager.joinGame(game_id, user);
+  if (game) {
     const userStatus = gameListManager.getUserStatus(user.user_id);
     events.userStatusUpdate(user.username, userStatus);
-    events.joinGame(game_id, user);
+    events.joinGame(game, user);
     res.status(200).json({
       status: "success",
-      message: "You have joint the game " + game_name
+      message: "You have joint the game " + game.name
     });
   } else {
     res.status(409).json({
@@ -54,13 +54,14 @@ exports.leaveGame = (req, res, next) => {
     username: req.session.userName,
     user_id: req.session.userId
   }
-  const game_name = gameListManager.leaveGame(game_id, user);
-  events.leaveGame(game_id, user);
+  const [gameStatus, game] = gameListManager.leaveGame(game_id, user);
+
+  events.leaveGame(gameStatus, game, user);
   const userStatus = gameListManager.getUserStatus(user.user_id);
   events.userStatusUpdate(user.username, userStatus);
   res.status(200).json({ 
     status: "success",
-    message: "You have leave the game " + game_name
+    message: "You have leave the game " + game.name
    });
 }
 
@@ -80,8 +81,7 @@ exports.getLobby = async (req, res, next) => {
       user_id: user_id
     }
     const userStatus = gameListManager.getUserStatus(user_id);
-    events.joinLobby(username, userStatus);
-    events.leaveLobby(user);
+    events.joinLobby(user, userStatus);
     return res.status(200).render("lobby", {whoami: username});
   } else {
     return res.status(401).render("login");

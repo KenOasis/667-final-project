@@ -49,19 +49,21 @@ const gameListManager = {
       if (game.users.length === game.capacity) {
         game.status = "full";
       }
-      return game.name;
+      return game;
     }
   },
 
   leaveGame: (game_id, user) => {
     let gameIndex = findGameById(game_id);
     let game = gameList[gameIndex];
+    console.log("game : " + gameIndex);
     game.users = game.users.filter(element => element.user_id != user.user_id);
     if (game.users.length <= 0) {
       // remove the game without any player
       gameList.splice(gameIndex, 1);
+      return ["removed", game];
     }
-    return game.name;
+    return ["existed", game];
   },
   startGame: (game_id) => {
     const gameIndex = findGameById(game_id);
@@ -97,7 +99,8 @@ const gameListManager = {
       if (game.users.length <= 0) {
         gameList.splice(index, 1);
       }
-    } 
+    }
+    return gameList; 
   },
 
   getGameList: () => {
