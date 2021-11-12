@@ -4,7 +4,6 @@ using in the frontend for checking the card detail
 infomation and generator card url to show up the card pic
 */
 let cardModule = {
-
     cards: [{
         card_id: [1],
         card_color: "red",
