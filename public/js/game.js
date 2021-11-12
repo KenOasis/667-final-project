@@ -31,7 +31,7 @@ const game_state = { // this is the game_state hold at the front-end
         {
             user_id: 12,
             uno: true,
-            card_players: [6],
+            card_players: [6, 20, 40,12,15,20,100,17,19],
             number_of_cards: 7
         }
     ],
@@ -43,4 +43,26 @@ const top_player = document.getElementById("top-player");
 const left_player = document.getElementById("left-player");
 const right_player = document.getElementById("right-player");
 const main_player = document.getElementById("main-player");
-console.log(cardModule);
+const players = game_state.players;
+const players_element = [top_player, left_player, right_player, main_player];
+const hands = [];
+
+for(let i = 0; i < players.length; i++){
+    hands.push(players[i].card_players);
+}
+
+for(let i = 0; i < hands.length; i++){
+    hands[i].map((card_id)=>{
+        if(players_element[i].id != "main-player"){
+            let div = document.createElement("div");
+            div.classList.add("back");
+            players_element[i].appendChild(div);
+        }
+        else{
+            const card_info = cardModule.get_card_detail(card_id);
+            let div = document.createElement("div");
+            div.classList = (`card ${card_info.card_color} ${card_info.card_value}`);
+            players_element[i].appendChild(div);
+        }
+    })
+}

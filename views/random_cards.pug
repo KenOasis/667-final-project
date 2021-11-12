@@ -59,31 +59,20 @@ block content
 
   div(class = "container fluid")
     div(class = "row")
-      div(class = "col-md-2") Space1 
-      div(class = "col-md-8 cards" id = "top-player")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
-      div(class = "col-md-2")
-        button(class = "btn btn-outline-danger") Leave
+      div(class = "col-md-4") Space1 
+      div(class = "col-md-3 cards" id = "top-player")
+
+      div(class = "col-md-5")
+        button(class = "btn btn-outline-danger" id = "leave-btn") Leave
     div(class = "row")
       div(class = "col-md-3 cards" id = "left-player")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
+
       div(class = "col-md-6" id = "discard-pile") DISCARD PILE 
       div(class = "col-md-3 cards" id = "right-player")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
-        div(class = "card wild")
+
     
     div(class = "row")
-      div(class = "col-md-3")
+      div(class = "col-md-3" id = "game-chat")
         div(class = "col" id = "messages" style = "border:2px solid #dedede; height:300px; overflow-y:auto")
         br
         div(class = "input-group mb-3")
@@ -91,19 +80,12 @@ block content
           div(class = "input-group-append")
             button(type = "button" class = "btn btn-outline-danger") Send
       div(class = "col-md-9 cards" id = "main-player")
-            div(class = "card wild")
-            div(class = "card wild")
-            div(class = "card wild")
-            div(class = "card wild")
-            div(class = "card wild")
-            div(class = "card wild")
-            div(class = "card wild")
 
-    div(class="row")
-      div(class="" id="game_controller" style="display:inline-block; text-align: center;")
-        botton(class="btn btn-outline-danger " type="botton" id="draw_card") DRAW
-        botton(class="btn btn-outline-danger " type="botton" id="uno") UNO
-        botton(class="btn btn-outline-danger " type="botton" id="play" onclick="playCard(event)") PLAY
+    
+    div(class="" id="game_controller")
+      button(class="btn btn-outline-danger " type="button" id="draw_card") DRAW
+      button(class="btn btn-outline-danger " type="button" id="uno") UNO
+      button(class="btn btn-outline-danger " type="button" id="play" onclick="playCard(event)") PLAY
 
     script(type ="text/javascript" src= "/js/card.js")
     script(type ="text/javascript" src= "/js/game.js")

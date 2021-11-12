@@ -37,7 +37,6 @@
     width:68px;
     border-radius:10px;
     background-image:url('../images/uno_cards/cards.png');
-    z-index:1;
 
 }
 .back{
@@ -50,19 +49,41 @@
 .cards {
     display:flex;
     border:solid red 1px;
-    padding:50px;
+    padding:70px;
 }
 .card:hover{
     top: -50px;
     /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
-    width:200px; /*when cards are greater than 50, width 200px will be good*/
+    /*width:200px; when cards are greater than 50, width 200px will be good*/
     border-bottom: 50px transparent;
     
 }
 #discard-pile{
     text-align: center;
 }
+#top-player{
+    justify-content: center;
+}
+#leave-btn{
+    float:right;
+}
+#main-player{
+    position:relative;
+    justify-content: center;
+    /* right:200px; */
+    padding-right:200px;
 
+}
+#game-chat{
+    position: relative;
+    top:16px;
+}
+#game_controller{
+    position:relative;
+    bottom:100px;
+    left:600px;
+    
+}
 .red{
     background-position-y:0px;
 }
