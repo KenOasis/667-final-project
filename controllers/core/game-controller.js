@@ -159,3 +159,6 @@ exports.generateGameState = (req, res, next) => {
     game_state: game_state
   })
 }
+exports.getGame = (req,res,next) =>{
+  return res.status(200).render("game");
+}

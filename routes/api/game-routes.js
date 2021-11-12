@@ -8,4 +8,6 @@ router.get('/game_state', gameController.generateGameState);
 router.post('/initial', gameController.initGame); 
 
 router.post('/load', gameController.loadGame);
+
+router.get('/play_uno',gameController.getGame)
 exports.routes = router;
