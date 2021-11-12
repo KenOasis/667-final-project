@@ -29,22 +29,22 @@ const DUMMY_GAME_STATE = {  // this is the game_state hold at the front-end
   players: [{  // cards of players and whether he/she is in UNO (ready to win ?)
     user_id: 1,
     uno: false,
-    // card_players: [1, 22, 84, 12, 47],   // non-current_player could only see the number_of cards
+    // cardds: [1, 22, 84, 12, 47],   // non-current_player could only see the number_of cards
     number_of_cards: 5
   },{
     user_id: 6,
     uno: false,
-    // card_players: [8, 33, 100, 23, 75, 43],
+    // cards: [8, 33, 100, 23, 75, 43],
     number_of_cards: 6
   },{
     user_id: 9,
     uno: false,
-    card_players: [102, 21, 17, 65, 15, 54],
+    cards: [102, 21, 17, 65, 15, 54],
     number_of_cards: 7
   },{
     user_id: 12,
     uno: true,
-    // card_players: [6],
+    // cards: [6],
     number_of_cards: 1
   }],
 

@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false
     },
+    uno: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     initial_order: {
       type: DataTypes.INTEGER,
       allowNull: false

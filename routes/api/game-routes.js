@@ -5,6 +5,7 @@ const gameController = require('../../controllers/core/game-controller');
 // For frontend testing
 router.get('/game_state', gameController.generateGameState);
 
-
 router.post('/initial', gameController.initGame); 
+
+router.post('/load', gameController.loadGame);
 exports.routes = router;

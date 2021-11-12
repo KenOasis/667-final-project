@@ -3,7 +3,6 @@ const cardsDriver = require('../../db/drivers/card-drivers');
 const gameCardsDriver = require('../../db/drivers/game-cards-driver');
 const gamesDriver = require('../../db/drivers/games-driver');
 
-const gameState = require('../../dataObj/gameState');
 const shuffle = require('../../util/shuffle');
 
 const gameStateDummy = require('../../volatile/gameStateDummy');
@@ -28,7 +27,7 @@ exports.initGame = async (req, res, next) => {
         await gameUsersDriver.createGameUsers(
           game_id, 
           user_id,
-          userIdsOrderCounter === 1 ? true : false, userIdsOrderCounter);
+          userIdsOrderCounter === 1 ? true : false, userIdsOrderCounter); // Game start at the first order player
         userIdsOrderCounter += 1;
       }
       // Stpe 2: Generate the 108 game_card rows and give them an random draw order. 
@@ -46,7 +45,12 @@ exports.initGame = async (req, res, next) => {
       }
 
       // Step 3: initial matching
-        await gamesDriver.initialMatching(game_id);
+      await gamesDriver.initialMatching(game_id);
+  
+
+      // Step 4: initial first 7 cards of each player's card deck
+      await gameCardsDriver.initialPlayersDeck(game_id);
+
       res.status(200).json({ status: "success" });
     }
   } catch (err) {
@@ -58,23 +62,55 @@ exports.initGame = async (req, res, next) => {
 
 exports.loadGame = async (req, res, next) => {
   const user_id = req.session.userId;
-  const { game_id } = req.query;
+  const { game_id } = req.body;
   
   try {
     const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
 
     if (isInGame) {
       const card_deck = await gameCardsDriver.getCardDeck(game_id);
+      console.log(card_deck);
 
-      const direction = await gamesDriver.getDirection(game_id);
+      const game_direction = await gamesDriver.getDirection(game_id);
+      console.log(game_direction);
 
       const game_order = await gameUsersDriver.getGameOrder(game_id);
-      
+      console.log(game_order);
+
       const current_player = await 
       gameUsersDriver.getCurrentPlayer(game_id);
+      console.log(current_player);
 
       const matching = await gamesDriver.getMatching(game_id);
+      console.log(matching);
 
+      const players = await gameCardsDriver.getPlayers(game_id, user_id);
+      console.log(players);
+
+      const discards = await gameCardsDriver.getDiscards(game_id);
+      console.log(discards);
+      if (card_deck && game_direction && game_order && current_player && matching && players && discards) {
+        const game_state = {
+          card_deck,
+          game_direction,
+          game_order,
+          current_player,
+          matching,
+          players,
+          discards
+        };
+
+        // TODO this should be send as parameter when rendering the game page
+        res.status(200).json({
+          status: "success",
+          game_state: game_state
+        });
+      } else {
+        res.status(500).json({
+          status: "failed",
+          message: "Internal error, pls contact admin"
+        });
+      }
     } else {
 
       res.status(403).json({

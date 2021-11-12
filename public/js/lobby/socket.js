@@ -88,6 +88,14 @@ socket.on('joinGame', data => {
     gameListContainer.insertBefore(new_game_li, current_game_li);
     gameListContainer.removeChild(current_game_li);
   }
+
+  if (data.game.status === "full") {
+    // TODO, game is full
+    // 1) All player send a fetch to init the /game/initial
+    // 2) If result.status === "success", redirected to a Loading page
+    // 3) When all 4 players join the loading page, then fetch the /game/load
+    // 4) Then they will be rendered to the game page 
+  }
 })
 
 socket.on('leaveGame', data => {

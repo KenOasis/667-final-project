@@ -31,6 +31,11 @@ module.exports = {
           type: Sequelize.BOOLEAN,
           allowNull: false,
         },
+        uno: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
+        },
         initial_order: {
           type: Sequelize.INTEGER,
           allowNull: false

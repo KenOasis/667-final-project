@@ -89,11 +89,13 @@ exports.getGameOrder = async (game_id) => {
       attributes: ['user_id'],
       order: [['initial_order', 'ASC']]
     });
+    
+    if (game_users && game_users.length) {
+      const game_order = game_users.map(game_user => game_user.user_id);
 
-    const game_order = game_users.map(game_user => game_user.user_id);
-
-    return game_order;
-
+      return game_order;
+    }
+    return null;
   } catch (err) {
     console.error(err);
     return null;

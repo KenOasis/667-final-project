@@ -24,7 +24,7 @@ exports.getDirection = async (id) => {
         id
       }
     })
-    if (game && game.length) {
+    if (game) {
       return game.direction;
     }
     return null
@@ -66,7 +66,7 @@ exports.getMatching = async (id) => {
   try {
     const game = await Games.findByPk(id);
 
-    if (game && game.length) {
+    if (game) {
       const { matching_color, matching_number } = game;
 
       return {
@@ -74,6 +74,7 @@ exports.getMatching = async (id) => {
         number: matching_number
       }
     }
+    return null;
   } catch (err) {
     console.error(err);
     return null;
