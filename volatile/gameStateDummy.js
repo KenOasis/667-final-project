@@ -23,7 +23,7 @@ const DUMMY_GAME_STATE = {  // this is the game_state hold at the front-end
   
   matching: { // matching status for the current turn
     color: "green",
-    number:  9,
+    number:  "nine",
   },
 
   players: [{  // cards of players and whether he/she is in UNO (ready to win ?)

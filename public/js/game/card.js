@@ -1,5 +1,6 @@
 "use strict"
-let cards = [{
+let CardModule = {
+    cards: [{
         card_id: [1],
         card_color: "red",
         card_type: "number",
@@ -323,57 +324,10 @@ let cards = [{
         card_type: "wild",
         card_value: "wild_draw_four"
     }
-];
-
-function get_card_detail(id) {
-    let card_info = cards.filter(card => card.card_id.includes(id));
+],
+get_card_detail(id){
+    let card_info = this.cards.filter(card => card.card_id.includes(id));
     return card_info;
-};
-exports.get_card_detail = get_card_detail;
-
-const getNumber = (face_value) => {
-    switch (face_value) {
-        case 'zero':
-            return 0;
-        case 'one':
-            return 1;
-        case 'two':
-            return 2;
-        case 'three':
-            return 3;
-        case 'four':
-            return 4;
-        case 'five':
-            return 5;
-        case 'six':
-            return 6;
-        case 'seven':
-            return 7;
-        case 'eight':
-            return 8;
-        case 'nine':
-            return 9;
-        default:
-            return;
-    }
+}
 }
 
-function card_url_generator(id) {
-    let card_detail = get_card_detail(id)[0];
-    let type = card_detail.card_type;
-    let color = card_detail.card_color;
-    let value = card_detail.card_value;
-    let loca = "/images/uno_cards/";
-    switch (type) {
-        case 'wild':
-            return loca + action + ".jpg";
-        case 'action':
-            return loca + type + '-' + color + '-' + value + ".jpg";
-        case 'number':
-            return loca + type + '-' + color + '-' + getNumber(value) + ".jpg";
-        default:
-            return loca + "back.jpg";
-    }
-
-}
-exports.card_url_generator = card_url_generator;

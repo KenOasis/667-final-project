@@ -65,11 +65,6 @@ exports.leaveGame = (req, res, next) => {
    });
 }
 
-exports.startGame = (req, res, next) => {
-  const game_id = req.body.game_id;
-  // TODO start the game and update lobby state
-  // initial game and render a game view to all users 
-}
 
 exports.getLobby = async (req, res, next) => {
   let isLoggedIn = req.session.isLoggedIn === true ? true : false;

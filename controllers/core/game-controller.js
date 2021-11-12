@@ -6,14 +6,15 @@ const gamesDriver = require('../../db/drivers/games-driver');
 const shuffle = require('../../util/shuffle');
 
 const gameStateDummy = require('../../volatile/gameStateDummy');
+const gameListManager = require('../../volatile/gameListManager');
 exports.initGame = async (req, res, next) => {
-  const { game_id, users_id } = req.body;
-
+  const { game_id } = req.body;
+  const users_id = gameListManager.getUserListOfGame(game_id);
   try {
   // Step 0 : check whether the game is initialed already.
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
     
-    if (game_users && game_users.length) {
+    if (game_users) {
       res.status(200).json({
         status: "success"
       })
@@ -55,7 +56,7 @@ exports.initGame = async (req, res, next) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(202).json({ status: "processing" });
+    res.status(202).json({ status: "failed" });
   }
 
 }
@@ -158,4 +159,7 @@ exports.generateGameState = (req, res, next) => {
   res.status(200).json({
     game_state: game_state
   })
+}
+exports.getGame = (req,res,next) =>{
+  return res.status(200).render("game");
 }
