@@ -29,7 +29,7 @@ exports.getGameUsersByUserId = async (user_id) => {
 
  exports.getGameUsersByGameId = async (game_id) => {
   try {
-    const game_users = await GameUsers.findAll({
+    const game_users = await GameUsers.findOne({
       where: {
         game_id: game_id
       }

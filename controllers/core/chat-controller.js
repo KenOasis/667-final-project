@@ -7,7 +7,6 @@ exports.sendChat = (req, res, next) => {
   const username = req.session.userName;
   
   const timestamp = new Date().toLocaleDateString();
-  console.log(timestamp);
   if (id === 0) {
     // what cause the failure by using single quotes rather than double quotes for room name and eventname?
     const io = require("../../socket/socket").getIO();
@@ -17,6 +16,6 @@ exports.sendChat = (req, res, next) => {
   return res.status(200).json({
     "status" : "success"
   });
-  // TODO, broadcast to specific room
+  // TODO, broadcast to specific game
 }
 

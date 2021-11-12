@@ -3,11 +3,16 @@ const db = require('../models');
 const Games = db['games'];
 
 const gamesDriver = require('../db/drivers/games-driver');
-const findGameById = (game_id) => {
+const findGameIndexById = (game_id) => {
   return gameList.findIndex(game => 
      game.game_id === game_id);
 }
-
+/** 
+ * This is the Game List data manager for handler the 
+ * create/join/leav of game room in the lobby page
+ * This is VOLATILE means once the server shutdowns/restarts
+ * the data will be gone. check dummy_data at the end to see the format
+ */
 const gameListManager = {
   
   init: (list) => {
@@ -36,7 +41,7 @@ const gameListManager = {
   },
 
   joinGame: (game_id, user) => {
-    let gameIndex = findGameById(game_id);
+    let gameIndex = findGameIndexById(game_id);
     let game = gameList[gameIndex];
     if (game.users.length >= game.capacity) {
       return false;
@@ -54,7 +59,7 @@ const gameListManager = {
   },
 
   leaveGame: (game_id, user) => {
-    let gameIndex = findGameById(game_id);
+    let gameIndex = findGameIndexById(game_id);
     let game = gameList[gameIndex];
     console.log("game : " + gameIndex);
     game.users = game.users.filter(element => element.user_id != user.user_id);
@@ -66,7 +71,7 @@ const gameListManager = {
     return ["existed", game];
   },
   startGame: (game_id) => {
-    const gameIndex = findGameById(game_id);
+    const gameIndex = findGameIndexById(game_id);
     const game = gameList[gameIndex];
     game.users.forEach(user => {
       user.status = "playing"
@@ -102,10 +107,34 @@ const gameListManager = {
     }
     return gameList; 
   },
-
+  getUserListOfGame: (game_id) => {
+    let gameIndex = findGameIndexById(game_id);
+    if (gameIndex >= 0 ) {
+      let game = gameList[gameIndex];
+      let users_id = game.users.map(user => user.user_id);
+      return users_id
+    } 
+    return null;
+  },
   getGameList: () => {
     return gameList;
   }
 }
 
 module.exports = gameListManager;
+
+const dummy_data = {
+  game_id: 2,
+  name: "Uno!",
+  users: [{
+    user_id: "5",
+    username: "Joey88",
+    status: "ready"  // "ready" -> in the game room waiting;  "playing" -> in the game 
+  },{
+    user_id: "8",
+    username: "Jason2319",
+    status: "ready"  
+  }],
+  capacity: 4, 
+  status: "waiting" // "waiting" -> not full; "full" -> game is full soon to start; "playing" -> in the game 
+}
