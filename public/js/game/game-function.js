@@ -14,10 +14,12 @@ let card_tool ={
        leftseat.appendChild(div);
    },
    // set the card div with card_id
-    set_cards(card_id){
+    set_cards(card_id,style="normal"){
        const card = document.createElement('div');
        const card_detail = CardModule.get_card_detail(card_id);
-       card.id = "card_" + card_id.toString()
+       if(style == "normal"){
+        card.id = "card_" + card_id.toString()
+       }
        if(card_detail.card_color === "none"){
            card.className=" card " + card_detail.card_value
        }
@@ -140,6 +142,7 @@ class game_state_helper {
         this.show_left_right_card(order[3])
         this.set_match()
         this.set_current_player()
+        this.color_match_card()
     }
     // show_discard
     show_discard(){
@@ -147,7 +150,7 @@ class game_state_helper {
         console.log(container)
         const discards = this.get_discard_pile();
         for(let i in discards){
-            const card = card_tool.set_cards(discards[i])
+            const card = card_tool.set_cards(discards[i],"discard")
             container.appendChild(card)
         }
 
@@ -166,15 +169,31 @@ class game_state_helper {
         num_html.style.color = color[color_match];
         
     }
-    set_current_player(){
-        const current_player = this.game_state.current_player;
+    check_current_player(){
+        const current_player= this.game_state.current_player;
         const bottom_player = this.find_bottom_player().user_id;
-        if(bottom_player === current_player){
+        return current_player == bottom_player
+    }
+    color_match_card(){
+        const bottom = this.find_bottom_player().cards;
+        const match = this.find_matching_card();
+        if(this.check_current_player){
+            for(let i in bottom){
+                if( match.includes(bottom[i])){
+                    const card = document.getElementById("card_" + bottom[i].toString());
+                    card.style.border="4px solid #FFA07A";
+                }
+            }
+        }
+    }
+    set_current_player(){
+        if(this.check_current_player()){
             const button = document.getElementById("cover_button");
             button.style.zIndex=-1;
-        }
-        
+        } 
     }
+
+
 
     
 }
