@@ -5,12 +5,12 @@ const { Op } = require('sequelize');
 
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 
-exports.getGameUsersByUserId = async (user_id) => {
+exports.getGameUsersByUserId = async (id) => {
   try {
     const game_users = await Users.findAll({
       attributes: ["username", "email", "created_at", "game_users.points"],
       where: {
-        user_id: user_id
+        id
       },
       include: [{
         model: GameUsers,
@@ -29,7 +29,7 @@ exports.getGameUsersByUserId = async (user_id) => {
 
  exports.getGameUsersByGameId = async (game_id) => {
   try {
-    const game_users = await GameUsers.findAll({
+    const game_users = await GameUsers.findOne({
       where: {
         game_id: game_id
       }
