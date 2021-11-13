@@ -10,12 +10,12 @@ block content
   script(type="text/javascript" src="/js/validation/change-password-validation.js" defer)
   // Toasts 
   div(class="position-fixed top-0 end-0 p-3" style="z-index: 2000")
-    div(id="profileToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000")
+    #profileToast(class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000")
       div(class="toast-header")
         strong(class="me-auto") Message 
         small(class="text-muted") Change Password
         button(type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close")
-      div(class="toast-body" id="errors_message")
+      #errors_message(class="toast-body")
   // Card for profile
   div(class="container d-flex justify-content-center")
     div(class="card text-center" style="width: 20rem;;")
@@ -25,40 +25,37 @@ block content
         h5 account email: #{email}
         button(type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal") change password
         // Modal change password
-        div(class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="CPModalLabel" aria-hidden="true")
+        #changePasswordModal(class="modal fade" tabindex="-1" role="dialog" aria-labelledby="CPModalLabel" aria-hidden="true")
           div(class="modal-dialog" role="ducoment")
             div(class="modal-content")
               div(class="modal-header")
-                h5(class="modal-title" id="CPModalLabel") Change Password
+                h5#CPModalLabel(class="modal-title") Change Password
               div(class="modal-body")
                 form 
                   div(class="form-outline mb-3")
-                    input(
+                    input#current_password(
                       type="password" 
                       name="current_password"
-                      id="current_password"
                       class="form-control form-control-lg"
                       placeholder="Current password"  
                       )
-                    div(class="invalid-feedback" id="feedback_current")
+                    #feedback_current(class="invalid-feedback")
                   div(class="form-outline mb-3")
-                    input(
+                    input#new_password(
                       type="password" 
                       name="new_password" 
-                      id= "new_password"
                       class="form-control form-control-lg"
                       placeholder="New password"
                       )
-                    div(class="invalid-feedback" id="feedback_new")
+                    #feedback_new(class="invalid-feedback")
                   div(class="form-outline mb-3")
-                    input(
+                    input#confirm_password(
                       type="password" 
                       name="confirm_password" 
-                      id= "confirm_password"
                       class="form-control form-control-lg"
                       placeholder="Confirm new password"
                       )
-                    div(class="invalid-feedback" id="feedback_confirm")
+                    #feedback_confirm(class="invalid-feedback")
                   button( 
                     type="button" 
                     class="btn btn-primary p-1"
