@@ -58,7 +58,7 @@ const update = {
     {  // action need to perform in front end (caused by )
       performer: 9,
       action_type: "play_card",
-      card: 94, 
+      card: 94, //94->drawtwo
     }, {
       performer: 6,
       action_type: "draw_two", // draw_two should be include the action which skip user's turn,

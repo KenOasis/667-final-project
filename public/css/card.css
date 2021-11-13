@@ -31,41 +31,39 @@
     height:100px;
     text-align: center;
 }
-#discard_pile{
-    display: contents;
+#status{
+    height:200px;
+    border: 2px solid gray;
+}
+.matching{
+    height: 140px;
+    border: 1px solid gray;
+}
+#card_controller{
+    position: relative;
+    height: 38px;
+    width: 440px;
+}
+.cover{
+    position: relative;
+    background-color: white;
+    height: 38px;
+    width: 420px;
+    top: -38px;
+    z-index: 1;
+
+}
+#uno{
+    position: relative;
+    z-index: 0;
+}
+#play{
+    position: relative;
+    z-index: 0;
 }
 
 /*---------------------------------------------------------------- */
-/* .hand{
-    position: relative;
-}
-.hand .card{
-    position:absolute;
-}
-.back{
-    height:87px; 
-    width:60px;
-    background-position-x:-575px;
-    background-position-y:-93px;
-    background-image:url('../images/uno_cards/getBack.png');
-}
-.cards {
-    display:flex;
-    padding:50px;
-}
-*/
 
-
-.card:hover{
-    top: -50px;
-    /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
-    width:200px; /*when cards are greater than 50, width 200px will be good*/
-    border-bottom: 50px transparent;
-    
-}
-#discard-pile{
-    text-align: center;
-} 
 
 .card{
     display: inline-block;
@@ -85,7 +83,7 @@
     position:absolute;
 }
 .card:hover{
-    top: -50px;
+    top: -15px;
     /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
     width:75px; /*when cards are greater than 50, width 200px will be good*/
     border-bottom: 50px transparent;

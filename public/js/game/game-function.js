@@ -1,40 +1,11 @@
-const game_state={
-    "cards_deck":45,
-    "game_direction":"clockwise",
-    "game_order":[1,9,6,12],
-    "current_player":9,
-    "matching":{
-        "color":"red",
-        "number":"nine"
-    },
-    "players":[
-        {
-            "user_id":1,
-            "uno":false,
-            "number_of_cards":5
-        },
-        {
-            "user_id":6,
-            "uno":false,
-            "number_of_cards":6},
-        {
-            "user_id":9,
-            "uno":false,
-            "cards":[102,21,17,65,15,54],
-            "number_of_cards":7
-        },
-        {
-            "user_id":12,
-            "uno":true,
-            "number_of_cards":1
-        }],
-                
-        
-    "discards":[94,25,28]
- }
 
- let card_tool ={
-
+/**
+ * This file is used to create the card to html 
+ * and init the game_state to html
+ *
+ */
+let card_tool ={
+    // sit player to html
     sit_player(player_id, contianer_id){
        const leftseat= document.getElementById(contianer_id);
        const div=document.createElement('div');
@@ -42,6 +13,7 @@ const game_state={
        div.id="player_"+player_id.toString();
        leftseat.appendChild(div);
    },
+   // set the card div with card_id
     set_cards(card_id){
        const card = document.createElement('div');
        const card_detail = CardModule.get_card_detail(card_id);
@@ -54,6 +26,7 @@ const game_state={
        }
        return card;
    },
+   // set card_back div 
     set_card_back(card_back){
        const card = document.createElement('div');
        if(card_back == "back"){
@@ -64,7 +37,7 @@ const game_state={
        }
        return card;
    },
-
+   // put card to player's container
    card_to_player(player_id, card){
         const div = document.getElementById("player_" + player_id.toString());
         div.appendChild(card);
@@ -73,7 +46,10 @@ const game_state={
 
    }
 /**
- * left and right player setup
+ * 
+ * 
+ * this class is used for read the game state
+ * and get the data you want
  * 
  */
 
@@ -81,6 +57,7 @@ class game_state_helper {
     constructor(game_state){
         this.game_state=game_state;
     }
+    // find the bottom player
     find_bottom_player(){
         const players = this.game_state.players;
         const bottom_player = players.filter(player=>{
@@ -90,6 +67,7 @@ class game_state_helper {
         })
         return bottom_player[0]
     }
+    // arrange players start in bottom
     arrange_players(){
         const order = this.game_state.game_order;
         const bottom_player = this.find_bottom_player().user_id;
@@ -99,11 +77,13 @@ class game_state_helper {
         const from_bottom_to_right= left.concat(right);
         return from_bottom_to_right;
     }
+    // find each player info
     find_one_player(id){
         const players= this.game_state.players;
         const player_info =players.filter(player => player.user_id === id)
         return player_info[0];
     }
+    // find matching card
     find_matching_card(){
         const matching=this.game_state.matching;
         const bottom_player = this.find_bottom_player().cards;
@@ -115,9 +95,11 @@ class game_state_helper {
         })
         return match_list;
     }
+    // get discard_pile()
     get_discard_pile(){
         return this.game_state.discards;
     }
+    //show the top bottom player's cards
     show_top_bottom_card(player_id){
         const player_info = this.find_one_player(player_id);
         if("cards" in player_info){
@@ -136,6 +118,7 @@ class game_state_helper {
 
         }
     }
+    // show left and right player's card
     show_left_right_card(player_id){
         const player_info = this.find_one_player(player_id);
         const number_of_card = player_info.number_of_cards;
@@ -144,6 +127,7 @@ class game_state_helper {
             card_tool.card_to_player(player_id,back_html);
         }
     }
+    // init the gamestate
     game_init(){
         const order = this.arrange_players()
         card_tool.sit_player(order[0], "container_bottom");
@@ -155,9 +139,12 @@ class game_state_helper {
         card_tool.sit_player(order[3], "container_right");
         this.show_left_right_card(order[3])
         this.set_match()
+        this.set_current_player()
     }
+    // show_discard
     show_discard(){
         const container = document.getElementById("discard_pile")
+        console.log(container)
         const discards = this.get_discard_pile();
         for(let i in discards){
             const card = card_tool.set_cards(discards[i])
@@ -165,8 +152,8 @@ class game_state_helper {
         }
 
     }
+    //set match 
     set_match(){
-        const match = document.getElementById("match_color")
         const color = {
             red: "rgb(255,0,0)",
             blue: "rgb(0,0,255)",
@@ -174,19 +161,23 @@ class game_state_helper {
             yellow: "rgb(255, 210, 71)"
         }
         const color_match = this.game_state.matching.color;
-        match.style.backgroundColor = color[color_match];
         const num_html = document.getElementById("match_number");
         num_html.innerHTML = this.game_state.matching.number;
         num_html.style.color = color[color_match];
         
     }
+    set_current_player(){
+        const current_player = this.game_state.current_player;
+        const bottom_player = this.find_bottom_player().user_id;
+        if(bottom_player === current_player){
+            const button = document.getElementById("cover_button");
+            button.style.zIndex=-1;
+        }
+        
+    }
 
     
 }
-
-const card = new game_state_helper(game_state);
-card.game_init()
-card.show_discard()
 
 
 
