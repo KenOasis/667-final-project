@@ -27,6 +27,13 @@
     height: 160px;
     width: 440px;
 }
+.matching{
+    height:100px;
+    text-align: center;
+}
+#discard_pile{
+    display: contents;
+}
 
 /*---------------------------------------------------------------- */
 /* .hand{

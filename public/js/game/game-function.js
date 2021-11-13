@@ -4,7 +4,7 @@ const game_state={
     "game_order":[1,9,6,12],
     "current_player":9,
     "matching":{
-        "color":"green",
+        "color":"red",
         "number":"nine"
     },
     "players":[
@@ -67,7 +67,6 @@ const game_state={
 
    card_to_player(player_id, card){
         const div = document.getElementById("player_" + player_id.toString());
-        console.log(div)
         div.appendChild(card);
    }
 
@@ -124,18 +123,14 @@ class game_state_helper {
         if("cards" in player_info){
             const cards = player_info.cards;
             for(let i in cards){
-                console.log("bottom")
-                console.log(cards[i])
                 const card_html = card_tool.set_cards(cards[i]);
                 card_tool.card_to_player(player_id,card_html);
             }
         }
         else{
             const number_cards = player_info.number_of_cards;
-            console.log(number_cards)
             for(let i= 0 ; i < number_cards ; i++){
                 const back_html = card_tool.set_card_back("back");
-                console.log(back_html);
                 card_tool.card_to_player(player_id,back_html);
             }
 
@@ -153,13 +148,37 @@ class game_state_helper {
         const order = this.arrange_players()
         card_tool.sit_player(order[0], "container_bottom");
         this.show_top_bottom_card(order[0]);
-        console.log("left" + order[1])
         card_tool.sit_player(order[1], "container_left");
         this.show_left_right_card(order[1]);
         card_tool.sit_player(order[2], "container_top");
         this.show_top_bottom_card(order[2]);
         card_tool.sit_player(order[3], "container_right");
         this.show_left_right_card(order[3])
+        this.set_match()
+    }
+    show_discard(){
+        const container = document.getElementById("discard_pile")
+        const discards = this.get_discard_pile();
+        for(let i in discards){
+            const card = card_tool.set_cards(discards[i])
+            container.appendChild(card)
+        }
+
+    }
+    set_match(){
+        const match = document.getElementById("match_color")
+        const color = {
+            red: "rgb(255,0,0)",
+            blue: "rgb(0,0,255)",
+            green: "rgb(60,179,113)",
+            yellow: "rgb(255, 210, 71)"
+        }
+        const color_match = this.game_state.matching.color;
+        match.style.backgroundColor = color[color_match];
+        const num_html = document.getElementById("match_number");
+        num_html.innerHTML = this.game_state.matching.number;
+        num_html.style.color = color[color_match];
+        
     }
 
     
@@ -167,6 +186,7 @@ class game_state_helper {
 
 const card = new game_state_helper(game_state);
 card.game_init()
+card.show_discard()
 
 
 
