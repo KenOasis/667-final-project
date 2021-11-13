@@ -320,14 +320,14 @@ let CardModule = {
     },
     {
         card_id: [105, 106, 107, 108],
-        card_color: "yellow",
+        card_color: "none",
         card_type: "wild",
         card_value: "wild_draw_four"
     }
 ],
 get_card_detail(id){
     let card_info = this.cards.filter(card => card.card_id.includes(id));
-    return card_info;
+    return card_info[0];
 }
 }
 
