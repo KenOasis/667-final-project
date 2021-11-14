@@ -1,6 +1,6 @@
 const gameListManager = require('../../volatile/gameListManager');
 
-const events = require('../../socket/events');
+const eventsLobby = require('../../socket/eventsLobby');
 
 
 exports.createGame = async (req, res, next) => {
@@ -13,9 +13,7 @@ exports.createGame = async (req, res, next) => {
 
   try {
     const new_game = await gameListManager.createGame(game_name, user);
-    events.createGame(new_game);
-    const userStatus = gameListManager.getUserStatus(user.user_id);
-    events.userStatusUpdate(user.username, userStatus);
+    eventsLobby.createGame(new_game);
     res.status(200).json({ 
       status: "success",
       message: "Game: " + game_name + " is created!"
@@ -33,9 +31,11 @@ exports.joinGame = (req, res, next) => {
   }
   const game = gameListManager.joinGame(game_id, user);
   if (game) {
-    const userStatus = gameListManager.getUserStatus(user.user_id);
-    events.userStatusUpdate(user.username, userStatus);
-    events.joinGame(game, user);
+    eventsLobby.joinGame(game, user);
+    // If game is full 
+    if (game.status === "full") {
+      eventsLobby.initGame(game_id);
+    }
     res.status(200).json({
       status: "success",
       message: "You have joint the game " + game.name
@@ -56,9 +56,7 @@ exports.leaveGame = (req, res, next) => {
   }
   const [gameStatus, game] = gameListManager.leaveGame(game_id, user);
 
-  events.leaveGame(gameStatus, game, user);
-  const userStatus = gameListManager.getUserStatus(user.user_id);
-  events.userStatusUpdate(user.username, userStatus);
+  eventsLobby.leaveGame(gameStatus, game, user);
   res.status(200).json({ 
     status: "success",
     message: "You have leave the game " + game.name
@@ -76,7 +74,7 @@ exports.getLobby = async (req, res, next) => {
       user_id: user_id
     }
     const userStatus = gameListManager.getUserStatus(user_id);
-    events.joinLobby(user, userStatus);
+    eventsLobby.joinLobby(user, userStatus);
     return res.status(200).render("lobby", {whoami: username});
   } else {
     return res.status(401).render("login");

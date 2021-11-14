@@ -7,9 +7,13 @@ const shuffle = require('../../util/shuffle');
 
 const gameStateDummy = require('../../volatile/gameStateDummy');
 const gameListManager = require('../../volatile/gameListManager');
+
+const eventsLobby = require('../../socket/eventsLobby');
+const eventsLoading = require('../../socket/eventsLoading');
+
 exports.initGame = async (req, res, next) => {
   const { game_id } = req.body;
-  const users_id = gameListManager.getUserListOfGame(game_id);
+  const users_id = gameListManager.getUserListOfGame(game_id).map(user => user.user_id);
   try {
   // Step 0 : check whether the game is initialed already.
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
@@ -51,7 +55,8 @@ exports.initGame = async (req, res, next) => {
 
       // Step 4: initial first 7 cards of each player's card deck
       await gameCardsDriver.initialPlayersDeck(game_id);
-
+      
+      eventsLobby.gameReady(game_id);
       res.status(200).json({ status: "success" });
     }
   } catch (err) {
@@ -61,7 +66,18 @@ exports.initGame = async (req, res, next) => {
 
 }
 
-exports.loadGame = async (req, res, next) => {
+exports.loadingGame = async (req, res, next) => {
+  const game_id = +req.query.game_id;
+  const user_id = req.session.userId;
+  const [isAllLoaded, game] = gameListManager.loadGame(game_id, user_id);
+  const user_list = game.users.filter(user => user.status === "playing")
+  res.status(200).render('loading', { game_id: game_id});
+  eventsLoading.userJoin(game_id, user_list);
+}
+
+
+
+exports.startGame = async (req, res, next) => {
   const user_id = req.session.userId;
   const { game_id } = req.body;
   
