@@ -102,8 +102,8 @@ const constructGameElement = (game) => {
   const buttons_div = document.createElement('div');
   const userList = game.users.map(user => user.username);
   // check whether the user is in this game
-  let indexOfUser = -1;
-  if ((indexOfUser = userList.indexOf(whoami))!== -1) {
+  let indexOfUser = userList.indexOf(whoami);
+  if (indexOfUser !== -1) {
     const user = game.users[indexOfUser];
     if(user.status === "ready"){
       const span_leave = document.createElement('span');
@@ -112,12 +112,20 @@ const constructGameElement = (game) => {
       span_leave.onclick = leaveGame;
       span_leave.innerHTML = "leave";
       buttons_div.appendChild(span_leave);
+    } else if (user.status === "loading"){
+      const span_start = document.createElement('span');
+      span_start.className = "btn badge bg-danger rounded-spill mx-1";
+      span_start.id = "game-" + game.game_id + "-start";
+      span_start.onclick = startGame;
+      span_start.innerHTML = "start";
+      buttons_div.appendChild(span_start);
     } else {
       // The game is playing
       const span_reconnect = document.createElement('span');
       span_reconnect.className = "btn badge bg-primary rounded-spill mx-1";
       span_reconnect.id = "game-" + game.game_id + "-reconnect";
-      span_reconnect.innerHTML = "";
+      span_reconnect.innerHTML = "reconnect";
+      // TODO implement the reconnectGame();
       span_reconnect.onclick = reconnectGame;
       buttons_div.appendChild(span_reconnect);
     }

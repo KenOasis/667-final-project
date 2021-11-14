@@ -7,18 +7,51 @@ const findGameIndexById = (game_id) => {
   return gameList.findIndex(game => 
      game.game_id === game_id);
 }
+
+const events = require('../socket/eventsLobby');
 /** 
  * This is the Game List data manager for handler the 
  * create/join/leav of game room in the lobby page
  * This is VOLATILE means once the server shutdowns/restarts
  * the data will be gone. check dummy_data at the end to see the format
+ * 
  */
 const gameListManager = {
   
-  init: (list) => {
+  init: function(list) {
     gameList = list
+  },  
+  getUserStatus: function(user_id) {
+    let status_list = [];
+    gameList.forEach(game => game.users.forEach(user => {
+      if (user.user_id === user_id) {
+        status_list.push(user.status);
+      }
+    }));
+    if (status_list.length === 0) {
+      return "free";
+    } else if(status_list.includes("playing")) {
+      return "playing";
+    } else if(status_list.includes("loading")){
+      return "loading"
+    } else {
+      return "ready";
+    }
   },
-  createGame: async (game_name, user) => {
+  setUserStatus: function(game_id, user_id, user_status) {
+    const gameIndex = findGameIndexById(game_id);
+    const game = gameList[gameIndex];
+    let username = "";
+    game.users.forEach(user => {
+      if (user.user_id === user_id) {
+        user.status = user_status;
+        username = user.username;
+      }
+    });
+    const userStatus = this.getUserStatus(user_id);
+    events.userStatusUpdate(username, userStatus);
+  },
+  createGame: async function(game_name, user) {
     let gameCreated = null;
     try {
       gameCreated = await gamesDriver.createGame(game_name);
@@ -31,16 +64,17 @@ const gameListManager = {
       users: [{
         user_id: user.user_id,
         username: user.username,
-        status: "ready"
+        status: ""
       }],
       capacity: 4,
       status: "waiting" 
     }
     gameList.push(new_game);
+    this.setUserStatus(new_game.game_id, user.user_id, "ready");
     return new_game
   },
 
-  joinGame: (game_id, user) => {
+  joinGame: function(game_id, user) {
     let gameIndex = findGameIndexById(game_id);
     let game = gameList[gameIndex];
     if (game.users.length >= game.capacity) {
@@ -49,8 +83,9 @@ const gameListManager = {
       game.users.push({
         user_id: user.user_id,
         username: user.username,
-        status: "ready"
-      })
+        status: ""
+      });
+      this.setUserStatus(game_id, user.user_id, "ready");
       if (game.users.length === game.capacity) {
         game.status = "full";
       }
@@ -58,65 +93,61 @@ const gameListManager = {
     }
   },
 
-  leaveGame: (game_id, user) => {
+  leaveGame: function (game_id, user) {
     let gameIndex = findGameIndexById(game_id);
     let game = gameList[gameIndex];
-    console.log("game : " + gameIndex);
     game.users = game.users.filter(element => element.user_id != user.user_id);
+    const userStatus = gameListManager.getUserStatus(user.user_id);
+    events.userStatusUpdate(user.username, userStatus);
     if (game.users.length <= 0) {
       // remove the game without any player
       gameList.splice(gameIndex, 1);
       return ["removed", game];
-    }
+    };
     return ["existed", game];
   },
-  startGame: (game_id) => {
+  initGame: function(game_id) {
     const gameIndex = findGameIndexById(game_id);
     const game = gameList[gameIndex];
     game.users.forEach(user => {
-      user.status = "playing"
+      this.setUserStatus(game_id, user.user_id, "loading");
     });
-    game.status = "in game";
+    game.status = "loading";
+    return game;
   },
-
-  getUserStatus: (user_id) => {
-    let status_list = [];
-    gameList.forEach(game => game.users.forEach(user => {
-      if (user.user_id === user_id) {
-        status_list.push(user.status);
+  loadGame: function(game_id, user_id) {
+    this.setUserStatus(game_id, user_id, "playing");
+    const gameIndex = findGameIndexById(game_id);
+    const game = gameList[gameIndex];
+    let isAllLoaded = true;
+    game.users.forEach(user => {
+      if (user.status !== "playing") {
+        isAllLoaded = false;
       }
-    }));
-    if (status_list.length === 0) {
-      return "free";
-    } else if(status_list.includes("playing")) {
-      return "playing";
-    } else {
-      return "ready";
-    }
+    });
+    return [isAllLoaded, game];
   },
-
-  userLeaveLobby: (user_id) => {
+  userLeaveLobby: function(user_id) {
     let index = gameList.length;
     while (index > 0) {
       index--;
       game = gameList[index];
-      game.users = game.users.filter(user => user.user_id !== user_id || user.status === "playing");
+      game.users = game.users.filter(user => user.user_id !== user_id || user.status === "playing" || user.status === "loading");
       if (game.users.length <= 0) {
         gameList.splice(index, 1);
       }
     }
     return gameList; 
   },
-  getUserListOfGame: (game_id) => {
+  getUserListOfGame: function(game_id) {
     let gameIndex = findGameIndexById(game_id);
     if (gameIndex >= 0 ) {
       let game = gameList[gameIndex];
-      let users_id = game.users.map(user => user.user_id);
-      return users_id
+      return game.users
     } 
     return null;
   },
-  getGameList: () => {
+  getGameList: function() {
     return gameList;
   }
 }

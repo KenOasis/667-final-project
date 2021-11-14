@@ -1,6 +1,6 @@
 const gameListManager = require('../volatile/gameListManager');
 var crypto = require("crypto");
-let socket_id;
+
 
 exports.joinLobby = (user, currentUserStatus) => {
   const io = require('./socket').getIO();
@@ -9,9 +9,9 @@ exports.joinLobby = (user, currentUserStatus) => {
   // This is where established the connection for lobby
   io.on("connection", (socket) => {
     io.removeAllListeners();
-    socket_id = socket.id;
     socket.join("lobby");
-
+    console.log(socket.id + " join!");
+    // listen to the client event of disconnect
     socket.on("disconnect", () => {
       const gameList = gameListManager.userLeaveLobby(user.user_id);
       socket.volatile.to("lobby").emit("userLeaveLobby", {
@@ -96,4 +96,29 @@ exports.leaveGame = (gameStatus, game, user) => {
     user: user,
     game_status: gameStatus
   })
+}
+
+exports.initGame = (game_id) => {
+  const io = require('./socket').getIO();
+  const users_id = gameListManager.getUserListOfGame(game_id).map(user => user.user_id)
+  io.in("lobby").fetchSockets()
+    .then((sockets) => {
+      const users_socket = sockets.filter(socket => users_id.includes(socket.request.session.userId));
+      const room = "game-" + game_id;
+      users_socket.forEach(
+        socket => {
+          socket.join(room);
+        }
+      );
+      io.in(users_socket[0].id).emit("initGame", { game_id })
+    })
+}
+
+exports.gameReady = (game_id) => {
+  const io = require('./socket').getIO();
+  const room = "game-" + game_id;
+  const game = gameListManager.initGame(game_id);
+  io.in("lobby").emit("gameReady", { game });
+  io.in(room).emit("gameStandby", {
+     message: `The game: ${game.name} is ready, click "start" to start the game` });
 }

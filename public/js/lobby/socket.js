@@ -88,28 +88,43 @@ socket.on('joinGame', data => {
     gameListContainer.insertBefore(new_game_li, current_game_li);
     gameListContainer.removeChild(current_game_li);
   }
-
-  if (data.game.status === "full") {
-    // TODO, game is full
-    // 1) All player send a fetch to init the /game/initial
-    // 2) If result.status === "success", redirected to a Loading page
-    // 3) When all 4 players join the loading page, then fetch the /game/load
-    // 4) Then they will be rendered to the game page 
-  }
 })
 
 socket.on('leaveGame', data => {
-if (data.game_status === "existed" ) {
+  if (data.game_status === "existed" ) {
+    const new_game = data.game;
+    const new_game_li = constructGameElement(new_game);
+    const current_game_li = document.getElementById(`game-${data.game.game_id}`);
+    gameListContainer.insertBefore(new_game_li, current_game_li);
+    gameListContainer.removeChild(current_game_li);
+  } else {
+    // game has no player, remove from the list
+    const game_li = document.getElementById(`game-${data.game.game_id}`);
+    gameListContainer.removeChild(game_li);
+  }
+});
+
+socket.on('initGame', data => {
+  initGame(data.game_id);
+})
+
+socket.on('gameReady', data => {
+  // Step One of init game, change all status
   const new_game = data.game;
   const new_game_li = constructGameElement(new_game);
   const current_game_li = document.getElementById(`game-${data.game.game_id}`);
   gameListContainer.insertBefore(new_game_li, current_game_li);
   gameListContainer.removeChild(current_game_li);
-} else {
-  // game has no player, remove from the list
-  const game_li = document.getElementById(`game-${data.game.game_id}`);
-  gameListContainer.removeChild(game_li);
-}
+});
+
+
+
+socket.on('gameStandby', data => {
+  if (toastContainer) {
+    const newToast = addToast(data.message);
+    let toast = new bootstrap.Toast(newToast);
+    toast.show(); 
+  }
 })
 // test code for socket handshake.
 // socket.on('Hello', (data) => {
