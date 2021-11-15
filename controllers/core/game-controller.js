@@ -108,6 +108,7 @@ exports.startGame = async (req, res, next) => {
       console.log(discards);
       if (card_deck && game_direction && game_order && current_player && matching && players && discards) {
         const game_state = {
+          reciever: 0,
           card_deck,
           game_direction,
           game_order,
