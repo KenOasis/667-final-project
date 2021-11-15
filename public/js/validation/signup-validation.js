@@ -75,6 +75,8 @@ const onSubmitSignup = () => {
     password: pw.value,
     confirm_password: confirmPW.value,
   };
+  
+
   if (onSubmitValidation()) {
     fetch(url, {
       method: "POST",

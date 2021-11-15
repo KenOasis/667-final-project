@@ -1,0 +1,16 @@
+extends layout/main-layout.pug
+
+block title
+  title Login
+block navbar
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
+
+block content
+  form
+    input(type="button" onclick="test1()" class="btn btn-primary" value="init game")
+    input(type="button" onclick="test2()" class="btn btn-primary" value="load game")
+  script(type="text/javascript" src="/js/test.js")

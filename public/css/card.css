@@ -1,21 +1,3 @@
-.showCard {
-    height: 200px;
-    width: auto;
-    position: relative;
-    left: 0;
-    z-index: 0;
-    border-radius: 100px;
-    border: 3px solid #800000;
-    filter: brightness(95%);
-}
-
-.showColCard {
-    width: 200px;
-    height: auto;
-    position: relative;
-    top: 0;
-    z-index: 0;
-}
 
 #flash-message {
     position: fixed;
@@ -31,13 +13,34 @@
 #flash-message div {
     text-align: center;
 }
-/* ----------------------------------------------------------- */
-.card{
-    height:100px; 
-    width:68px;
-    border-radius:10px;
-    background-image:url('../images/uno_cards/cards.png');
 
+
+/* ----------------Setting the boxk fro layout the game page------------------- */
+
+.left_right{
+    border: 2px solid blue;
+    height: 390px;
+    width: 220px;
+}
+.top_bottom{
+    border: 2px solid blue;
+    height: 160px;
+    width: 440px;
+}
+
+/*---------------------------------------------------------------- */
+/* .hand{
+    position: relative;
+}
+.hand .card{
+    position:absolute;
+}
+.back{
+    height:87px; 
+    width:60px;
+    background-position-x:-575px;
+    background-position-y:-93px;
+    background-image:url('../images/uno_cards/getBack.png');
 }
 .back{
     height:87px; 
@@ -55,9 +58,9 @@
     top: -50px;
     /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
     /*width:200px; when cards are greater than 50, width 200px will be good*/
-    border-bottom: 50px transparent;
+    /* border-bottom: 50px transparent; 
     
-}
+}*/
 #discard-pile{
     text-align: center;
 }
@@ -84,76 +87,229 @@
     left:600px;
     
 }
+#discard-pile{
+    text-align: center;
+} 
+
+.card{
+    display: inline-block;
+    height: 125px;
+    width: 75px;
+    background-image:url('../images/uno_cards/card-sets.jpg');
+    background-size:1040px 650px;
+    filter: brightness(95%);
+    border: 2px solid brown;
+    
+    
+}
+.hand{
+    position: relative;
+}
+.hand .card{
+    position:absolute;
+}
+.card:hover{
+    top: -50px;
+    /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
+    width:75px; /*when cards are greater than 50, width 200px will be good*/
+    border-bottom: 50px transparent;
+    z-index: 1;
+    
+}
+
 .red{
-    background-position-y:0px;
+    background-position-y:-140px;
 }
 
 .yellow{
-    background-position-y:-100px;
+    background-position-y:-402px;
 }
 .green{
-    background-position-y:-200px;
+    background-position-y:-270px;
 }
 .blue{
-    background-position-y:-300px;
-}
-.zero{
-    background-position-x:0px;
-    
-}
-.one{
-    background-position-x:-66px;
-   
-}
-.two{
-    background-position-x:-134px;
-   
-}
-.three{
-    background-position-x:-200px;
-    
-}
-.four{
-    background-position-x:-266px;
-    
-}
-.five{
-    background-position-x:-332px;
-  
-}
-.six{
-    background-position-x:-398px;
-}
-   
-.seven{
-    background-position-x:-465px;
-   
-}
-.yellow-eight{
-    background-position-x:-532px;
-   
-}
-.nine{
-    background-position-x:-599px;
-   
-}
-.skip{
-    background-position-x:-665px;
-   
-}
-.reverse{
-    background-position-x:-731px;
-   
-}
-.drawTwo{
-    background-position-x:-797px;
-    
+    background-position-y:-532px;
 }
 
-.wild{
-    background-position-x:-863px;
+.skip{
+    background-position-x: -1px;
 }
-.drawFour{
-    background-position-x:-863px;
-    background-position-y:-400px;
-} 
+.draw_two{
+    background-position-x: -77px;
+}
+.reverse{
+    background-position-x: -155px;
+}
+.zero{
+    background-position-x: -237px;
+}
+.one{
+    background-position-x: -316px;
+}
+.two{
+    background-position-x: -391px;
+}
+.three{
+    background-position-x: -471px ;
+}
+.four{
+    background-position-x: -556px;
+}
+.five{
+    background-position-x: -637px;
+}
+.six{
+    background-position-x: -721px;
+}
+.seven{
+    background-position-x: -807px;
+}
+.eight{
+    background-position-x: -891px ;
+}
+.nine{
+    background-position-x: -971px;
+}
+.wild{
+    
+    background-position-x: -553px;  
+}
+.wild_draw_four{
+    
+    background-position-x: -471px;
+}
+.back{
+    background-position-x: -392px;
+}
+.hand .card:nth-child(2){
+    left: 20px;
+}
+.hand .card:nth-child(3){
+    left: 40px;
+}
+.hand .card:nth-child(4){
+    left: 60px;
+}
+.hand .card:nth-child(5){
+    left: 80px;
+}
+.hand .card:nth-child(6){
+    left: 100px;
+}
+.hand .card:nth-child(7){
+    left: 120px;
+}
+.hand .card:nth-child(8){
+    left: 140px;
+}
+.hand .card:nth-child(9){
+    left: 160px;
+}
+.hand .card:nth-child(10){
+    left: 180px;
+}
+.hand .card:nth-child(11){
+    left: 200px;
+}
+.hand .card:nth-child(12){
+    left: 220px;
+}
+.hand .card:nth-child(13){
+    left: 240px;
+}
+.hand .card:nth-child(14){
+    left: 260px;
+}
+.hand .card:nth-child(15){
+    left: 280px;
+}
+.hand .card:nth-child(16){
+    left: 300px;
+}
+.hand .card:nth-child(17){
+    left: 320px;
+}
+.hand .card:nth-child(18){
+    left: 340px;
+}
+.hand .card:nth-child(19){
+    left: 360px;
+}
+.hand .card:nth-child(20){
+    left: 380px;
+}
+
+
+
+
+.cardcol{
+    display: inline-block;
+    width: 125px;
+    height: 75px;
+    background-image:url('../images/uno_cards/backrow.jpg');
+    background-size:125px 75px;
+    filter: brightness(95%);
+    border: 2px solid brown;  
+}
+
+
+.hand .cardcol{
+    position:absolute;
+}
+.hand .cardcol:nth-child(2){
+    top: 20px;
+}
+.hand .cardcol:nth-child(3){
+    top: 40px;
+}
+.hand .cardcol:nth-child(4){
+    top: 60px;
+}
+.hand .cardcol:nth-child(5){
+    top: 80px;
+}
+.hand .cardcol:nth-child(6){
+    top: 100px;
+}
+.hand .cardcol:nth-child(7){
+    top: 120px;
+}
+.hand .cardcol:nth-child(8){
+    top: 140px;
+}
+.hand .cardcol:nth-child(9){
+    top: 160px;
+}
+.hand .cardcol:nth-child(10){
+    top: 180px;
+}
+.hand .cardcol:nth-child(11){
+    top: 200px;
+}
+.hand .cardcol:nth-child(12){
+    top: 220px;
+}
+.hand .cardcol:nth-child(13){
+    top: 240px;
+}
+.hand .cardcol:nth-child(14){
+    top: 260px;
+}
+.hand .cardcol:nth-child(15){
+    top: 280px;
+}
+.hand .cardcol:nth-child(16){
+    top: 300px;
+}
+.hand .cardcol:nth-child(17){
+    top: 320px;
+}
+.hand .cardcol:nth-child(18){
+    top: 340px;
+}
+.hand .cardcol:nth-child(19){
+    top: 360px;
+}
+.hand .cardcol:nth-child(20){
+    top: 380px;
+}

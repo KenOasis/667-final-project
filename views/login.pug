@@ -10,15 +10,15 @@ block navbar
       include navbar/nav-logged-out
 
 block content
-  script(type="text/javascript" src="/js/login-validation.js" defer)
+  script(type="text/javascript" src="/js/validation/login-validation.js" defer)
   // Toasts 
   div(class="position-fixed top-0 end-0 p-3" style="z-index: 2000")
-    div(id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000")
+    #loginToast(class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000")
       div(class="toast-header")
         strong(class="me-auto") Message 
         small(class="text-muted") login
         button(type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close")
-      div(class="toast-body" id="errors_message")
+      #errors_message(class="toast-body")
   // Card for profile
   div(class="container fluid ")
     div(class="row d-flex justify-content-center align-items-center h-100")
@@ -28,19 +28,17 @@ block content
         form
           h1 Log in 
           div(class="form-outline mb-3")
-            input(
+            input#username(
               type="text" 
               name="username"
-              id="username"
               class="form-control form-control-lg"
               placeholder="Enter a valid username"  
               )
             label(class="form-label" for="username") Username 
           div(class="form-outline mb-3")
-            input(
+            input#password(
               type="password" 
               name="password" 
-              id= "password"
               class="form-control form-control-lg"
               placeholder="Enter password"
               )

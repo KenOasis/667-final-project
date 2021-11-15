@@ -1,12 +1,9 @@
 const { check, validationResult } = require('express-validator');
+const { restart } = require('nodemon');
 
 
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,256}$/;
 const usernameRegex = /^(?=.*\d)(|.*[a-z])(|.*[A-Z])[0-9+a-zA-Z]{3,20}$/;
-
-
-exports.loginValidation = async (req, res, next) => {
-}
 
 exports.signupValidation = async (req, res, next) => {
 
@@ -65,6 +62,16 @@ exports.changePWValidation = async (req, res, next) => {
       return true;
     }).run(req);
 
+  let results = validationResult(req);
+  if (!results.isEmpty()) {
+    return res.status(400).json({errors: results.array()});
+  } else {
+    next();
+  }
+}
+
+exports.gameNameValidation = async (req, res, next) => {
+  await check('game_name').isLength({min:3, max: 20}).withMessage("The length of game name is between 3 to 30!").run(req); 
   let results = validationResult(req);
   if (!results.isEmpty()) {
     return res.status(400).json({errors: results.array()});

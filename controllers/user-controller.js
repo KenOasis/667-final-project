@@ -1,63 +1,44 @@
-const db = require('../models');
-const Users = db['users'];
-const { Op } = require('sequelize');
+const userDriver = require('../db/drivers/user-driver');
+const gameUsersDriver = require('../db/drivers/game-users-driver');
 const bcrpyt = require('bcrypt');
 const saltround = 11;
-const Game_Users = db['game_users'];
-const path = require('path');
-const { randomInt } = require('crypto');
-Users.hasMany(Game_Users, {foreignKey: "user_id"});
 const url = require('url');
 
 exports.signUp = async (req, res, next) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
+  const { username, email, password } = req.body;
   let existedUser = null;
   
   try {
     // checked whether the username already existed in db
 
-    existedUser = await Users.findOne({
-      where: {
-          username
-      }
-    });
+    existedUser = await userDriver.findUserByName(username);
 
    if (existedUser !== null) {
      return res.status(409).json({errors: [{
        param: "username",
-       msg: username + " is already exist!"
+       msg: username + " already exists!"
      }]});
    }
 
     // checked whether the email already existed in db
 
-    existedUser = await Users.findOne({
-      where: {
-        email
-      }
-    });
+    existedUser = await userDriver.findUserByEmail(email);
 
     if (existedUser !== null) {
       return res.status(409).json({errors: [{
         param: "email",
-        msg: "Email is already exist!"
+        msg: "Email already exists!"
       }]});
     }
     let hashPassword = await bcrpyt.hash(password, saltround);
 
-    let newUser = await Users.create({
-      username: username,
-      email: email,
-      password: hashPassword,
-    });
+    let newUser = await userDriver.signupUser(username, email, hashPassword);
 
     return res.status(200).json({url: url.format({
       pathname:"/transition",
       query: {
          "title": "Successfully signup!",
-         "description": "Congratulation! You have successfully signup.",
+         "description": "Congratulation! You have successfully signed up.",
          "redirect_path": "/login",
          "page_name": "Login" 
        }
@@ -69,14 +50,9 @@ exports.signUp = async (req, res, next) => {
 }
 
 exports.login = async (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  const { username, password } = req.body;
   try {
-    let user = await  Users.findOne({
-      where: {
-        username: username
-      }
-    });
+    let user = await  userDriver.findUserByName(username);
     if (user !== null) {
       let hashPassword = user.password;
       let comparedResult = await bcrpyt.compare(password, hashPassword);
@@ -88,7 +64,7 @@ exports.login = async (req, res, next) => {
           pathname:"/transition",
           query: {
              "title": "Successfully signup!",
-             "description": "Congratulation! You have successfully login.",
+             "description": "Congratulation! You have successfully logged in.",
              "redirect_path": "/lobby",
              "page_name": "Game Lobby" 
            }
@@ -102,7 +78,7 @@ exports.login = async (req, res, next) => {
     } else {
       return res.status(401).json({errors: [{
         param: "username",
-        msg: "Username is not exist!"
+        msg: "Username does not exist!"
       }]});
     }
   } catch (error) {
@@ -116,7 +92,7 @@ exports.logout = (req, res, next) => {
     res.clearCookie('connect.sid').status(200).render("transition", { 
       isLoggedIn: false,
       title: "Successfully logged out!",
-      description: " You have successfully logged out.",
+      description: " You have successfully been logged out.",
       redirectPath: "/",
       redirectPageName: "Home" 
     });
@@ -124,15 +100,10 @@ exports.logout = (req, res, next) => {
 }
 
 exports.changePassword = async (req, res, next) => {
-  const userId = req.session.userId;
-  const current_password = req.body.current_password;
-  const new_password = req.body.new_password;
+  const { userId } = req.session;
+  const { current_password, new_password } = req.body;
   try {
-    const user = await Users.findOne({
-      where: {
-        id: userId
-      }
-    })
+    const user = await userDriver.findUserById(userId);
 
     if (user !== null) {
       let hashPassword = user.password;
@@ -159,21 +130,12 @@ exports.changePassword = async (req, res, next) => {
 }
 
 exports.getProfile = async (req, res, next) => {
-  const userId = req.session.userId;
+  const { userId } = req.session;
   try {
-    let results = await Users.findAll({
-      raw: true,
-      attributes: ["username", "email", "created_at", "game_users.points"],
-      where: {
-        id: userId
-      },
-      include: [{
-        model: Game_Users,
-        attributes: [],
-        required: true
-      }]
-    });
+    let results = await gameUsersDriver.getGameUsersByUserId(userId);
+
     let profileImg = `/images/profile/profile${Math.floor(Math.random() * 3) + 1}.gif`;
+
     if (results && results.length) {
       const gamePlayed = results.length;
       const game_won = (results.filter((element) => element.points > 0)).length;
@@ -191,11 +153,7 @@ exports.getProfile = async (req, res, next) => {
         points: points
       })
     } else if (results.length === 0) {
-      let user = await Users.findOne({
-        where: {
-          id: userId
-        }
-      })
+      let user = await userDriver.findUserById(userId);
       res.status(200).render('profile', {
         username: user.username,
         email: user.email,

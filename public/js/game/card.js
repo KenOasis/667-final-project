@@ -1,9 +1,5 @@
 "use strict"
-/* this module are making the cards table that 
-using in the frontend for checking the card detail 
-infomation and generator card url to show up the card pic
-*/
-let cardModule = {
+let CardModule = {
     cards: [{
         card_id: [1],
         card_color: "red",
@@ -274,6 +270,7 @@ let cardModule = {
         card_color: "yellow",
         card_type: "wild",
         card_value: "wild_draw_four"
+<<<<<<< HEAD:public/js/card.js
     }],
 
     /* this functuin request the card_id and respone
@@ -335,3 +332,13 @@ let cardModule = {
     }
 
 }
+=======
+    }
+],
+get_card_detail(id){
+    let card_info = this.cards.filter(card => card.card_id.includes(id));
+    return card_info;
+}
+}
+
+>>>>>>> 86da878dc69fadd8bca3b4f530ecbd5af8261d73:public/js/game/card.js
