@@ -180,3 +180,8 @@ exports.generateGameState = (req, res, next) => {
 exports.getGame = (req,res,next) =>{
   return res.status(200).render("game");
 }
+
+exports.playCard = (req, res, next) => {
+
+  return res.status(200).json({});
+}

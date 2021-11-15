@@ -49,7 +49,7 @@ const game_state = {
     number_of_cards: 1
   }],
 
-  discards: [25, 28, 10], 
+  discards: [25, 28, 10]
   // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
 }
 // After this round he play a card 94 
@@ -140,8 +140,9 @@ const challengeAction = {
 
 
 //  This acts just like the wild card except that the next player also has to draw four cards as well as forfeit his/her turn. With this card, you must have no other alternative cards to play that matches the color of the card previously played. If you play this card illegally, you may be challenged by the next player to show your hand to him/her. If guilty, you need to draw 4 cards. If not, the challenger needs to draw 6 cards instead.
+
 // Regardless of the outcome of challenge, the matching color will be the color which named by the player who played the card.
 // legally to play: no other non-wild card which could play for the current matching
 
-
-
+// 
+// challenge is to challege whether the wild_draw_four is played legally or not.
