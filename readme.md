@@ -52,13 +52,16 @@ For the routes:
 - db 
    - drivers &emsp;&emsp;&emsp; driver for db query
    - index.js &emsp;&emsp;&cross; Not used anymore
+- factories  
 - middleware 
 - migrations
 - models
 - public
    - css
    - images
-   - lobby &emsp;&emsp;&emsp; js file for lobby events
+   - lobby &emsp;&emsp;&emsp; js file for lobby 
+   - loading
+   - game
    - validation &emsp;&emsp;&emsp; data format validation file
 - routes
 - seeders

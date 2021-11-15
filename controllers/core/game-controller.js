@@ -108,6 +108,7 @@ exports.startGame = async (req, res, next) => {
       console.log(discards);
       if (card_deck && game_direction && game_order && current_player && matching && players && discards) {
         const game_state = {
+          reciever: 0,
           card_deck,
           game_direction,
           game_order,
@@ -178,4 +179,9 @@ exports.generateGameState = (req, res, next) => {
 }
 exports.getGame = (req,res,next) =>{
   return res.status(200).render("game");
+}
+
+exports.playCard = (req, res, next) => {
+
+  return res.status(200).json({});
 }
