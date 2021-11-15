@@ -97,6 +97,11 @@ const unoAction = {
   type: "uno"
 }
 
+const unoPenaltyAction = {
+  performer: 9,
+  type: "uno_penalty",
+  cards: [22,33]
+}
 const skipAction = {
   performer: 9,
   type: "skip"
@@ -128,17 +133,40 @@ const wildDrawFourAction = {
 }
 
 // for the 2nd step of wild draw four (challenge)
+
+
+// example of do not challenge 
 const challengeAction = {
-  performance: 8,
+  performer: 8,
   type: "challenge",
-  is_challenged: true,
-  is_success: "false", // if is_challenge is false, this is not used.
+  is_challenged: false,
+  // is_success is not part of this obj
   penalty_player: 8, // who draw the penalty card
-  penalty_cards_count: 6, // how many penalty card draw
-  penalty_cards: [5, 8, 12, 56, 25, 12] // only the reciever 
+  penalty_count: 4, // how many penalty card draw
+  penalty_cards: [5, 8, 12, 56] // only if the reciever is the penalty_player 
 }
 
+// example of do challenge but failed
+const challengeAction = {
+  performer: 8,
+  type: "challenge",
+  is_challenged: true,
+  is_success: false, 
+  penalty_player: 8, // who draw the penalty card
+  penalty_count: 6, // how many penalty card draw
+  penalty_cards: [5, 8, 12, 56, 25, 12] // only if the reciever is the penalty_player  
+}
 
+// example of do challenge and success
+const challengeAction = {
+  performer: 8,
+  type: "challenge",
+  is_challenged: true,
+  is_success: true, // if is_challenge is false, this is not used.
+  penalty_player: 5, // who draw the penalty card, at this case is who play the wild draw four
+  penalty_count: 4, // how many penalty card draw
+  penalty_cards: [5, 8, 12, 56] // only if the reciever is the penalty_player 
+}
 //  This acts just like the wild card except that the next player also has to draw four cards as well as forfeit his/her turn. With this card, you must have no other alternative cards to play that matches the color of the card previously played. If you play this card illegally, you may be challenged by the next player to show your hand to him/her. If guilty, you need to draw 4 cards. If not, the challenger needs to draw 6 cards instead.
 
 // Regardless of the outcome of challenge, the matching color will be the color which named by the player who played the card.

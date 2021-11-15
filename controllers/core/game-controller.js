@@ -10,6 +10,7 @@ const gameListManager = require('../../volatile/gameListManager');
 
 const eventsLobby = require('../../socket/eventsLobby');
 const eventsLoading = require('../../socket/eventsLoading');
+const { Result } = require('express-validator');
 
 exports.initGame = async (req, res, next) => {
   const { game_id } = req.body;
@@ -69,10 +70,23 @@ exports.initGame = async (req, res, next) => {
 exports.loadingGame = async (req, res, next) => {
   const game_id = +req.query.game_id;
   const user_id = req.session.userId;
-  const [isAllLoaded, game] = gameListManager.loadGame(game_id, user_id);
-  const user_list = game.users.filter(user => user.status === "playing")
-  res.status(200).render('loading', { game_id: game_id});
-  eventsLoading.userJoin(game_id, user_list);
+  try {
+    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
+    if (isInGame) {
+      const [isAllLoaded, game] = gameListManager.loadGame(game_id, user_id);
+      const user_list = game.users.filter(user => user.status === "playing")
+      res.status(200).render('loading', { game_id: game_id});
+      eventsLoading.userJoin(game_id, user_list);
+    } else {
+      res.status(403).json({
+        status: "forbidden",
+        message: "Join game failed. You are not in this game"
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: "failed"});
+  }
 }
 
 
@@ -132,8 +146,8 @@ exports.startGame = async (req, res, next) => {
     } else {
 
       res.status(403).json({
-        status: "failed",
-        message: "Join game failed."
+        status: "forbidden",
+        message: "Join game failed. You are not in this game"
       });
 
     }
@@ -177,11 +191,10 @@ exports.generateGameState = (req, res, next) => {
     game_state: game_state
   })
 }
-exports.getGame = (req,res,next) =>{
+exports.getGame = (req,res,next) => {
   return res.status(200).render("game");
 }
 
 exports.playCard = (req, res, next) => {
-
   return res.status(200).json({});
 }
