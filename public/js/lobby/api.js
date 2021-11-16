@@ -96,38 +96,4 @@ const sendChat = () => {
 }
 
 
-const startGame = (event) => {
-  const game_id = event.target.parentNode.parentNode.dataset.game_id;
-  url = `http://${location.host}/game/loading?game_id=${game_id}`
-  window.open(url, "_blank");
-}
 
-const initGame = (game_id) => {
-  const url = "http://" + location.host + "/game/initial";
-  const body = {
-    game_id
-  };
-  fetch(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-    credentials: "include",
-    headers: new Headers({
-      'content-type' : 'application/json'
-    })
-  }).then(response => response.json())
-  .then(result => {
-    if (result.status === "success") {
-      // after the game is initial, the backend
-      // will brocast all player in the game to
-      // start loading page
-    } else {
-      let reInit = () => {
-        let timer = setTimeout(() => {
-          initGame(game_id);
-          window.clearTimeout(timer);
-        }, 1500);
-      };
-      reInit();
-    }
-  }); 
-}

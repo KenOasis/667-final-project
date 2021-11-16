@@ -112,13 +112,6 @@ const constructGameElement = (game) => {
       span_leave.onclick = leaveGame;
       span_leave.innerHTML = "leave";
       buttons_div.appendChild(span_leave);
-    } else if (user.status === "loading"){
-      const span_start = document.createElement('span');
-      span_start.className = "btn badge bg-danger rounded-spill mx-1";
-      span_start.id = "game-" + game.game_id + "-start";
-      span_start.onclick = startGame;
-      span_start.innerHTML = "start";
-      buttons_div.appendChild(span_start);
     } else {
       // The game is playing
       const span_reconnect = document.createElement('span');

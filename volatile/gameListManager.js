@@ -32,9 +32,7 @@ const gameListManager = {
       return "free";
     } else if(status_list.includes("playing")) {
       return "playing";
-    } else if(status_list.includes("loading")){
-      return "loading"
-    } else {
+    }  else {
       return "ready";
     }
   },
@@ -110,29 +108,17 @@ const gameListManager = {
     const gameIndex = findGameIndexById(game_id);
     const game = gameList[gameIndex];
     game.users.forEach(user => {
-      this.setUserStatus(game_id, user.user_id, "loading");
+      this.setUserStatus(game_id, user.user_id, "playing");
     });
-    game.status = "loading";
+    game.status = "playing";
     return game;
-  },
-  loadGame: function(game_id, user_id) {
-    this.setUserStatus(game_id, user_id, "playing");
-    const gameIndex = findGameIndexById(game_id);
-    const game = gameList[gameIndex];
-    let isAllLoaded = true;
-    game.users.forEach(user => {
-      if (user.status !== "playing") {
-        isAllLoaded = false;
-      }
-    });
-    return [isAllLoaded, game];
   },
   userLeaveLobby: function(user_id) {
     let index = gameList.length;
     while (index > 0) {
       index--;
       game = gameList[index];
-      game.users = game.users.filter(user => user.user_id !== user_id || user.status === "playing" || user.status === "loading");
+      game.users = game.users.filter(user => user.user_id !== user_id || user.status === "playing");
       if (game.users.length <= 0) {
         gameList.splice(index, 1);
       }
