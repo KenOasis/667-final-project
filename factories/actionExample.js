@@ -9,9 +9,10 @@
 
 
 const game_state = {
-  // who is recieving this game_state: "who am i"
-  // initial game state will be 0;  
-  reciever: 9,
+ 
+  game_id: 2,
+
+  reciever: 9,  // who is recieving this game_state: "who am i", initial game state will be 0;  
   
   cards_deck: 45,    // how many cards still in the deck
 

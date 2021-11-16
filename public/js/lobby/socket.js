@@ -104,28 +104,24 @@ socket.on('leaveGame', data => {
   }
 });
 
-socket.on('initGame', data => {
-  initGame(data.game_id);
-})
 
-socket.on('gameReady', data => {
-  // Step One of init game, change all status
+socket.on('initGame', data => {
   const new_game = data.game;
   const new_game_li = constructGameElement(new_game);
   const current_game_li = document.getElementById(`game-${data.game.game_id}`);
   gameListContainer.insertBefore(new_game_li, current_game_li);
   gameListContainer.removeChild(current_game_li);
+
 });
 
-
-
-socket.on('gameStandby', data => {
+socket.on("gameReady", data => {
   if (toastContainer) {
     const newToast = addToast(data.message);
     let toast = new bootstrap.Toast(newToast);
     toast.show(); 
   }
 })
+
 // test code for socket handshake.
 // socket.on('Hello', (data) => {
 //   // if (lobbyToast) {

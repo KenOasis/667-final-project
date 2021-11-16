@@ -98,27 +98,17 @@ exports.leaveGame = (gameStatus, game, user) => {
   })
 }
 
-exports.initGame = (game_id) => {
-  const io = require('./socket').getIO();
-  const users_id = gameListManager.getUserListOfGame(game_id).map(user => user.user_id)
-  io.in("lobby").fetchSockets()
-    .then((sockets) => {
-      const users_socket = sockets.filter(socket => users_id.includes(socket.request.session.userId));
-      const room = "game-" + game_id;
-      users_socket.forEach(
-        socket => {
-          socket.join(room);
-        }
-      );
-      io.in(users_socket[0].id).emit("initGame", { game_id })
-    })
-}
 
-exports.gameReady = (game_id) => {
+exports.initGame = (game_id, users_id) => {
   const io = require('./socket').getIO();
-  const room = "game-" + game_id;
   const game = gameListManager.initGame(game_id);
-  io.in("lobby").emit("gameReady", { game });
-  io.in(room).emit("gameStandby", {
-     message: `The game: ${game.name} is ready, click "start" to start the game` });
+  io.in("lobby").emit("initGame", { game });
+  io.in("lobby").fetchSockets()
+    .then(sockets => {
+      users_socket = sockets.filter( socket => users_id.includes(socket.request.session.userId));
+      users_socket.forEach(socket => {
+        io.to(socket.id).emit("gameReady", { message: `Game "${game.name}" is ready, will start in few seconds!`})
+      })
+    })
+    
 }
