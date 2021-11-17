@@ -8,9 +8,48 @@ const shuffle = require("../../util/shuffle");
 const gameStateDummy = require("../../volatile/gameStateDummy");
 const gameListManager = require("../../volatile/gameListManager");
 
-const eventsLobby = require("../../socket/eventsLobby");
+const eventsGame = require("../../socket/eventsGame");
 
-exports.startGame = async (req, res, next) => {
+exports.joinGame = async (req, res, next) => {
+  const user_id = req.session.userId;
+  const username = req.session.userName;
+  const { game_id } = req.body;
+  try {
+    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
+    if (isInGame) {
+      const game_users_list = await gameUsersDriver.getGameUsersByGameId(
+        game_id
+      );
+      let user_list = [];
+      if (game_users_list) {
+        user_list = game_users_list.map((game_users) => {
+          return {
+            user_id: game_users.id,
+            username: game_users.username,
+            status: "loading",
+          };
+        });
+      } else {
+        throw new Error("fetch users list failed");
+      }
+      eventsGame.userJoin(game_id, username, user_list);
+      res.status(200).render("game");
+    } else {
+      res.status(403).json({
+        status: "forbidden",
+        message: "Join game failed. You are not in this game",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Joined game failed.",
+    });
+  }
+};
+
+exports.loadGame = async (req, res, next) => {
   const user_id = req.session.userId;
   const { game_id } = req.body;
 
