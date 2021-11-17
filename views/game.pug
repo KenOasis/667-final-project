@@ -22,45 +22,46 @@ html(lang="en")
         width="70"
         height="100"
         )
-  div(class="container fluid")
-    div(class="row")
-      div(class="col-md-2") Space1
-      div(class="col-md-2") Draw
-        button(type = "button" class = "btn btn-outline-danger") Draw
-      #container_top(class="col-md-4 top_bottom ")
-        
-      div(class="col-md-2") Top_player Avatar
-      div(class="col-md-2") 
-        botton#leave(class="btn btn-outline-danger") Leave
-    div(class ="row")
-      div(class="col-md-2") left_player Avatar
-      div(class="col-md-2 left_right")
-        #container_left(class = "row")    
-      div(class="col-md-4" )
-        div(class="row")
-          div(class="col-md-3")
-          div(class="col-md-6")
-            div(class = "card red skip")
-          div(class="col-md-3")
-      #container_right(class="col-md-2 left_right")
+    div(class="container fluid")
+      div(class="row")
+        div(class="col-md-2") Space1
+        div(class="col-md-2") Draw
+          button(type = "button" class = "btn btn-outline-danger") Draw
+        #container_top(class="col-md-4 top_bottom ")
+          
+        div(class="col-md-2") Top_player Avatar
+        div(class="col-md-2") 
+          botton#leave(class="btn btn-outline-danger") Leave
+      div(class ="row")
+        div(class="col-md-2") left_player Avatar
+        div(class="col-md-2 left_right")
+          #container_left(class = "row")    
+        div(class="col-md-4" )
+          div(class="row")
+            div(class="col-md-3")
+            div(class="col-md-6")
+              div(class = "card red skip")
+            div(class="col-md-3")
+        #container_right(class="col-md-2 left_right")
 
-      div(class="col-md-2") right_player Avatar
-    div(class="row")
-      div(class="col-md-2")
-      div(class="col-md-2") #number
-      div(class="col-md-4" style="text-align:end") 
-        button(type = "button" class = "btn btn-outline-danger") UNO
-        button(type = "button" class = "btn btn-outline-danger") PLAY
-      div(class="col-md-2") #number
-      div(class="col-md-2") 
-    div(class = "row")
-      div(class="col-md-4 p-0")
-        #messages(class = "col" style = "border:2px solid #dedede; height:120px; overflow-y:auto")
-        div(class = "input-group mb-3")
-          input#message(type = "text" class = "form-control")
-          div(class = "input-group-append")
-            button(type = "button" class = "btn btn-outline-danger") Send
-      #container_bottom(class="col-md-8 top_bottom")
+        div(class="col-md-2") right_player Avatar
+      div(class="row")
+        div(class="col-md-2")
+        div(class="col-md-2") #number
+        div(class="col-md-4" style="text-align:end") 
+          button(type = "button" class = "btn btn-outline-danger") UNO
+          button(type = "button" class = "btn btn-outline-danger") PLAY
+        div(class="col-md-2") #number
+        div(class="col-md-2") 
+      div(class = "row")
+        div(class="col-md-4 p-0")
+          #messages(class = "col" style = "border:2px solid #dedede; height:120px; overflow-y:auto")
+          div(class = "input-group mb-3")
+            input#message(type = "text" class = "form-control")
+            div(class = "input-group-append")
+              button(type = "button" class = "btn btn-outline-danger") Send
+        #container_bottom(class="col-md-8 top_bottom")
+    script(type="text/javascript" src="/js/game/socket.js")
     script(type="text/javascript" src="/js/game/card.js" )
     script(type="text/javascript" src="/js/game/game-function.js" )
   br

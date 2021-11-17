@@ -100,3 +100,5 @@ const sendChat = () => {
       .catch((err) => console.log(err));
   }
 };
+
+const startGame = (game_id) => {};

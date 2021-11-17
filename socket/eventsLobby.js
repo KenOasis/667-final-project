@@ -99,6 +99,7 @@ exports.initGame = (game_id, users_id) => {
     );
     users_socket.forEach((socket) => {
       lobby.to(socket.id).emit("gameReady", {
+        game_id: game_id,
         message: `Game "${game.name}" is ready, will start in few seconds!`,
       });
     });
