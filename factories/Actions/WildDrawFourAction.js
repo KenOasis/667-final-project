@@ -1,7 +1,6 @@
-const Action = require('./Action');
+const Action = require("./Action");
 
-class WildDrawFourAction extends Action{
-  
+class WildDrawFourAction extends Action {
   constructor(performer, color) {
     super(performer);
     this._type = "wild_draw_four";
@@ -12,8 +11,8 @@ class WildDrawFourAction extends Action{
     return {
       performer: this._performer,
       type: this._type,
-      color: this._color
-    }
+      color: this._color,
+    };
   }
 }
 

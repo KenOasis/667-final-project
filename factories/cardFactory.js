@@ -1,6 +1,6 @@
-const cardsBulk = require('../db/cards_bulk');
+const cardsBulk = require("../db/cards_bulk");
 
-class Card{
+class Card {
   constructor(id, type, color, action, face_value) {
     this._id = id;
     this._type = type;
@@ -28,23 +28,29 @@ class Card{
 
 const cardsMap = new Map();
 let idCounter = 1;
-cardsBulk.forEach(card => {
+cardsBulk.forEach((card) => {
   cardsMap.set(idCounter, card);
   idCounter++;
 });
 
-/** 
- * This class is used for generate the card class 
+/**
+ * This class is used for generate the card class
  * which reducing times of query to the db to get
- * the card data. 
-*/
+ * the card data.
+ */
 
-class CardFactory{
+class CardFactory {
   #cards = cardsMap;
-   create(card_id) {
+  create(card_id) {
     let card = this.#cards.get(card_id);
     if (card !== undefined) {
-      return new Card(card_id, card.type, card.color, card.action, card.face_value);
+      return new Card(
+        card_id,
+        card.type,
+        card.color,
+        card.action,
+        card.face_value
+      );
     } else {
       // TODO reconstruct it from the db (update #cards);
       return null;
@@ -53,7 +59,6 @@ class CardFactory{
 }
 
 module.exports = new CardFactory();
-
 
 // //testcode
 // const factory = new CardFactory();

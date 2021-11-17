@@ -3,51 +3,56 @@
   game_state of the frontend (and backend?)
 */
 
+const game_state = {
+  // this is the game_state hold at the front-end
+  cards_deck: 45, // how many cards still in the deck
 
+  game_direction: "clockwise", // game direction
 
-
-const game_state = {  // this is the game_state hold at the front-end
-  cards_deck: 45,    // how many cards still in the deck
-
-  game_direction: 'clockwise', // game direction
-
-  game_order: [1, 9, 6, 12], // player order, left->right is clockwise, right->left is counter-clockwise 
+  game_order: [1, 9, 6, 12], // player order, left->right is clockwise, right->left is counter-clockwise
 
   current_player: 9,
-  
-  matching: { // matching status for the current turn
+
+  matching: {
+    // matching status for the current turn
     color: "green",
-    number:  9,
+    number: 9,
   },
 
-  players: [{  // cards of players and whether he/she is in UNO (ready to win ?)
-    user_id: 1,
-    uno: false,
-    // card_players: [1, 22, 84, 12, 47],   // non-current_player could only see the number_of cards
-    number_of_cards: 5
-  },{
-    user_id: 6,
-    uno: false,
-    // card_players: [8, 33, 100, 23, 75, 43],
-    number_of_cards: 6
-  },{
-    user_id: 9,
-    uno: false,
-    card_players: [102, 21, 17, 65, 15, 54],
-    number_of_cards: 7
-  },{
-    user_id: 12,
-    uno: true,
-    // card_players: [6],
-    number_of_cards: 1
-  }],
+  players: [
+    {
+      // cards of players and whether he/she is in UNO (ready to win ?)
+      user_id: 1,
+      uno: false,
+      // card_players: [1, 22, 84, 12, 47],   // non-current_player could only see the number_of cards
+      number_of_cards: 5,
+    },
+    {
+      user_id: 6,
+      uno: false,
+      // card_players: [8, 33, 100, 23, 75, 43],
+      number_of_cards: 6,
+    },
+    {
+      user_id: 9,
+      uno: false,
+      card_players: [102, 21, 17, 65, 15, 54],
+      number_of_cards: 7,
+    },
+    {
+      user_id: 12,
+      uno: true,
+      // card_players: [6],
+      number_of_cards: 1,
+    },
+  ],
 
-  discards: [94, 25, 28], 
+  discards: [94, 25, 28],
   // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
-}
+};
 
 // example
-// Then this is user 9 (within user's round): Play a card (card_id: 94, green, draw_two, action), then the update state coming back from the backend. the reciever is player: user_id === 6 
+// Then this is user 9 (within user's round): Play a card (card_id: 94, green, draw_two, action), then the update state coming back from the backend. the reciever is player: user_id === 6
 
 // remember, this is the action trigger {{{AFTER}}} you send the request to the backend
 const update = {
@@ -55,21 +60,21 @@ const update = {
   user_id: 6,
   // the order of action is their performed-order
   actions: [
-    {  // action need to perform in front end (caused by )
+    {
+      // action need to perform in front end (caused by )
       performer: 9,
       action_type: "play_card",
-      card: 94, 
-    }, {
+      card: 94,
+    },
+    {
       performer: 6,
       action_type: "draw_two", // draw_two should be include the action which skip user's turn,
-      cards: [77, 49] // the card drew from the 
-    }]
+      cards: [77, 49], // the card drew from the
+    },
+  ],
 
   // If no challenge happen, after all the action triggered, next player in the order start its own round
-}
-
-
-
+};
 
 /*
 Response action object for drawcard action
@@ -95,10 +100,10 @@ exports.drawCard = (performer_id, card_id, is_performer) => {
   action.performer = performer_id;
   action.action_type = "draw_card";
   if (is_performer === true) {
-    action.card_id = card_id
+    action.card_id = card_id;
   }
   return action;
-}
+};
 
 /*
 Response action object for playcard action
@@ -119,7 +124,7 @@ exports.playCard = (performer_id, card_id) => {
   action.action_type = "play_card";
   action.card = card_id;
   return action;
-}
+};
 
 /*
 Response action object for calling uno action
@@ -134,11 +139,11 @@ Response action object for calling uno action
   }
 */
 exports.uno = (performer_id) => {
-  const action = {}
+  const action = {};
   action.performer = performer_id;
   action.action_type = "uno";
   return action;
-}
+};
 /*
 // Response action object for action skip
 @parameter
@@ -155,7 +160,7 @@ exports.skip = (performer_id) => {
   action.performer = performer_id;
   action.action_type = "skip";
   return action;
-}
+};
 
 /*
 // Response action object for action reverse
@@ -172,7 +177,7 @@ exports.reverse = (performer_id) => {
   action.performer = performer_id;
   action.action_type = "reverse";
   return action;
-}
+};
 
 /*
 Response action object for drawtwo action
@@ -201,7 +206,7 @@ exports.drawTwo = (performer_id, cards, is_performer) => {
     action.cards = cards;
   }
   return action;
-}
+};
 
 /*
 // Response action object for action wild
@@ -221,7 +226,7 @@ exports.wild = (performer_id, color) => {
   action.action_type = "wild";
   action.color = color;
   return action;
-}
+};
 
 /*
 Response action object for challenge action for played wild_draw_four
@@ -242,8 +247,7 @@ exports.challenge = (performer_id) => {
   action.performer = performer_id;
   action.action_type = "challenge";
   return action;
-}
-
+};
 
 /*
 Response action object for result action for played wild_draw_four
@@ -291,7 +295,14 @@ it will trigger the animation of the results (whether the next-player accept the
     }
     
 */
-exports.wildDrawFour = (performer_id, number_of_cards, is_challenged, is_succeed, cards, is_performer) => {
+exports.wildDrawFour = (
+  performer_id,
+  number_of_cards,
+  is_challenged,
+  is_succeed,
+  cards,
+  is_performer
+) => {
   const action = {};
   action.performer = performer_id;
   action.number_of_cards = number_of_cards;
@@ -303,7 +314,5 @@ exports.wildDrawFour = (performer_id, number_of_cards, is_challenged, is_succeed
     action.is_challenged = is_challenged;
     action.is_succeed = is_succeed;
   }
-  return action 
-}
-
-
+  return action;
+};

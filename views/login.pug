@@ -1,0 +1,58 @@
+extends layout/main-layout.pug
+
+block title
+  title Login
+block navbar
+  case (isLoggedIn)
+    when true
+      include navbar/nav-logged-in
+    default
+      include navbar/nav-logged-out
+
+block content
+  script(type="text/javascript" src="/js/validation/login-validation.js" defer)
+  // Toasts 
+  div(class="position-fixed top-0 end-0 p-3" style="z-index: 2000")
+    div(id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000")
+      div(class="toast-header")
+        strong(class="me-auto") Message 
+        small(class="text-muted") login
+        button(type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close")
+      div(class="toast-body" id="errors_message")
+  // Card for profile
+  div(class="container fluid ")
+    div(class="row d-flex justify-content-center align-items-center h-100")
+      div(class="col-md-9 col-lg-6 col-xl-5")
+        img(src="/images/logo.png" class="img-fluid" alt="Sample image")
+      div(class="col-md-8 col-lg-6 col-xl-4 offset-xl-1")
+        form
+          h1 Log in 
+          div(class="form-outline mb-3")
+            input(
+              type="text" 
+              name="username"
+              id="username"
+              class="form-control form-control-lg"
+              placeholder="Enter a valid username"  
+              )
+            label(class="form-label" for="username") Username 
+          div(class="form-outline mb-3")
+            input(
+              type="password" 
+              name="password" 
+              id= "password"
+              class="form-control form-control-lg"
+              placeholder="Enter password"
+              )
+            label(class="form-label" for="password") Password
+          div(class="text-center text-lg-start mt-4 pt-2")
+            button( 
+              type="button" 
+              class="btn btn-primary btn-lg"
+              style="padding-left: 2.5rem padding-right: 2.5rem;"
+              onClick="onSubmitLogin()"
+            ) Login 
+            p(class="medium fw-bold mt-2 pt-1 mb-0") Don't have an account?
+              a(href="/signup" class="link-danger") Click here
+        br
+        br

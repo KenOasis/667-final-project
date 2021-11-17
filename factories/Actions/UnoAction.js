@@ -1,16 +1,16 @@
-const Action = require('./Action');
+const Action = require("./Action");
 
-class UnoAction extends Action{
+class UnoAction extends Action {
   constructor(performer) {
     super(performer);
-    this._type = "uno"
+    this._type = "uno";
   }
 
   action() {
     return {
       performer: this._performer,
-      type: this._type
-    }
+      type: this._type,
+    };
   }
 }
 

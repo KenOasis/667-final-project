@@ -7,8 +7,8 @@ class Action {
   action() {
     return {
       performer: this._performer,
-      type: this._type
-    }
+      type: this._type,
+    };
   }
 }
 

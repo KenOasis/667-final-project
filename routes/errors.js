@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const errorController = require('../controllers/static/errors');
+const errorController = require("../controllers/static/errors");
 
 router.use(errorController.Error404);
 

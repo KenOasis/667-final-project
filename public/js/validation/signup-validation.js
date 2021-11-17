@@ -2,7 +2,7 @@ const username = document.getElementById("username");
 const email = document.getElementById("email");
 const pw = document.getElementById("password");
 const confirmPW = document.getElementById("confirmPassword");
-const liveToast = document.getElementById('signupToast');
+const liveToast = document.getElementById("signupToast");
 
 const feedback_username = document.getElementById("feedback_username");
 const feedback_email = document.getElementById("feedback_email");
@@ -75,7 +75,6 @@ const onSubmitSignup = () => {
     password: pw.value,
     confirm_password: confirmPW.value,
   };
-  
 
   if (onSubmitValidation()) {
     fetch(url, {
@@ -88,26 +87,26 @@ const onSubmitSignup = () => {
       .then((response) => response.json())
       .then((results) => {
         if (results.errors) {
-          if(liveToast) {
+          if (liveToast) {
             let errors = results.errors;
             let errorMsg = `<b class="text-danger">{${errors[0].param}} : ${errors[0].msg}</b>`;
-            document.getElementById('errors_message').innerHTML = errorMsg
+            document.getElementById("errors_message").innerHTML = errorMsg;
             var toast = new bootstrap.Toast(liveToast);
             toast.show();
           }
         } else {
-          // success 
+          // success
           if (results.url) {
             window.location.href = results.url;
           }
         }
       })
       .catch((err) => {
-        if(liveToast) {
+        if (liveToast) {
           let errorMsg = `<b class="text-danger">${err.name} : ${err.message}/b>`;
-          document.getElementById('errors_message').innerHTML = errorMsg
+          document.getElementById("errors_message").innerHTML = errorMsg;
           var toast = new bootstrap.Toast(liveToast);
-          toast.show()
+          toast.show();
         } else {
           console.log(err);
         }

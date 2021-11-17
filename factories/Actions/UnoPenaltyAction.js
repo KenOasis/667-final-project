@@ -1,6 +1,6 @@
-const Action = require('./Action');
+const Action = require("./Action");
 
-class UnoPenaltyAction extends Action{
+class UnoPenaltyAction extends Action {
   constructor(performer, cards, receiver) {
     super(performer);
     this._type = "uno_penalty";
@@ -23,6 +23,6 @@ class UnoPenaltyAction extends Action{
   }
 }
 
-module.exports = UnoPenaltyAction
+module.exports = UnoPenaltyAction;
 
 module.exports = UnoPenaltyAction;
