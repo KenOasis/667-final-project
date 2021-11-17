@@ -1,4 +1,4 @@
-const host = location.host;
+const host = location.host + "/lobby";
 const socket = io(host);
 
 // socket event listener
