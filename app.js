@@ -5,7 +5,7 @@ if (process.env.NODE_ENV === "development") {
 const express = require("express");
 const path = require("path");
 const app = express();
-
+const socketIO = require("./socket/socket");
 // Setup for session
 const session = require("express-session");
 const sequelizeStore = require("connect-session-sequelize")(session.Store);
@@ -64,15 +64,19 @@ app.use(errorRoutes.routes);
 let port_number = process.env.PORT || 3000;
 const server = app.listen(port_number);
 
-const io = require("./socket/socket").init(server);
+const io = socketIO.init(server);
+socketIO.initNameSpace();
 // @references: https://github.com/socketio/socket.io/blob/master/examples/passport-example/index.js
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
-io.use(wrap(sessionMiddleware));
-io.use((socket, next) => {
-  if (socket.request.session.userId) {
-    next();
-  } else {
-    next(new Error("Unauthorize"));
-  }
-});
+
+for (const key of io._nsps.keys()) {
+  io.of(key).use(wrap(sessionMiddleware));
+  io.of(key).use((socket, next) => {
+    if (socket.request.session.userId) {
+      next();
+    } else {
+      next(new Error("Unauthorize"));
+    }
+  });
+}
