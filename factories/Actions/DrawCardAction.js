@@ -1,7 +1,7 @@
-const Action = require('./Action');
+const Action = require("./Action");
 
-class DrawCardAction extends Action{
-  constructor(performer, card_id, receiver){
+class DrawCardAction extends Action {
+  constructor(performer, card_id, receiver) {
     super(performer);
     this._type = "draw_card";
     this._receiver = receiver;
@@ -9,11 +9,11 @@ class DrawCardAction extends Action{
       this._card_id = card_id;
     }
   }
-  
+
   action() {
     const obj = {
       performer: this._performer,
-      type: this._type
+      type: this._type,
     };
     if (this._performer === this._receiver) {
       obj.card_id = this._card_id;

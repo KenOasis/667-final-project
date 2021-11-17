@@ -1,10 +1,10 @@
-const testUsers = require('../db/test_users');
+const testUsers = require("../db/test_users");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('users', testUsers);
+    await queryInterface.bulkInsert("users", testUsers);
   },
-  async : (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('users', null, {});
-  }
-}
+  async: (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete("users", null, {});
+  },
+};
