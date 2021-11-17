@@ -1,38 +1,35 @@
-const db = require('../../models/');
-const Games = db['games'];
-const shuffle = require('../../util/shuffle')
+const db = require("../../models/");
+const Games = db["games"];
+const shuffle = require("../../util/shuffle");
 exports.createGame = async (name) => {
   try {
-    const user = await Games.create(
-      {
-        name
-      }
-    );
+    const user = await Games.create({
+      name,
+    });
 
     return user;
-    
   } catch (err) {
     console.error(err);
     return null;
   }
-}
+};
 
 exports.getDirection = async (id) => {
   try {
     const game = await Games.findOne({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
     if (game) {
       return game.direction;
     }
-    return null
+    return null;
   } catch (err) {
     console.error(err);
     return null;
   }
-}
+};
 
 exports.initialMatching = async (id) => {
   try {
@@ -50,7 +47,7 @@ exports.initialMatching = async (id) => {
         "six",
         "seven",
         "eight",
-        "nine"
+        "nine",
       ])[0];
       game.save();
       return true;
@@ -60,7 +57,7 @@ exports.initialMatching = async (id) => {
     console.error(err);
     return false;
   }
-}
+};
 
 exports.getMatching = async (id) => {
   try {
@@ -71,12 +68,12 @@ exports.getMatching = async (id) => {
 
       return {
         color: matching_color,
-        number: matching_number
-      }
+        number: matching_number,
+      };
     }
     return null;
   } catch (err) {
     console.error(err);
     return null;
   }
-}
+};

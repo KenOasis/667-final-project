@@ -21,7 +21,7 @@ exports.getTransition = (req, res, next) => {
   const description = req.query.description;
   const redirect_path = req.query.redirect_path;
   const page_name = req.query.page_name;
-  const isLoggedIn = (req.session.isLoggedIn === true ? true : false);
+  const isLoggedIn = req.session.isLoggedIn === true ? true : false;
   if (title && description && redirect_path && page_name) {
     res.status(200).render("transition", {
       isLoggedIn: isLoggedIn,

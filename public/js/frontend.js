@@ -1,44 +1,26 @@
 const game_state = { // this is the game_state hold at the front-end
     cards_deck: 45, // how many cards still in the deck
 
-    game_direction: 'clockwise', // game direction
-
-    game_order: [1, 9, 6, 12], // player order, left->right is clockwise, right->left is counter-clockwise 
-
-    current_player: 9,
-
-    matching: { // matching status for the current turn
-        color: "green",
-        number: 9,
-    },
-
-    players: [{ // cards of players and whether he/she is in UNO (ready to win ?)
-            user_id: 1,
-            uno: false,
-            // card_players: [1, 22, 84, 12, 47],   // non-current_player could only see the number_of cards
-            number_of_cards: 7
-        }, {
-            user_id: 6,
-            uno: false,
-            // card_players: [8, 33, 100, 23, 75, 43],
-            number_of_cards: 7
-        }, {
-            user_id: 9,
-            uno: false,
-            card_players: [108, 1, 22, 3, 4, 5, 6],
-            number_of_cards: 7
-        },
-        {
-            user_id: 12,
-            uno: true,
-            // card_players: [6],
-            number_of_cards: 7
-        }
-    ],
-
-    discards: [9, 12, 4, 56],
-    // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
-}
+const simple_game_state = {
+  current_play: 9,
+  current_color: "green",
+  player_a: {
+    player_id: 9,
+    cards: [80, 90, 100, 22],
+  },
+  player_b: {
+    player_id: 10,
+    cards: [80, 90, 100, 22],
+  },
+  player_c: {
+    player_id: 11,
+    cards: [80, 90, 100, 22],
+  },
+  player_d: {
+    player_id: 12,
+    cards: [80, 90, 100, 22],
+  },
+};
 
 /**
  *  fund_state_player is used for get the player cards detail information
@@ -93,182 +75,11 @@ function sitting_players() {
  */
 
 function card_img_element(card_id) {
-    const li = document.createElement('li');
-    li.id = "card_" + card_id.toString();
-    li.className = "list-group-item p-1";
-    const card_img = document.createElement("img")
-    card_img.src = cardModule.card_url_generator(card_id);
-    card_img.id = card_id;
-    card_img.className = "showCard";
-    card_img.addEventListener('click', function() {
-        showWholeCard(card_id);
-    })
-    li.appendChild(card_img)
-    return li;
-}
-/**
- * showWholdCard(card_id) is used for click event
- * first click => card_li_element will show the whole cards and up
- * second click on same card => back to the line
- *
- */
-
-function showWholeCard(card_id) {
-    const card = document.getElementById("card_" + card_id.toString());
-    const card_zIndex = card.style.zIndex;
-    if (card_zIndex == 1000) {
-        card.style.zIndex = 0;
-        card.style.top = 0;
-        card.style.border = 0;
-        card_current_Style("player_" + game_state.current_player.toString())
-    } else {
-        card.style.zIndex = 1000;
-        card.style.top = "-40px"
-        card.style.border = "3px solid #0000FF"
-    }
-
-}
-/**
- * create_img_element() is create the backside card in html element
- * it should be userd in left player and right player
- * example:
- * opp_card_rol_show() 
- * return:
- * <li class="list-group-item p-2"><img src=""/images/uno_cards/backrow.jpg"" class="showColCard"></li>
- * 
- */
-
-function opp_card_col_show() {
-    const li = document.createElement('li');
-    li.className = "list-group-item p-1";
-    const card_img = document.createElement("img")
-    card_img.src = "/images/uno_cards/backrow.jpg"
-    card_img.className = "showColCard";
-    li.appendChild(card_img)
-    return li;
-}
-/**
- * create_img_element() is create the backside card in html element
- * it should be userd in left player and right player
- * example:
- * card_img_element()
- * return:
- * <li class="list-group-item p-2"><img src=""/images/uno_cards/backrow.jpg"" class="showColCard"></li>
- * 
- */
-function opp_card_rol_show() {
-    const li = document.createElement('li');
-    li.className = "list-group-item p-1";
-    const card_img = document.createElement("img")
-    card_img.src = "/images/uno_cards/backcol.jpg"
-    card_img.className = "showCard";
-    li.appendChild(card_img)
-    return li;
-}
-
-/**
- * create_parent_col_div() is usered create the container to player's cards in html element
- * by player_id
- * it should be used to store left player's cards and right player's cards
- * 
- * example:
- * create_parent_col_div(7)
- * return:
- * <ul id="player_7" class="list_group"> </ul> 
- * 
- */
-
-function create_parent_col_div(player_id) {
-    const ul = document.createElement("ul");
-    ul.id = "player_" + player_id.toString();
-    ul.className = "list-group";
-    return ul;
-}
-
-
-
-
-/**
- * create_parent_row_div(player_id) is usered create the container to player's cards in html/pug element
- * by player_id
- * it should be used to store top player's cards and bottom player's cards
- * 
- * example:
- * create_parent_col_div(7)
- * return:
- * like
- * <ul id="player_7" class="list-group list-group-horizontal"> </ul> 
- * 
- */
-
-function create_parent_row_div(player_id) {
-    const ul = document.createElement("ul");
-    ul.id = "player_" + player_id.toString();
-    ul.className = "list-group list-group-horizontal";
-    return ul;
-}
-/**
- * get_player_sit()  is used to sit down 4 players to their positions 
- * and set up their cards containers to html/pug
- * 
- */
-function get_player_sit() {
-    let sitting_order = sitting_players();
-
-    const current_player = document.getElementById("container_bottom");
-    const current_bottom = create_parent_row_div(sitting_order[0]);
-    current_player.appendChild(current_bottom);
-
-    const left_player = document.getElementById("container_left");
-    const current_left = create_parent_col_div(sitting_order[1]);
-    left_player.appendChild(current_left);
-
-    const top_player = document.getElementById("container_top");
-    const current_top = create_parent_row_div(sitting_order[2]);
-    top_player.appendChild(current_top);
-
-    const right_player = document.getElementById("container_right");
-    const current_right = create_parent_col_div(sitting_order[3]);
-    right_player.appendChild(current_right);
-}
-
-/**
- * read_current_card(player_id) is used to add the card to current
- * player's container
- * 
- * siting the player and seting up card container before using the function
- * 
- */
-function read_current_card(player_id) {
-    const player_game_state = find_state_player(player_id)
-    const current_div = document.getElementById("player_" + player_id.toString())
-    let left = 0;
-    let play_cards_state = player_game_state[0].card_players;
-    for (let i in play_cards_state) {
-        let img = card_img_element(play_cards_state[i]);
-        img.style.left = "-" + left.toString() + "px"
-        current_div.appendChild(img);
-        left = left + 40;
-    }
-}
-/**
- * read_opp_card(player_id) is used to add the card to left and right
- * player's container
- * 
- * siting the player and seting up card container before using the function
- * 
- */
-function read_opp_card(player_id) {
-    const player_game_state = find_state_player(player_id)
-    const current_div = document.getElementById("player_" + player_id.toString())
-    let top = 0;
-    let number_of_card = player_game_state[0].number_of_cards;
-    for (let i = 0; i < number_of_card; i++) {
-        let img = opp_card_col_show();
-        img.style.top = "-" + top.toString() + "px"
-        current_div.appendChild(img)
-        top = top + 55;
-    }
+  const card_img = document.createElement("img");
+  card_img.src = cardmodule.card_url_generator(card_id);
+  card_img.id = card_id;
+  card_img.className = "item-hl p-0 rounded showCard";
+  return card_img;
 }
 /**
  * read_current_card(player_id) is used to add the card to top
@@ -342,16 +153,7 @@ function init_game_table() {
 
 init_game_table()
 
-
-/** 
- * add_card_to_current_player()
- * 
- * Testing function for adding card and style again the cards
- *@param player_id and card_list
- * 
- * 
- */
-
+function opp_card_show() {}
 
 function add_card_to_current_player(player_id, card_list) {
     const card_container = document.getElementById("player_" + player_id.toString())
@@ -685,7 +487,9 @@ let card_top_style = () => {
 //             return "result"
 //         })
 
-//         })
+// }
 
-//
-//
+// cardRowStyle("card_container")
+// cardRowStyle("player1")
+// cardColStyle("player2")
+// cardColStyle("player3")

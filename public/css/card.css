@@ -27,69 +27,43 @@
     height: 160px;
     width: 440px;
 }
+.matching{
+    height:100px;
+    text-align: center;
+}
+#status{
+    height:200px;
+    border: 2px solid gray;
+}
+.matching{
+    height: 140px;
+    border: 1px solid gray;
+}
+#card_controller{
+    position: relative;
+    height: 38px;
+    width: 440px;
+}
+.cover{
+    position: relative;
+    background-color: white;
+    height: 38px;
+    width: 420px;
+    top: -38px;
+    z-index: 1;
+
+}
+#uno{
+    position: relative;
+    z-index: 0;
+}
+#play{
+    position: relative;
+    z-index: 0;
+}
 
 /*---------------------------------------------------------------- */
-/* .hand{
-    position: relative;
-}
-.hand .card{
-    position:absolute;
-}
-.back{
-    height:87px; 
-    width:60px;
-    background-position-x:-575px;
-    background-position-y:-93px;
-    background-image:url('../images/uno_cards/getBack.png');
-}
-.back{
-    height:87px; 
-    width:60px;
-    background-position-x:-575px;
-    background-position-y:-93px;
-    background-image:url('../images/uno_cards/getBack.png');
-}
-.cards {
-    display:flex;
-    border:solid red 1px;
-    padding:70px;
-}
-.card:hover{
-    top: -50px;
-    /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
-    /*width:200px; when cards are greater than 50, width 200px will be good*/
-    /* border-bottom: 50px transparent; 
-    
-}*/
-#discard-pile{
-    text-align: center;
-}
-#top-player{
-    justify-content: center;
-}
-#leave-btn{
-    float:right;
-}
-#main-player{
-    position:relative;
-    justify-content: center;
-    /* right:200px; */
-    padding-right:200px;
 
-}
-#game-chat{
-    position: relative;
-    top:16px;
-}
-#game_controller{
-    position:relative;
-    bottom:100px;
-    left:600px;
-    
-}
-#discard-pile{
-    text-align: center;
-} 
 
 .card{
     display: inline-block;
@@ -98,7 +72,7 @@
     background-image:url('../images/uno_cards/card-sets.jpg');
     background-size:1040px 650px;
     filter: brightness(95%);
-    border: 2px solid brown;
+    border: 2px solid black;
     
     
 }
@@ -109,7 +83,7 @@
     position:absolute;
 }
 .card:hover{
-    top: -50px;
+    top: -15px;
     /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
     width:75px; /*when cards are greater than 50, width 200px will be good*/
     border-bottom: 50px transparent;
