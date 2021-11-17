@@ -328,6 +328,6 @@ let CardModule = {
   ],
   get_card_detail(id) {
     let card_info = this.cards.filter((card) => card.card_id.includes(id));
-    return card_info;
+    return card_info[0];
   },
 };

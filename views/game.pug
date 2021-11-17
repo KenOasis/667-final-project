@@ -30,6 +30,11 @@ html(lang="en")
         #container_top(class="col-md-4 top_bottom ")
           
         div(class="col-md-2") Top_player Avatar
+<<<<<<< HEAD
+=======
+          div(class="" id="top_avatar")
+            img()
+>>>>>>> 9baeb9abbc328630b732bcad68ca77e08ec9851b
         div(class="col-md-2") 
           botton#leave(class="btn btn-outline-danger") Leave
       div(class ="row")
@@ -37,6 +42,7 @@ html(lang="en")
         div(class="col-md-2 left_right")
           #container_left(class = "row")    
         div(class="col-md-4" )
+<<<<<<< HEAD
           div(class="row")
             div(class="col-md-3")
             div(class="col-md-6")
@@ -53,6 +59,21 @@ html(lang="en")
           button(type = "button" class = "btn btn-outline-danger") PLAY
         div(class="col-md-2") #number
         div(class="col-md-2") 
+=======
+          div(class = "row")
+            div(class = "col-md-12" id = "status") System prompt area
+          div(class="row")
+            div(class="col-md-4 matching")
+              h1(id = "match_number")
+            div(class="col-md-8 hand" id = "discard_pile")
+          div(class="row")
+            div(class="col-md-12" style="text-align:end" id ="card_controller")
+              button(type = "button" class = "btn btn-outline-danger" id="uno") UNO
+              button(type = "button" class = "btn btn-outline-danger" id="play") PLAY
+              div(class="cover" id="cover_button")
+        #container_right(class="col-md-2 left_right")
+        div(class="col-md-2") right_player Avatar 
+>>>>>>> 9baeb9abbc328630b732bcad68ca77e08ec9851b
       div(class = "row")
         div(class="col-md-4 p-0")
           #messages(class = "col" style = "border:2px solid #dedede; height:120px; overflow-y:auto")
@@ -61,9 +82,15 @@ html(lang="en")
             div(class = "input-group-append")
               button(type = "button" class = "btn btn-outline-danger") Send
         #container_bottom(class="col-md-8 top_bottom")
+<<<<<<< HEAD
     script(type="text/javascript" src="/js/game/socket.js")
     script(type="text/javascript" src="/js/game/card.js" )
     script(type="text/javascript" src="/js/game/game-function.js" )
+=======
+      script(type="text/javascript" src="/js/game/card.js" )
+      script(type="text/javascript" src="/js/game/game-function.js" )
+      script(type="text/javascript" src="/js/game/game-data.js" )
+>>>>>>> 9baeb9abbc328630b732bcad68ca77e08ec9851b
   br
   br
 
