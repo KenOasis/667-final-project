@@ -49,7 +49,7 @@ const constructUserElement = (user) => {
   const li = document.createElement("li");
   li.className =
     "list-group-item d-flex justify-content-between align-items-center";
-  li.id = "user-" + user.username + user.id;
+  li.id = "user-" + user.username;
   const userNameDiv = document.createElement("div");
   userNameDiv.className = "badge bg-light text-primary";
   userNameDiv.innerHTML = user.username;

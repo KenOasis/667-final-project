@@ -15,12 +15,10 @@ socket.on("userJoinLobby", (data) => {
     toast.show();
   }
   if (data.username !== whoami) {
-    const queryPattern = `[id^="user-${data.username}"]`;
-    let currentUser = document.querySelector(queryPattern);
+    let currentUser = document.getElementById(`user-${data.username}`);
     const user = {
       username: data.username,
       status: data.status,
-      id: data.id,
     };
     const newUser = constructUserElement(user);
     if (currentUser === null) {
@@ -39,8 +37,7 @@ socket.on("userLeaveLobby", (data) => {
     toast.show();
   }
   if (data.user.username !== whoami) {
-    const queryPattern = `[id^="user-${data.user.username}"]`;
-    let currentUser = document.querySelector(queryPattern);
+    let currentUser = document.getElementById(`user-${data.user.username}`);
     if (currentUser !== null) {
       userListContainer.removeChild(currentUser);
     }
@@ -48,11 +45,10 @@ socket.on("userLeaveLobby", (data) => {
   }
 });
 
-socket.on("updateUserStatus", (user) => {
-  const queryPattern = `[id^="user-${user.username}"]`;
-  let currentUser = document.querySelector(queryPattern);
+socket.on("updateUserStatus", (data) => {
+  let currentUser = document.getElementById(`user-${data.username}`);
   if (currentUser !== null) {
-    const newUser = constructUserElement(user);
+    const newUser = constructUserElement(data);
     userListContainer.insertBefore(newUser, currentUser);
     userListContainer.removeChild(currentUser);
   }
