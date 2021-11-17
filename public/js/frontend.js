@@ -1,43 +1,35 @@
 const cardmodule = require("./card");
 
-
 const simple_game_state = {
-    current_play: 9,
-    current_color: "green",
-    player_a: {
-        player_id: 9,
-        cards: [80, 90, 100, 22]
-    },
-    player_b: {
-        player_id: 10,
-        cards: [80, 90, 100, 22]
-    },
-    player_c: {
-        player_id: 11,
-        cards: [80, 90, 100, 22]
-    },
-    player_d: {
-        player_id: 12,
-        cards: [80, 90, 100, 22]
-    }
-}
+  current_play: 9,
+  current_color: "green",
+  player_a: {
+    player_id: 9,
+    cards: [80, 90, 100, 22],
+  },
+  player_b: {
+    player_id: 10,
+    cards: [80, 90, 100, 22],
+  },
+  player_c: {
+    player_id: 11,
+    cards: [80, 90, 100, 22],
+  },
+  player_d: {
+    player_id: 12,
+    cards: [80, 90, 100, 22],
+  },
+};
 
 function card_img_element(card_id) {
-    const card_img = document.createElement("img")
-    card_img.src = cardmodule.card_url_generator(card_id);
-    card_img.id = card_id;
-    card_img.className = "item-hl p-0 rounded showCard";
-    return card_img;
-
+  const card_img = document.createElement("img");
+  card_img.src = cardmodule.card_url_generator(card_id);
+  card_img.id = card_id;
+  card_img.className = "item-hl p-0 rounded showCard";
+  return card_img;
 }
 
-function opp_card_show() {
-
-
-}
-
-
-
+function opp_card_show() {}
 
 // let cardRowStyle = (id) => {
 //     console.log(id)
@@ -148,7 +140,6 @@ function opp_card_show() {
 //         })
 
 // }
-
 
 // cardRowStyle("card_container")
 // cardRowStyle("player1")

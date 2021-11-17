@@ -1,16 +1,16 @@
-const db = require('../../models/');
-const Users = db['users'];
-const GameUsers = db['game_users'];
-const Games = db['games'];
-const GameCards = db['game_cards']
-const Cards = db['cards'];
-const { Op } = require('sequelize');
-const shuffle = require('../../util/shuffle');
+const db = require("../../models/");
+const Users = db["users"];
+const GameUsers = db["game_users"];
+const Games = db["games"];
+const GameCards = db["game_cards"];
+const Cards = db["cards"];
+const { Op } = require("sequelize");
+const shuffle = require("../../util/shuffle");
 
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 Games.hasMany(GameUsers, { foreignKey: "game_id" });
 
-Users.hasMany(GameCards, { foreignKey: "user_id" })
+Users.hasMany(GameCards, { foreignKey: "user_id" });
 
 Games.hasMany(GameCards, { foreignKey: "game_id" });
 
@@ -23,29 +23,27 @@ exports.initialGameCards = async (game_id, user_id, card_id, draw_order) => {
       user_id,
       card_id,
       draw_order,
-    })
+    });
 
     return game_card;
-  }
-  catch(err) {
+  } catch (err) {
     console.error(err);
     return null;
   }
-}
+};
 
 exports.initialPlayersDeck = async (game_id) => {
   try {
-
     const game_users = await GameUsers.findAll({
       where: {
-        game_id
-      }
+        game_id,
+      },
     });
 
     let user_ids;
 
     if (game_users && game_users.length) {
-      user_ids = game_users.map(game_user => game_user.user_id);
+      user_ids = game_users.map((game_user) => game_user.user_id);
     } else {
       return null;
     }
@@ -55,10 +53,10 @@ exports.initialPlayersDeck = async (game_id) => {
         where: {
           game_id,
           in_deck: true,
-          discarded: 0
+          discarded: 0,
         },
         order: [["draw_order", "ASC"]],
-        limit: 7
+        limit: 7,
       });
       for await (const game_card of game_cards) {
         game_card.user_id = user_id;
@@ -71,7 +69,7 @@ exports.initialPlayersDeck = async (game_id) => {
     console.error(err);
     return null;
   }
-}
+};
 
 exports.getCardDeck = async (game_id) => {
   try {
@@ -79,8 +77,8 @@ exports.getCardDeck = async (game_id) => {
       where: {
         game_id,
         in_deck: true,
-        discarded: 0
-      }
+        discarded: 0,
+      },
     });
 
     return card_deck;
@@ -88,40 +86,40 @@ exports.getCardDeck = async (game_id) => {
     console.error(err);
     return null;
   }
-}
+};
 
 exports.getPlayers = async (game_id, current_user_id) => {
   try {
     const game_users = await GameUsers.findAll({
       where: {
-        game_id
-      }
+        game_id,
+      },
     });
     let user_ids = [];
     if (game_users && game_users.length) {
-      game_users.forEach(game_user => {
+      game_users.forEach((game_user) => {
         user_ids.push(game_user.user_id);
       });
     } else {
       return null;
     }
-    const players = []
+    const players = [];
     for await (const user_id of user_ids) {
       const game_user = await GameUsers.findOne({
         where: {
           game_id,
           user_id,
-        }
+        },
       });
       const game_cards = await GameCards.findAll({
         where: {
           game_id,
           user_id,
           in_deck: false,
-          discarded: 0
-        }
+          discarded: 0,
+        },
       });
-      const player = {}
+      const player = {};
 
       if (game_user) {
         player.user_id = game_user.user_id;
@@ -133,7 +131,7 @@ exports.getPlayers = async (game_id, current_user_id) => {
         player.number_of_cards = game_cards.length;
 
         if (current_user_id === user_id) {
-          player.cards = game_cards.map(game_card => game_card.card_id);
+          player.cards = game_cards.map((game_card) => game_card.card_id);
         }
       } else {
         return null;
@@ -145,8 +143,7 @@ exports.getPlayers = async (game_id, current_user_id) => {
     console.error(err);
     return null;
   }
-}
-
+};
 
 exports.getDiscards = async (game_id) => {
   try {
@@ -154,16 +151,16 @@ exports.getDiscards = async (game_id) => {
       where: {
         game_id,
         discarded: {
-          [Op.gt]: 0
-        }
+          [Op.gt]: 0,
+        },
       },
       order: [["discarded", "DESC"]],
-      limit: 3
+      limit: 3,
     });
 
     let discards = [];
     if (game_cards && game_cards.length) {
-      game_cards.forEach(game_card => {
+      game_cards.forEach((game_card) => {
         discards.push(game_card.card_id);
       });
       return discards;
@@ -175,5 +172,4 @@ exports.getDiscards = async (game_id) => {
     console.error(err);
     return null;
   }
-}
-
+};

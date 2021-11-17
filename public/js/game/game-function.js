@@ -17,14 +17,15 @@ let card_tool ={
     set_cards(card_id,style="normal"){
        const card = document.createElement('div');
        const card_detail = CardModule.get_card_detail(card_id);
+       console.log(card_detail.card_values);
        if(style == "normal"){
         card.id = "card_" + card_id.toString()
        }
        if(card_detail.card_color === "none"){
-           card.className=" card " + card_detail.card_value
+           card.className=" card " + card_detail.card_value;
        }
        else{
-           card.className=" card " + card_detail.card_color + " " +card_detail.card_value
+           card.className=" card " + card_detail.card_color + " " +card_detail.card_value;
        }
        return card;
    },

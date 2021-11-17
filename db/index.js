@@ -1,4 +1,4 @@
-const pgp = require('pg-promise')();
+const pgp = require("pg-promise")();
 
 // Heroku Postgresql DO NOT SUPPORT SSL with free tier
 // ADD Config Vars "PGSSLMODE:no-verify" at the app setting

@@ -39,9 +39,6 @@ For the routes:
 
 * (GET)&emsp; /game/game_state &emsp;&emsp; Return a JSON game_state to test in frontend
   
-* (POST)&emsp;/game/initial &emsp;&check;
-  
-* (POST)&emsp;/game/load  &emsp; &check; (need to decide render to a new page or return a json);
 * /game &emsp;&emsp; under construction
   
 # Project Organization
@@ -52,13 +49,16 @@ For the routes:
 - db 
    - drivers &emsp;&emsp;&emsp; driver for db query
    - index.js &emsp;&emsp;&cross; Not used anymore
+- factories  
 - middleware 
 - migrations
 - models
 - public
    - css
    - images
-   - lobby &emsp;&emsp;&emsp; js file for lobby events
+   - lobby &emsp;&emsp;&emsp; js file for lobby 
+   - loading
+   - game
    - validation &emsp;&emsp;&emsp; data format validation file
 - routes
 - seeders
