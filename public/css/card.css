@@ -18,12 +18,12 @@
 /* ----------------Setting the boxk fro layout the game page------------------- */
 
 .left_right{
-    border: 2px solid blue;
+    /* border: 2px solid blue; */
     height: 390px;
     width: 220px;
 }
 .top_bottom{
-    border: 2px solid blue;
+    /* border: 2px solid blue; */
     height: 160px;
     width: 440px;
 }
@@ -37,7 +37,7 @@
 }
 .matching{
     height: 140px;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
 }
 #card_controller{
     position: relative;

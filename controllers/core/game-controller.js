@@ -27,6 +27,7 @@ exports.joinGame = async (req, res, next) => {
             game_id: game_id,
             user_id: game_users.id,
             username: game_users.username,
+            points: game_users.points,
           };
         });
       } else {

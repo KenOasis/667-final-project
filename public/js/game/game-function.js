@@ -77,10 +77,10 @@ let card_tool ={
         return obj;
     },
     highlight_current(player_id){
-        const boder = document.getElementById("player_" + player_id.toString());
-        const parent = boder.parentElement
-        parent.style.border="4px solid #FF0000"
-        parent.style.borderRadius="15px"
+        const user = document.getElementById("user_" + player_id.toString());
+        const avater = user.getElementsByClassName("avater")[0];
+        avater.style.border="4px solid #FF0000"
+        avater.style.borderRadius="15px"
     }
 
    }
