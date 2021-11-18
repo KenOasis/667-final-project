@@ -61,6 +61,45 @@ const game_state = {  // this is the game_state hold at the front-end
   }
 
 
-  const game_helper = new game_state_helper(game_state);
-  game_helper.set_players_location()
-  game_helper.set_game_state_to_page()
+
+  let card_action = {
+
+
+
+
+
+  }
+
+  function game_init(game_stat){
+    const game_helper = new game_state_helper(game_state);
+    game_helper.set_players_location();
+    setTimeout(function(){
+      game_helper.set_game_state_to_page();
+    },3000)
+
+  }
+  game_init(game_state);
+
+
+
+
+  function play_card(){
+    let obj = card_tool.check_clicked_card(game_state.receiver)
+    if(obj.matching ==="True"){
+      const card = CardModule.get_card_detail(obj.card_id);
+      if(card.card_value === "wild"){
+        const modal = document.getElementById("modal");
+        modal.classList.add("show");
+        modal.style.display="block";
+        
+      }
+    }
+
+  }
+  
+
+  function color_selector(event){
+    // event.preventDefault();
+    console.log(event.target);
+
+  }

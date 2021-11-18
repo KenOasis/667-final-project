@@ -61,7 +61,11 @@
     position: relative;
     z-index: 0;
 }
-
+.color_select{
+    height: 50px;
+    width: 100px;
+    margin: 5px;
+}
 /*---------------------------------------------------------------- */
 
 

@@ -48,7 +48,7 @@ html(lang="en")
           div(class="row")
             div(class="col-md-12" style="text-align:end" id ="card_controller")
               button(type = "button" class = "btn btn-outline-danger" id="uno") UNO
-              button(type = "button" class = "btn btn-outline-danger" id="play") PLAY
+              button(type = "button" class = "btn btn-outline-danger" id="play" onclick="play_card()") PLAY
               div(class="cover" id="cover_button")
         #container_right(class="col-md-2 left_right")
         div(class="col-md-2") right_player Avatar 
@@ -60,9 +60,20 @@ html(lang="en")
             div(class = "input-group-append")
               button(type = "button" class = "btn btn-outline-danger") Send
         #container_bottom(class="col-md-8 top_bottom")
-      script(type="text/javascript" src="/js/game/card.js" )
-      script(type="text/javascript" src="/js/game/game-function.js" )
-      script(type="text/javascript" src="/js/game/game-data.js" )
+    //-  Modal
+    div(class="modal fade" id= "modal" tabindex="-1" role="dialog" aria-labelledby="model_title" aria-hidden="true")
+      div(class="modal-dialog modal-dialog-centered" role="document")
+        div(class="modal-content")
+          div(class="modal-header")
+            h5(class="modal-title" id="model_title") Choose a color
+          div(class="modal-body")
+              button(class="btn btn-lg btn-success color_select" id="green" onclick="color_selector(this)" type="button")
+              button(class="btn btn-lg btn-danger color_select" id="red" onclick="color_selector(this)"  type="button")
+              button(class="btn btn-lg btn-warning color_select" id="yellow" onclick="color_selector(this)" type="button")
+              button(class="btn btn-lg btn-primary color_select" id="blue" onclick="color_selector(this)" type="button")
+    script(type="text/javascript" src="/js/game/card.js" )
+    script(type="text/javascript" src="/js/game/game-function.js" )
+    script(type="text/javascript" src="/js/game/game-action.js" )
   br
   br
 
