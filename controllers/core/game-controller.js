@@ -27,6 +27,7 @@ exports.joinGame = async (req, res, next) => {
             game_id: game_id,
             user_id: game_users.id,
             username: game_users.username,
+            points: game_users.points,
           };
         });
       } else {
@@ -88,7 +89,7 @@ exports.loadGameState = async (req, res, next) => {
       ) {
         const game_state = {
           game_id,
-          reciever: user_id,
+          receiver: user_id,
           card_deck,
           game_direction,
           game_order,
