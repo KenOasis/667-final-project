@@ -25,20 +25,28 @@ html(lang="en")
     input#user_list(type="hidden" value=(user_list))
     div(class="container fluid")
       div(class="row")
-        div(class="col-md-2") Space1
-        div(class="col-md-2") Draw
-          button(type = "button" class = "btn btn-outline-danger") Draw
+        div(class="col-md-2")
+        div(class="col-md-2" style="text-align: right;")
+          button(type = "button" id="draw" class = "btn draw_button") Deck
+          h6(id="card_deck" style="left: -30px;position: relative;") 45
         #container_top(class="col-md-4 top_bottom ")
           
-        div(class="col-md-2") Top_player Avatar
-          div(class="" id="top_avatar")
-            img()
+        div(class="col-md-2" id="top_user")
+          div(class="d-flex flex-column row-h1")
+            div(class="p-2 item-h1")
+              img(class="card-img-top avater" style="width: 5rem;" src="/images/profile/profile2.gif" alt="Card img top")
+            div(class="p-0 item-h1 name" ) 
+            div(class="p-0 item-h1 point") point:
         div(class="col-md-2") 
           botton#leave(class="btn btn-outline-danger") Leave
       div(class ="row")
-        div(class="col-md-2") left_player Avatar
-        div(class="col-md-2 left_right")
-          #container_left(class = "row")    
+        div(class="col-md-2" id="left_user")
+          div(class="d-flex flex-column row-h1" )
+            div(class="p-2 item-h1")
+              img(class="card-img-top avater" style="width: 10rem;" src="/images/profile/profile1.gif" alt="Card img top")
+            div(class="p-2 item-h1 name" ) 
+            div(class="p-2 item-h1 point") point:
+        div(class="col-md-2 left_right" id="container_left")
         div(class="col-md-4" )
           div(class = "row")
             div(class = "col-md-12" id = "status") System prompt area
@@ -49,10 +57,15 @@ html(lang="en")
           div(class="row")
             div(class="col-md-12" style="text-align:end" id ="card_controller")
               button(type = "button" class = "btn btn-outline-danger" id="uno") UNO
-              button(type = "button" class = "btn btn-outline-danger" id="play") PLAY
+              button(type = "button" class = "btn btn-outline-danger" id="play" onclick="play_card()") PLAY
               div(class="cover" id="cover_button")
         #container_right(class="col-md-2 left_right")
-        div(class="col-md-2") right_player Avatar 
+        div(class="col-md-2" id="right_user")
+          div(class="d-flex flex-column row-h1" )
+            div(class="p-2 item-h1")
+              img(class="card-img-top avater" style="width: 10rem;" src="/images/profile/profile3.gif" alt="Card img top")
+            div(class="p-2 item-h1 name" ) 
+            div(class="p-2 item-h1 point") point
       div(class = "row")
         div(class="col-md-4 p-0")
           #messages(class = "col" style = "border:2px solid #dedede; height:120px; overflow-y:auto")
@@ -61,11 +74,22 @@ html(lang="en")
             div(class = "input-group-append")
               button(type = "button" class = "btn btn-outline-danger") Send
         #container_bottom(class="col-md-8 top_bottom")
-      script(src="/socket.io/socket.io.js")
-      script(type="text/javascript" src="/js/game/socket.js")
-      script(type="text/javascript" src="/js/game/card.js" )
-      script(type="text/javascript" src="/js/game/game-function.js" )
-      script(type="text/javascript" src="/js/game/game-data.js" )
+    //-  Modal
+    div(class="modal fade" id= "modal" tabindex="-1" role="dialog" aria-labelledby="model_title" aria-hidden="true")
+      div(class="modal-dialog modal-dialog-centered" role="document")
+        div(class="modal-content")
+          div(class="modal-header")
+            h5(class="modal-title" id="model_title") Choose a color
+          div(class="modal-body")
+              button(class="btn btn-lg btn-success color_select" id="green" onclick="color_selector(this)" type="button")
+              button(class="btn btn-lg btn-danger color_select" id="red" onclick="color_selector(this)"  type="button")
+              button(class="btn btn-lg btn-warning color_select" id="yellow" onclick="color_selector(this)" type="button")
+              button(class="btn btn-lg btn-primary color_select" id="blue" onclick="color_selector(this)" type="button")
+    script(src="/socket.io/socket.io.js")
+    script(type="text/javascript" src="/js/game/card.js" )
+    script(type="text/javascript" src="/js/game/game-function.js" )
+    script(type="text/javascript" src="/js/game/game-init.js")
+    script(type="text/javascript" src="/js/game/game-action.js" )
   br
   br
 
