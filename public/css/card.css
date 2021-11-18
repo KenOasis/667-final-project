@@ -47,7 +47,7 @@
 .cover{
     position: relative;
     background-color: white;
-    height: 38px;
+    height: 39px;
     width: 420px;
     top: -38px;
     z-index: 1;
@@ -73,7 +73,6 @@
     background-size:1040px 650px;
     filter: brightness(95%);
     border: 2px solid black;
-    
     
 }
 .hand{
