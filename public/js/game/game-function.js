@@ -104,6 +104,7 @@ let card_tool ={
     arrange_players(){
         const order = this.game_state.game_order;
         const bottom_player = this.game_state.receiver;
+        console.log(bottom_player);
         const cut = order.indexOf(bottom_player);
         const left =order.slice(cut,order.lenght);
         const right = order.slice(0,cut);

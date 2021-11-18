@@ -22,6 +22,7 @@ html(lang="en")
         width="70"
         height="100"
         )
+    input#user_list(type="hidden" value=(user_list))
     div(class="container fluid")
       div(class="row")
         div(class="col-md-2")
@@ -34,10 +35,8 @@ html(lang="en")
           div(class="d-flex flex-column row-h1" id="top_user")
             div(class="p-2 item-h1")
               img(class="card-img-top" style="width: 5rem;" src="/images/profile/profile2.gif" alt="Card img top")
-            div(class="p-0 item-h1" )
-              h5 zhiling1
-            div(class="p-0 item-h1")
-              h6 point:
+            div(class="p-0 item-h1 name" ) 
+            div(class="p-0 item-h1 point") point:
         div(class="col-md-2") 
           botton#leave(class="btn btn-outline-danger") Leave
       div(class ="row")
@@ -45,10 +44,8 @@ html(lang="en")
           div(class="d-flex flex-column row-h1" id="left_user")
             div(class="p-2 item-h1")
               img(class="card-img-top" style="width: 10rem;" src="/images/profile/profile1.gif" alt="Card img top")
-            div(class="p-2 item-h1" )
-              h5 zhiling1
-            div(class="p-2 item-h1")
-              h6 point:
+            div(class="p-2 item-h1 name" ) 
+            div(class="p-2 item-h1 point") point:
         div(class="col-md-2 left_right")
           #container_left(class = "row")    
         div(class="col-md-4" )
@@ -68,10 +65,8 @@ html(lang="en")
           div(class="d-flex flex-column row-h1" id="right_user")
             div(class="p-2 item-h1")
               img(class="card-img-top" style="width: 10rem;" src="/images/profile/profile3.gif" alt="Card img top")
-            div(class="p-2 item-h1" )
-              h5 zhiling1
-            div(class="p-2 item-h1")
-              h6 point:
+            div(class="p-2 item-h1 name" ) 
+            div(class="p-2 item-h1 point") point
       div(class = "row")
         div(class="col-md-4 p-0")
           #messages(class = "col" style = "border:2px solid #dedede; height:120px; overflow-y:auto")
@@ -91,8 +86,10 @@ html(lang="en")
               button(class="btn btn-lg btn-danger color_select" id="red" onclick="color_selector(this)"  type="button")
               button(class="btn btn-lg btn-warning color_select" id="yellow" onclick="color_selector(this)" type="button")
               button(class="btn btn-lg btn-primary color_select" id="blue" onclick="color_selector(this)" type="button")
+    script(src="/socket.io/socket.io.js")
     script(type="text/javascript" src="/js/game/card.js" )
     script(type="text/javascript" src="/js/game/game-function.js" )
+    script(type="text/javascript" src="/js/game/game-init.js")
     script(type="text/javascript" src="/js/game/game-action.js" )
   br
   br

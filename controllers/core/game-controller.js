@@ -8,9 +8,48 @@ const shuffle = require("../../util/shuffle");
 const gameStateDummy = require("../../volatile/gameStateDummy");
 const gameListManager = require("../../volatile/gameListManager");
 
-const eventsLobby = require("../../socket/eventsLobby");
+const eventsGame = require("../../socket/eventsGame");
 
-exports.startGame = async (req, res, next) => {
+exports.joinGame = async (req, res, next) => {
+  const user_id = req.session.userId;
+  const username = req.session.userName;
+  const { game_id } = req.body;
+  try {
+    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
+    if (isInGame) {
+      const game_users_list = await gameUsersDriver.getGameUsersByGameId(
+        game_id
+      );
+      let user_list = [];
+      if (game_users_list) {
+        user_list = game_users_list.map((game_users) => {
+          return {
+            game_id: game_id,
+            user_id: game_users.id,
+            username: game_users.username,
+          };
+        });
+      } else {
+        throw new Error("fetch users list failed");
+      }
+      eventsGame.userJoin(game_id);
+      res.status(200).render("game", { user_list: JSON.stringify(user_list) });
+    } else {
+      res.status(403).json({
+        status: "forbidden",
+        message: "Join game failed. You are not in this game",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Joined game failed.",
+    });
+  }
+};
+
+exports.loadGameState = async (req, res, next) => {
   const user_id = req.session.userId;
   const { game_id } = req.body;
 
@@ -19,25 +58,25 @@ exports.startGame = async (req, res, next) => {
 
     if (isInGame) {
       const card_deck = await gameCardsDriver.getCardDeck(game_id);
-      console.log(card_deck);
+      // console.log(card_deck);
 
       const game_direction = await gamesDriver.getDirection(game_id);
-      console.log(game_direction);
+      // console.log(game_direction);
 
       const game_order = await gameUsersDriver.getGameOrder(game_id);
-      console.log(game_order);
+      // console.log(game_order);
 
       const current_player = await gameUsersDriver.getCurrentPlayer(game_id);
-      console.log(current_player);
+      // console.log(current_player);
 
       const matching = await gamesDriver.getMatching(game_id);
-      console.log(matching);
+      // console.log(matching);
 
       const players = await gameCardsDriver.getPlayers(game_id, user_id);
-      console.log(players);
+      // console.log(players);
 
       const discards = await gameCardsDriver.getDiscards(game_id);
-      console.log(discards);
+      // console.log(discards);
       if (
         card_deck &&
         game_direction &&
@@ -49,7 +88,7 @@ exports.startGame = async (req, res, next) => {
       ) {
         const game_state = {
           game_id,
-          reciever: 0,
+          receiver: user_id,
           card_deck,
           game_direction,
           game_order,

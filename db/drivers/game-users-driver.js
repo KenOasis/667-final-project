@@ -30,10 +30,18 @@ exports.getGameUsersByUserId = async (id) => {
 
 exports.getGameUsersByGameId = async (game_id) => {
   try {
-    const game_users = await GameUsers.findOne({
-      where: {
-        game_id: game_id,
-      },
+    const game_users = await Users.findAll({
+      attributes: ["id", "username"],
+      include: [
+        {
+          model: GameUsers,
+          where: {
+            game_id: game_id,
+          },
+          attributes: [],
+          required: true,
+        },
+      ],
     });
 
     return game_users;

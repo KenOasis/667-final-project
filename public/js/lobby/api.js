@@ -100,3 +100,17 @@ const sendChat = () => {
       .catch((err) => console.log(err));
   }
 };
+
+const startGame = (game_id) => {
+  const form = document.createElement("form");
+  form.style = "display: none;";
+  form.method = "POST";
+  form.action = "/game/join";
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "game_id";
+  input.value = game_id;
+  form.appendChild(input);
+  document.body.append(form);
+  form.submit();
+};
