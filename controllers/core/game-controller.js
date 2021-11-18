@@ -24,16 +24,16 @@ exports.joinGame = async (req, res, next) => {
       if (game_users_list) {
         user_list = game_users_list.map((game_users) => {
           return {
+            game_id: game_id,
             user_id: game_users.id,
             username: game_users.username,
-            status: "loading",
           };
         });
       } else {
         throw new Error("fetch users list failed");
       }
-      eventsGame.userJoin(game_id, username, user_list);
-      res.status(200).render("game");
+      eventsGame.userJoin(game_id);
+      res.status(200).render("game", { user_list });
     } else {
       res.status(403).json({
         status: "forbidden",
