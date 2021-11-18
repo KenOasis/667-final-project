@@ -66,6 +66,16 @@
     width: 100px;
     margin: 5px;
 }
+.draw_button{
+    height: 125px;
+    width: 75px;
+    border: thick double rgb(160, 38, 38);
+    background-color: rgb(51, 48, 48);
+    text-align: right;
+    font-size:x-large;
+    color: red;
+    font-variant-position: super;
+}
 /*---------------------------------------------------------------- */
 
 
@@ -77,7 +87,6 @@
     background-size:1040px 650px;
     filter: brightness(95%);
     border: 2px solid black;
-    
 }
 .hand{
     position: relative;

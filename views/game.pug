@@ -24,18 +24,31 @@ html(lang="en")
         )
     div(class="container fluid")
       div(class="row")
-        div(class="col-md-2") Space1
-        div(class="col-md-2") Draw
-          button(type = "button" class = "btn btn-outline-danger") Draw
+        div(class="col-md-2")
+        div(class="col-md-2" style="text-align: right;")
+          button(type = "button" id="draw" class = "btn draw_button") Deck
+          h6(id="card_deck" style="left: -30px;position: relative;") 45
         #container_top(class="col-md-4 top_bottom ")
           
-        div(class="col-md-2") Top_player Avatar
-          div(class="" id="top_avatar")
-            img()
+        div(class="col-md-2")
+          div(class="d-flex flex-column row-h1" id="top_user")
+            div(class="p-2 item-h1")
+              img(class="card-img-top" style="width: 5rem;" src="/images/profile/profile2.gif" alt="Card img top")
+            div(class="p-0 item-h1" )
+              h5 zhiling1
+            div(class="p-0 item-h1")
+              h6 point:
         div(class="col-md-2") 
           botton#leave(class="btn btn-outline-danger") Leave
       div(class ="row")
-        div(class="col-md-2") left_player Avatar
+        div(class="col-md-2")
+          div(class="d-flex flex-column row-h1" id="left_user")
+            div(class="p-2 item-h1")
+              img(class="card-img-top" style="width: 10rem;" src="/images/profile/profile1.gif" alt="Card img top")
+            div(class="p-2 item-h1" )
+              h5 zhiling1
+            div(class="p-2 item-h1")
+              h6 point:
         div(class="col-md-2 left_right")
           #container_left(class = "row")    
         div(class="col-md-4" )
@@ -51,7 +64,14 @@ html(lang="en")
               button(type = "button" class = "btn btn-outline-danger" id="play" onclick="play_card()") PLAY
               div(class="cover" id="cover_button")
         #container_right(class="col-md-2 left_right")
-        div(class="col-md-2") right_player Avatar 
+        div(class="col-md-2")
+          div(class="d-flex flex-column row-h1" id="right_user")
+            div(class="p-2 item-h1")
+              img(class="card-img-top" style="width: 10rem;" src="/images/profile/profile3.gif" alt="Card img top")
+            div(class="p-2 item-h1" )
+              h5 zhiling1
+            div(class="p-2 item-h1")
+              h6 point:
       div(class = "row")
         div(class="col-md-4 p-0")
           #messages(class = "col" style = "border:2px solid #dedede; height:120px; overflow-y:auto")
