@@ -22,6 +22,7 @@ html(lang="en")
         width="70"
         height="100"
         )
+    input#user_list(type="hidden" value=(user_list))
     div(class="container fluid")
       div(class="row")
         div(class="col-md-2") Space1
@@ -60,6 +61,8 @@ html(lang="en")
             div(class = "input-group-append")
               button(type = "button" class = "btn btn-outline-danger") Send
         #container_bottom(class="col-md-8 top_bottom")
+      script(src="/socket.io/socket.io.js")
+      script(type="text/javascript" src="/js/game/socket.js")
       script(type="text/javascript" src="/js/game/card.js" )
       script(type="text/javascript" src="/js/game/game-function.js" )
       script(type="text/javascript" src="/js/game/game-data.js" )

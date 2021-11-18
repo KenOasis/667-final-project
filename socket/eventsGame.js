@@ -1,10 +1,8 @@
-
-
-exports.userJoin = (game_id, user_list) => {
-  const io = require('./socket').getIO().of('/game');
-  io.on("connection", socket => {
-    const room = "game-" + game_id
+exports.userJoin = (game_id) => {
+  const gameSpace = require("./socket").getNameSpace("game");
+  const room = "game-" + game_id;
+  gameSpace.on("connect", (socket) => {
+    gameSpace.removeAllListeners();
     socket.join(room);
-    io.in(room).emit("testEvent", { user_list })
-  })
-}
+  });
+};
