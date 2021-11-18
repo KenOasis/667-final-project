@@ -8,6 +8,7 @@ Users.hasMany(GameUsers, { foreignKey: "user_id" });
 exports.getGameUsersByUserId = async (id) => {
   try {
     const game_users = await Users.findAll({
+      raw: true,
       attributes: ["username", "email", "created_at", "game_users.points"],
       where: {
         id,
@@ -31,17 +32,16 @@ exports.getGameUsersByUserId = async (id) => {
 exports.getGameUsersByGameId = async (game_id) => {
   try {
     const game_users = await Users.findAll({
-      attributes: ["id", "username"],
-      include: [
-        {
-          model: GameUsers,
-          where: {
-            game_id: game_id,
-          },
-          attributes: [],
-          required: true,
+      raw: true,
+      attributes: ["id", "username", "game_users.points"],
+      include: {
+        model: GameUsers,
+        where: {
+          game_id: game_id,
         },
-      ],
+        attributes: [],
+        required: true,
+      },
     });
 
     return game_users;

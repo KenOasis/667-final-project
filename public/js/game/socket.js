@@ -3,6 +3,7 @@ const socket = io(host + "/game");
 
 // this is the user_list
 const user_list = JSON.parse(document.getElementById("user_list").value);
+
 console.log(user_list);
 
 const loadGameState = () => {
