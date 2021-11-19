@@ -6,10 +6,12 @@ class DrawTwoAction extends Action {
     this._type = "draw_two";
     this._receiver = receiver;
     if (this._performer === this._receiver) {
-      this_cards = cards.slice(0);
+      this._cards = cards.slice(0);
     }
   }
-
+  static getParams() {
+    return ["performer", "cards", "receiver"];
+  }
   action() {
     const obj = {
       performer: this._performer,

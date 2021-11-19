@@ -7,6 +7,10 @@ class WildAction extends Action {
     this._color = color;
   }
 
+  static getParams() {
+    return ["performer", "color"];
+  }
+
   action() {
     return {
       performer: this._performer,
