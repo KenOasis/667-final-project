@@ -35,7 +35,7 @@
             card.className="card " + card_back;
        }
        else{
-            card.className = card_back
+            card.className = card_back;
        }
        return card;
    },

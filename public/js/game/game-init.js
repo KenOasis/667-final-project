@@ -5,7 +5,6 @@ const host = location.host;
 const socket = io(host + "/game");
 // this is the user_list
 const user_list = JSON.parse(document.getElementById("user_list").value);
-let whoiam;
 
 const player_profile={
     set_user(html_id, user){
@@ -13,8 +12,6 @@ const player_profile={
         const detail = profile.getElementsByClassName("name")[0];
         detail.innerText=user.username;
         profile.id="user_"+user.user_id.toString();
-        const point = profile.getElementsByClassName("point")[0];
-        point.innerText="points: "+ user.points;   
     },
     set_user_name(game_order_list, user){
         const position = game_order_list.indexOf(user.user_id);
