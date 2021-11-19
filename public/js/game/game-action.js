@@ -37,7 +37,7 @@ let add_card_event = (card_list) => {
         card_tool.card_to_player(player_id, card_html);
       }, i * 200);
     }
-    setTimeout(resolve, cards.length * 300, "done");
+    setTimeout(resolve, card_list.length * 300, "done");
   });
 };
 
