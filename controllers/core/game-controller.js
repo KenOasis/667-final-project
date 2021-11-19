@@ -1,5 +1,3 @@
-const gameUsersDriver = require("../../db/drivers/game-users-driver");
-
 const coreDriver = require("../../db/drivers/core-driver");
 
 const gameStateDummy = require("../../volatile/gameStateDummy");
@@ -11,7 +9,7 @@ exports.joinGame = async (req, res, next) => {
   const user_id = req.session.userId;
   const { game_id } = req.body;
   try {
-    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
+    const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
     if (isInGame) {
       const user_list = await coreDriver.getGameUserList(game_id);
       console.log(user_list);
@@ -43,8 +41,7 @@ exports.loadGameState = async (req, res, next) => {
   const { game_id } = req.body;
 
   try {
-    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
-
+    const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
     if (isInGame) {
       const game_state = await coreDriver.getGameState(game_id, user_id);
       if (game_state) {
@@ -72,8 +69,31 @@ exports.loadGameState = async (req, res, next) => {
 };
 
 exports.drawCard = (req, res, next) => {
-  const game_id = req.body.game_id;
-  const users_id = req.body.user_id;
+  const { game_id } = req.body;
+  const user_id = req.session.userId;
+
+  try {
+    const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
+    if (isInGame) {
+      const isActionSuccess = await coreDriver.drawCard(game_id, user_id);
+      if (isActionSuccess) {
+        // TODO brocast the game_state and update object to all users in this game
+      } else {
+        throw new Error("DB error");
+      }
+    } else {
+      res.status(403).json({
+        status: "forbidden",
+        message: "Request failed: You are not in this game",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "forbidden",
+      message: "Internal server error",
+    });
+  }
 };
 exports.playCard = (req, res, next) => {
   const game_id = req.body.game_id;

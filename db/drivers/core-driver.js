@@ -5,6 +5,21 @@ const gamesDriver = require("./games-driver");
 
 const shuffle = require("../../util/shuffle");
 
+exports.checkUserInGame = async (game_id, user_id) => {
+  try {
+    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
+
+    if (isInGame !== null) {
+      return isInGame;
+    } else {
+      throw new Error("DB error.");
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error("DB error.");
+  }
+};
+
 exports.initialGame = async (game_id, users_id) => {
   try {
     // Step 1 : Generate the random sequence of starting order of user
@@ -124,5 +139,15 @@ exports.getGameState = async (game_id, user_id) => {
   } catch (err) {
     console.error(err);
     return null;
+  }
+};
+
+exports.drawCard = async (game_id, user_id) => {
+  try {
+    const isActionSuccess = await gameCardsDriver.draw_card(game_id, user_id);
+    return isActionSuccess;
+  } catch (err) {
+    console.error(err);
+    throw new Error("DB error.");
   }
 };
