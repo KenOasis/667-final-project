@@ -173,3 +173,27 @@ exports.getDiscards = async (game_id) => {
     return null;
   }
 };
+
+exports.draw_card = async (game_id, user_id) => {
+  try {
+    const game_card = await GameCards.findOne({
+      where: {
+        game_id,
+        in_deck: true,
+        discarded: 0,
+      },
+      order: [["draw_order", "ASC"]],
+    });
+
+    if (game_card) {
+      game_card.user_id = user_id;
+      game_card.in_deck = false;
+      await game_card.save();
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
