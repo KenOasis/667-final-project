@@ -10,6 +10,9 @@ class DrawCardAction extends Action {
     }
   }
 
+  static getParams() {
+    return ["performer", "card_id", "receiver"];
+  }
   action() {
     const obj = {
       performer: this._performer,

@@ -6,6 +6,10 @@ class UnoAction extends Action {
     this._type = "uno";
   }
 
+  static getParams() {
+    return ["performer"];
+  }
+
   action() {
     return {
       performer: this._performer,
