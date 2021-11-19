@@ -1,17 +1,17 @@
 const Action = require("./Action");
 
 class DrawCardAction extends Action {
-  constructor(performer, card_id, receiver) {
+  constructor(performer, card, receiver) {
     super(performer);
     this._type = "draw_card";
     this._receiver = receiver;
     if (this._performer === this._receiver) {
-      this._card_id = card_id;
+      this._card = card.slice(0);
     }
   }
 
   static getParams() {
-    return ["performer", "card_id", "receiver"];
+    return ["performer", "card", "receiver"];
   }
   action() {
     const obj = {
@@ -19,7 +19,7 @@ class DrawCardAction extends Action {
       type: this._type,
     };
     if (this._performer === this._receiver) {
-      obj.card_id = this._card_id;
+      obj.card = this._card.slice(0);
     }
     return obj;
   }

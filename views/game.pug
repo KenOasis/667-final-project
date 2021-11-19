@@ -28,7 +28,7 @@ html(lang="en")
           height="100px"
           )
         div(class="col-md-2" style="text-align: right;")
-          button(type = "button" id="draw" class = "btn draw_button" onclick="draw_card(event)" disabled) Deck
+          button(type = "button" id="draw" class = "btn draw_button" onclick="draw_card_action()" disabled) Deck
           h6(id="card_deck" style="left: -30px;position: relative;") 45
         #container_top(class="col-md-4 top_bottom ")
           
@@ -41,7 +41,7 @@ html(lang="en")
         div(class="col-md-1") 
           botton#leave(class="btn btn-outline-danger") Leave
       div(class ="row")
-        div(class="col-md-2" id="left_user")
+        div(class="col-md-2" id="left_user") 
           div(class="d-flex flex-column row-h1" )
             div(class="p-2 item-h1")
               img(class="card-img-top avater" style="width: 10rem;" src="/images/profile/profile1.gif" alt="Card img top")
@@ -85,6 +85,7 @@ html(lang="en")
               button(class="btn btn-lg btn-warning color_select" id="yellow" onclick="color_selector(this)" type="close")
               button(class="btn btn-lg btn-primary color_select" id="blue" onclick="color_selector(this)" type="close")
     script(src="/socket.io/socket.io.js")
+    script(type="text/javascript" src="/js/game/socket.js")
     script(type="text/javascript" src="/js/game/card.js" )
     script(type="text/javascript" src="/js/game/card_util.js" )
     script(type="text/javascript" src="/js/game/game-element.js" )

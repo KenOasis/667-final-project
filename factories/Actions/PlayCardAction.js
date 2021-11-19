@@ -1,20 +1,20 @@
 const Action = require("./Action");
 class PlayCardAction extends Action {
-  constructor(performer, card_id) {
+  constructor(performer, card) {
     super(performer);
     this._type = "play_card";
-    this._card_id = card_id;
+    this._card = card.slice(0);
   }
 
   static getParams() {
-    return ["performer", "card_id"];
+    return ["performer", "card"];
   }
 
   action() {
     return {
       performer: this._performer,
       type: this._type,
-      card_id: this._card_id,
+      card: this._card.slice(0),
     };
   }
 }

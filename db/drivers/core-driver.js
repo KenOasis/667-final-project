@@ -144,8 +144,12 @@ exports.getGameState = async (game_id, user_id) => {
 
 exports.drawCard = async (game_id, user_id) => {
   try {
-    const isActionSuccess = await gameCardsDriver.draw_card(game_id, user_id);
-    return isActionSuccess;
+    const card_id = await gameCardsDriver.draw_card(game_id, user_id);
+    if (card_id) {
+      return card_id;
+    } else {
+      throw new Error("DB error.");
+    }
   } catch (err) {
     console.error(err);
     throw new Error("DB error.");
