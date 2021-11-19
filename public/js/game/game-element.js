@@ -43,6 +43,7 @@ let card_tool ={
    card_to_player(player_id, card){
         const div = document.getElementById("player_" + player_id.toString());
         div.appendChild(card);
+       
    },
    show_play_button(){
         const play=document.getElementById("play");
@@ -81,7 +82,21 @@ let card_tool ={
         const avater = user.getElementsByClassName("avater")[0];
         avater.style.border="4px solid #FF0000"
         avater.style.borderRadius="15px"
+    },
+    set_game_direction(direction,color){
+        const element = document.createElement('i');
+        element.id="game_direction"
+        element.style.color=color;
+        if(direction == 1 ){
+            element.className="bi bi-arrow-clockwise fs-1";
+        }
+        else{
+            element.className="bi bi-arrow-counterclockwise fs-1";
+        }
+        const parent = document.getElementById("match_direction");
+        parent.appendChild(element);
     }
+
 
    }
 /**
@@ -96,6 +111,12 @@ let card_tool ={
     constructor(game_state){
         this.game_state=game_state;
     }
+
+    set_side_stuff(){
+        this.set_match();
+        this.set_deck();
+        this.show_discard();
+    }
    /**
     * arrange the player's location by game_order
     * 
@@ -104,7 +125,6 @@ let card_tool ={
     arrange_players(){
         const order = this.game_state.game_order;
         const bottom_player = this.game_state.receiver;
-        console.log(bottom_player);
         const cut = order.indexOf(bottom_player);
         const left =order.slice(cut,order.lenght);
         const right = order.slice(0,cut);
@@ -142,10 +162,7 @@ let card_tool ={
         })
         return match_list;
     }
-    // get discard_pile()
-    get_discard_pile(){
-        return this.game_state.discards;
-    }
+
     /**
      * 
      * set up the top_bottom player's cards to their loca
@@ -155,32 +172,46 @@ let card_tool ={
         const player_info = this.find_one_player(player_id);
         if("cards" in player_info){
             const cards = player_info.cards;
-            for(let i in cards){
-                const card_html = card_tool.set_cards(cards[i]);
-                card_tool.card_to_player(player_id,card_html);
-            }
+            return new Promise(resolve=>{
+                let count =0;
+                for(let i = 0; i<cards.length; i++){
+                    setTimeout(function(){
+                        const card_html = card_tool.set_cards(cards[i]);
+                        card_tool.card_to_player(player_id,card_html);
+                        count++;
+                    },i*300)
+                }
+                setTimeout(resolve,cards.length*300,"done")
+            })
         }
         else{
             const number_cards = player_info.number_of_cards;
-            for(let i= 0 ; i < number_cards ; i++){
-                const back_html = card_tool.set_card_back("back");
-                card_tool.card_to_player(player_id,back_html);
-            }
+            return new Promise(resolve => {
+                for(let i = 0; i<number_cards; i++){
+                    setTimeout(function(){
+                    const back_html = card_tool.set_card_back("back");
+                    back_html.style.pointerEvents="none";
+                    card_tool.card_to_player(player_id,back_html);
+                    },i*300)
+                }
+                setTimeout(resolve,number_cards*300,"done")
+            })
 
         }
     }
-    /**
-     * 
-     * set up the left_right player's cards to their loca
-     * 
-     */
     show_left_right_card(player_id){
         const player_info = this.find_one_player(player_id);
         const number_of_card = player_info.number_of_cards;
-        for(let i=0 ; i < number_of_card ; i++){
-            const back_html =card_tool.set_card_back("cardcol");
-            card_tool.card_to_player(player_id,back_html);
-        }
+        return new Promise(resolve => {
+            for(let i = 0; i<number_of_card; i++){
+                setTimeout(function(){
+                const back_html = card_tool.set_card_back("cardcol");
+                back_html.style.pointerEvents="none";
+                card_tool.card_to_player(player_id,back_html);
+                },i*200)
+            }
+            setTimeout(resolve,number_of_card*200,"done")
+        })
     }
     /**
      * useing this first
@@ -195,34 +226,18 @@ let card_tool ={
         card_tool.sit_player(order[2], "container_top");
         card_tool.sit_player(order[3], "container_right"); 
     }
-    /**
-     * use this to update the card when each event happen
-     * 
-     */
-    set_game_state_to_page(){
-        const order = this.arrange_players();
-        this.show_top_bottom_card(order[0]);
-        this.show_left_right_card(order[1]);
-        this.show_top_bottom_card(order[2]);
-        this.show_left_right_card(order[3])
-        this.set_match();
-        this.show_discard();
-        this.set_current_player();
-    }
-
-
     // show_discard
     show_discard(){
-        const container = document.getElementById("discard_pile")
-        const discards = this.get_discard_pile();
+        const container = document.getElementById("discard_pile");
+        const discards = this.game_state.discards;
         for(let i in discards){
-            const card = card_tool.set_cards(discards[i],"discard")
-            container.appendChild(card)
+            const card = card_tool.set_cards(discards[i],"discard");
+            card.style.pointerEvents="none";
+            container.appendChild(card);
         }
 
     }
     //show matching color and number to players
-
     set_match(){
         const color = {
             red: "rgb(255,0,0)",
@@ -234,8 +249,14 @@ let card_tool ={
         const num_html = document.getElementById("match_number");
         num_html.innerHTML = this.game_state.matching.number;
         num_html.style.color = color[color_match];
-        
+        const direction = this.game_state.game_direction;
+        card_tool.set_game_direction(direction,color[color_match]);
     }
+    set_deck(){
+        const deck = document.getElementById("card_deck");
+        deck.innerText = this.game_state.card_deck;
+    }
+
 
     check_current_is_receiver(){
         const current_player= this.game_state.current_player;
@@ -272,15 +293,18 @@ let card_tool ={
      * 
      */
     set_current_player(){
+        const desk=document.getElementById("draw");
         if(this.check_current_is_receiver()){
             const uno = document.getElementById("uno");
             uno.style.zIndex= 2;
             this.color_match_card();
             this.set_card_click_event();
+            desk.disabled = false;
         }
         else{
             const current_player=this.game_state.current_player;
             card_tool.highlight_current(current_player);
+            desk.disabled=true;
 
         }
     }
