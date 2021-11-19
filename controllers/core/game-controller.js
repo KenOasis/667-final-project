@@ -1,9 +1,6 @@
 const gameUsersDriver = require("../../db/drivers/game-users-driver");
-const cardsDriver = require("../../db/drivers/card-drivers");
-const gameCardsDriver = require("../../db/drivers/game-cards-driver");
-const gamesDriver = require("../../db/drivers/games-driver");
 
-const shuffle = require("../../util/shuffle");
+const coreDriver = require("../../db/drivers/core-driver");
 
 const gameStateDummy = require("../../volatile/gameStateDummy");
 const gameListManager = require("../../volatile/gameListManager");
@@ -12,28 +9,20 @@ const eventsGame = require("../../socket/eventsGame");
 
 exports.joinGame = async (req, res, next) => {
   const user_id = req.session.userId;
-  const username = req.session.userName;
   const { game_id } = req.body;
   try {
     const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
     if (isInGame) {
-      const game_users_list = await gameUsersDriver.getGameUsersByGameId(
-        game_id
-      );
-      let user_list = [];
-      if (game_users_list) {
-        user_list = game_users_list.map((game_users) => {
-          return {
-            game_id: game_id,
-            user_id: game_users.id,
-            username: game_users.username,
-          };
-        });
+      const user_list = await coreDriver.getGameUserList(game_id);
+      console.log(user_list);
+      if (user_list && user_list.length) {
+        eventsGame.userJoin(game_id);
+        res
+          .status(200)
+          .render("game", { user_list: JSON.stringify(user_list) });
       } else {
         throw new Error("fetch users list failed");
       }
-      eventsGame.userJoin(game_id);
-      res.status(200).render("game", { user_list: JSON.stringify(user_list) });
     } else {
       res.status(403).json({
         status: "forbidden",
@@ -57,58 +46,16 @@ exports.loadGameState = async (req, res, next) => {
     const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
 
     if (isInGame) {
-      const card_deck = await gameCardsDriver.getCardDeck(game_id);
-      // console.log(card_deck);
-
-      const game_direction = await gamesDriver.getDirection(game_id);
-      // console.log(game_direction);
-
-      const game_order = await gameUsersDriver.getGameOrder(game_id);
-      // console.log(game_order);
-
-      const current_player = await gameUsersDriver.getCurrentPlayer(game_id);
-      // console.log(current_player);
-
-      const matching = await gamesDriver.getMatching(game_id);
-      // console.log(matching);
-
-      const players = await gameCardsDriver.getPlayers(game_id, user_id);
-      // console.log(players);
-
-      const discards = await gameCardsDriver.getDiscards(game_id);
-      // console.log(discards);
-      if (
-        card_deck &&
-        game_direction &&
-        game_order &&
-        current_player &&
-        matching &&
-        players &&
-        discards
-      ) {
-        const game_state = {
-          game_id,
-          receiver: user_id,
-          card_deck,
-          game_direction,
-          game_order,
-          current_player,
-          matching,
-          players,
-          discards,
-        };
-
-        // TODO this should be send as parameter when rendering the game page
+      const game_state = await coreDriver.getGameState(game_id, user_id);
+      if (game_state) {
         res.status(200).json({
           status: "success",
           game_state: game_state,
         });
       } else {
-        res.status(500).json({
-          status: "failed",
-          message: "Internal error, pls contact admin",
-        });
+        throw new Error("DB error.");
       }
+      // TODO this should be send as parameter when rendering the game page
     } else {
       res.status(403).json({
         status: "forbidden",
