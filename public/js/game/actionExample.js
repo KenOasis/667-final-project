@@ -7,7 +7,7 @@
 
 
 
-//FINISH
+
 const game_state = {
  
   game_id: 2,
@@ -61,13 +61,13 @@ const game_state = {
 // remember, this is the action return to the front end {{{AFTER}}} you send the request to the backend
 const update = {
   game_id: 5,
-  receiver: 6,
+  reciever: 6,
   // the order of action is their performed-order
   actions: [
     {  // action need to perform in front end (caused by )
       performer: 9,
       action_type: "play_card",
-      card: [94], 
+      card: 94, 
     }, {
       performer: 6,
       action_type: "draw_two", // draw_two should be include the action which skip user's turn,
@@ -84,13 +84,13 @@ const update = {
 const drawCardAction = {
   performer: 9,
   type: "draw_card",
-  card: [12] // if (is_performer)
+  card_id: 12 // if (is_performer)
 }
 
 const playCardAction = {
   performer: 9,
   type = "play_card",
-  card: [12]
+  card_id: 12
 }
 
 const unoAction = {

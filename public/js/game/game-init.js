@@ -55,23 +55,22 @@ const loadGameState = () => {
     .then((game_state) => {
       const game_class = new game_state_helper(game_state);
       const order = game_class.arrange_players();
-      const buttom_player = game_class.show_top_bottom_card(order[0]);
-      buttom_player
+      game_class
+        .show_top_bottom_card(order[0])
         .then((result) => {
           if (result === "done") {
             game_class.set_current_player();
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.log("inside", err);
         });
       game_class.show_left_right_card(order[1]);
       game_class.show_top_bottom_card(order[2]);
       game_class.show_left_right_card(order[3]);
       game_class.set_side_stuff();
-      game_class.set_current_player();
     })
-    .catch((error) => console.log(error));
+    .catch((error) => console.log("outside", error));
 };
 
 loadGameState();
