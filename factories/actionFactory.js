@@ -54,8 +54,8 @@ class ActionFactory {
       case "draw_card": {
         const check = checkParams(params, DrawCardAction.getParams());
         if (check === true) {
-          const { performer, card_id, receiver } = params;
-          return new DrawCardAction(performer, card_id, receiver).action();
+          const { performer, card, receiver } = params;
+          return new DrawCardAction(performer, card, receiver).action();
         } else {
           throw new Error(check);
         }
@@ -72,8 +72,8 @@ class ActionFactory {
       case "play_card": {
         const check = checkParams(params, PlayCardAction.getParams());
         if (check === true) {
-          const { performer, card_id } = params;
-          return new PlayCardAction(performer, card_id).action();
+          const { performer, card } = params;
+          return new PlayCardAction(performer, card).action();
         } else {
           throw new Error(check);
         }

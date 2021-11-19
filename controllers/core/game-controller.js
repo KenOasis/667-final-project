@@ -68,7 +68,6 @@ exports.loadGameState = async (req, res, next) => {
   }
 };
 
-
 exports.drawCard = async (req, res, next) => {
   const { game_id } = req.body;
   const user_id = req.session.userId;
