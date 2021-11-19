@@ -28,7 +28,7 @@ html(lang="en")
           height="100px"
           )
         div(class="col-md-2" style="text-align: right;")
-          button(type = "button" id="draw" class = "btn draw_button" disabled) Deck
+          button(type = "button" id="draw" class = "btn draw_button"  disabled) Deck
           h6(id="card_deck" style="left: -30px;position: relative;") 45
         #container_top(class="col-md-4 top_bottom ")
           
@@ -80,10 +80,10 @@ html(lang="en")
           div(class="modal-header")
             h5(class="modal-title" id="model_title") Choose a color
           div(class="modal-body")
-              button(class="btn btn-lg btn-success color_select" id="green" onclick="color_selector(this)" type="button")
-              button(class="btn btn-lg btn-danger color_select" id="red" onclick="color_selector(this)"  type="button")
-              button(class="btn btn-lg btn-warning color_select" id="yellow" onclick="color_selector(this)" type="button")
-              button(class="btn btn-lg btn-primary color_select" id="blue" onclick="color_selector(this)" type="button")
+              button(class="btn btn-lg btn-success color_select" id="green" onclick="color_selector(this)" type="close")
+              button(class="btn btn-lg btn-danger color_select" id="red" onclick="color_selector(this)"  type="close")
+              button(class="btn btn-lg btn-warning color_select" id="yellow" onclick="color_selector(this)" type="close")
+              button(class="btn btn-lg btn-primary color_select" id="blue" onclick="color_selector(this)" type="close")
     script(src="/socket.io/socket.io.js")
     script(type="text/javascript" src="/js/game/card.js" )
     script(type="text/javascript" src="/js/game/card_util.js" )

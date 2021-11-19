@@ -7,7 +7,7 @@
 
 
 
-//FINISH
+
 const game_state = {
  
   game_id: 2,
