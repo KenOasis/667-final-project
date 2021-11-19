@@ -12,7 +12,6 @@ exports.joinGame = async (req, res, next) => {
     const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
     if (isInGame) {
       const user_list = await coreDriver.getGameUserList(game_id);
-      console.log(user_list);
       if (user_list && user_list.length) {
         eventsGame.userJoin(game_id);
         res
@@ -75,9 +74,14 @@ exports.drawCard = async (req, res, next) => {
   try {
     const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
     if (isInGame) {
-      const isActionSuccess = await coreDriver.drawCard(game_id, user_id);
-      if (isActionSuccess) {
+      const card_id = await coreDriver.drawCard(game_id, user_id);
+      const game_user_list = await coreDriver.getGameUserList(game_id);
+      if (card_id && game_user_list) {
         // TODO brocast the game_state and update object to all users in this game
+        await eventsGame.drawCard(game_user_list, card_id, user_id);
+        res.status(200).json({
+          status: "success",
+        });
       } else {
         throw new Error("DB error");
       }

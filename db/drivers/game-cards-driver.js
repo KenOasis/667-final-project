@@ -189,9 +189,9 @@ exports.draw_card = async (game_id, user_id) => {
       game_card.user_id = user_id;
       game_card.in_deck = false;
       await game_card.save();
-      return true;
+      return game_card.card_id;
     }
-    return false;
+    return null;
   } catch (err) {
     console.error(err);
     return null;
