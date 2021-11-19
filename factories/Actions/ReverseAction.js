@@ -6,6 +6,9 @@ class ReverseAction extends Action {
     this._type = "reverse";
   }
 
+  static getParams() {
+    return ["performer"];
+  }
   action() {
     return {
       performer: this._performer,
