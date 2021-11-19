@@ -1,5 +1,5 @@
 // Action to draw a card
-function draw_card() {
+function draw_card_action() {
   const url = "http://" + location.host + "/game/drawcard";
   const game_id = JSON.parse(document.getElementById("user_list").value)[0]
     .game_id;
