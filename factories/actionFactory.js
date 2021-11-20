@@ -1,6 +1,7 @@
 const ChallengeAction = require("./Actions/ChallengeAction");
 const DrawCardAction = require("./Actions/DrawCardAction");
 const DrawTwoAction = require("./Actions/DrawTwoAction");
+const PassAction = require("./Actions/PassAction");
 const PlayCardAction = require("./Actions/PlayCardAction");
 const ReverseAction = require("./Actions/ReverseAction");
 const SkipAction = require("./Actions/SkipAction");
@@ -58,6 +59,13 @@ class ActionFactory {
           return new DrawCardAction(performer, card, receiver).action();
         } else {
           throw new Error(check);
+        }
+      }
+      case "pass": {
+        const check = checkParams(params, PassAction.getParams());
+        if (check === true) {
+          const { performer } = params;
+          return new PassAction(performer).action();
         }
       }
       case "draw_two": {
@@ -147,6 +155,7 @@ class ActionFactory {
       "challenge",
       "draw_card",
       "draw_two",
+      "pass",
       "play_card",
       "reverse",
       "skip",

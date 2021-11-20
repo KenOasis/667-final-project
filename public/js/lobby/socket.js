@@ -1,5 +1,7 @@
-const host = location.host + "/lobby";
-const socket = io(host);
+const host = "http://" + location.host + "/lobby";
+const socket = io(host, {
+  reconnectionDelayMax: 10000,
+});
 
 // socket event listener
 socket.on("userListInitial", (data) => {
@@ -120,7 +122,7 @@ socket.on("gameReady", (data) => {
   // console.log(data.time_counter);
   setTimeout(() => {
     startGame(data.game_id);
-  }, data.time_counter * 1000);
+  }, 1000);
 });
 
 // test code for socket handshake.
