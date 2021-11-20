@@ -112,6 +112,8 @@ exports.getGameState = async (game_id, user_id) => {
 
     const discards = await gameCardsDriver.getDiscards(game_id);
     // console.log(discards);
+
+    const undone_action = await gamesDriver.getUndoneAction(game_id);
     if (
       card_deck &&
       game_direction &&
@@ -119,7 +121,8 @@ exports.getGameState = async (game_id, user_id) => {
       current_player &&
       matching &&
       players &&
-      discards
+      discards &&
+      undone_action
     ) {
       const game_state = {
         game_id,
@@ -131,6 +134,7 @@ exports.getGameState = async (game_id, user_id) => {
         matching,
         players,
         discards,
+        undone_action,
       };
       return game_state;
     } else {
@@ -153,5 +157,47 @@ exports.drawCard = async (game_id, user_id) => {
   } catch (err) {
     console.error(err);
     throw new Error("DB error.");
+  }
+};
+
+exports.setUndoneActionDraw = async (game_id) => {
+  try {
+    const undone_action = "draw";
+    const updatedResult = await gamesDriver.updateUndoneAction(
+      game_id,
+      undone_action
+    );
+    return updatedResult;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+exports.setUndoneActionChallenge = async (game_id) => {
+  try {
+    const undone_action = "challenge";
+    const updatedResult = await gamesDriver.updateUndoneAction(
+      game_id,
+      undone_action
+    );
+    return updatedResult;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+exports.resetUndonAction = async (game_id) => {
+  try {
+    const undone_action = "none";
+    const updatedResult = await gamesDriver.updateUndoneAction(
+      game_id,
+      undone_action
+    );
+    return updatedResult;
+  } catch (err) {
+    console.error(err);
+    return null;
   }
 };

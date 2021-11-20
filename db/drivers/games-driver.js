@@ -77,3 +77,39 @@ exports.getMatching = async (id) => {
     return null;
   }
 };
+
+exports.getUndoneAction = async (id) => {
+  try {
+    const game = await Games.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (game) {
+      return game.undone_action;
+    }
+    return null;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+exports.updateUndoneAction = async (id, undone_action) => {
+  try {
+    await Games.update(
+      { undone_action },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
