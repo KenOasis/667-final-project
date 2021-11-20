@@ -117,9 +117,10 @@ socket.on("gameReady", (data) => {
     let toast = new bootstrap.Toast(newToast);
     toast.show();
   }
+  // console.log(data.time_counter);
   setTimeout(() => {
     startGame(data.game_id);
-  }, 2000);
+  }, data.time_counter * 1000);
 });
 
 // test code for socket handshake.

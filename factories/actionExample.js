@@ -82,6 +82,7 @@ const update = {
  */
 
 const drawCardAction = {
+  // reconnect
   performer: 9,
   type: "draw_card",
   card: [12] // if (is_performer)
@@ -128,6 +129,7 @@ const wildAction = {
 
 // for the 1st step of wild draw four (select color)
 const wildDrawFourAction = {
+  // reconnecrt
   performer: 9,
   type: "wild_draw_four",
   color: "blue" 
@@ -149,6 +151,7 @@ const challengeAction = {
 
 // example of do challenge but failed
 const challengeAction = {
+  // reconnect
   performer: 8,
   type: "challenge",
   is_challenged: true,

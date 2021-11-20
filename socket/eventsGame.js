@@ -34,7 +34,7 @@ exports.drawCard = async (game_user_list, card_id, performer) => {
             receiver: user_id,
           });
           update.actions.push(drawCardAction);
-          gameSpace.to(socket.id).emit("gameUpdate", {
+          gameSpace.in(socket.id).emit("gameUpdate", {
             game_state: game_state,
             update: update,
           });
