@@ -60,6 +60,7 @@ const loadGameState = () => {
         .then((result) => {
           if (result === "done") {
             game_class.set_current_player();
+            game_class.set_card_click_event();
           }
         })
         .catch((err) => {
