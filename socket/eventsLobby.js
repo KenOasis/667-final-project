@@ -97,10 +97,13 @@ exports.initGame = (game_id, users_id) => {
     users_socket = sockets.filter((socket) =>
       users_id.includes(socket.request.session.userId)
     );
+    let time_counter = 0;
     users_socket.forEach((socket) => {
+      time_counter++;
       lobby.to(socket.id).emit("gameReady", {
         game_id: game_id,
         message: `Game "${game.name}" is ready, will start in few seconds!`,
+        time_counter: time_counter,
       });
     });
   });
