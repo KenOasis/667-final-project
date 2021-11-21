@@ -123,7 +123,7 @@ const gameListManager = {
       index--;
       game = gameList[index];
       game.users = game.users.filter(
-        (user) => user.user_id !== user_id || user.status === "playing"
+        (user) => user.status === "playing" || user.user_id !== user_id
       );
       if (game.users.length <= 0) {
         gameList.splice(index, 1);

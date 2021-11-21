@@ -42,6 +42,7 @@ class game_state_helper {
   find_one_player(id) {
     const players = this.game_state.players;
     const player_info = players.filter((player) => player.user_id === id);
+    console.log(player_info);
     return player_info[0];
   }
   /**
@@ -74,42 +75,20 @@ class game_state_helper {
     const player_info = this.find_one_player(player_id);
     if ("cards" in player_info) {
       const cards = player_info.cards;
-      return new Promise((resolve) => {
-        for (let i = 0; i < cards.length; i++) {
-          setTimeout(function () {
-            const card_html = card_tool.set_cards(cards[i]);
-            card_tool.card_to_player(player_id, card_html);
-          }, i * 200);
-        }
-        setTimeout(resolve, cards.length * 500, "done");
-      });
+      return action_util.add_card_event(cards);
     } else {
       const number_cards = player_info.number_of_cards;
-      return new Promise((resolve) => {
-        for (let i = 0; i < number_cards; i++) {
-          setTimeout(function () {
-            const back_html = card_tool.set_card_back("back");
-            back_html.style.pointerEvents = "none";
-            card_tool.card_to_player(player_id, back_html);
-          }, i * 200);
-        }
-        setTimeout(resolve, number_cards * 500, "done");
-      });
+      return action_util.add_card_back_event(number_cards, "back", player_id);
     }
   }
   show_left_right_card(player_id) {
     const player_info = this.find_one_player(player_id);
     const number_of_card = player_info.number_of_cards;
-    return new Promise((resolve) => {
-      for (let i = 0; i < number_of_card; i++) {
-        setTimeout(function () {
-          const back_html = card_tool.set_card_back("cardcol");
-          back_html.style.pointerEvents = "none";
-          card_tool.card_to_player(player_id, back_html);
-        }, i * 200);
-      }
-      setTimeout(resolve, number_of_card * 500, "done");
-    });
+    return action_util.add_card_back_event(
+      number_of_card,
+      "cardcol",
+      player_id
+    );
   }
   /**
    * useing this first
@@ -192,7 +171,6 @@ class game_state_helper {
       const uno = document.getElementById("uno");
       uno.style.zIndex = 2;
       this.color_match_card();
-      this.set_card_click_event();
       desk.disabled = false;
     } else {
       const current_player = this.game_state.current_player;
@@ -207,30 +185,6 @@ class game_state_helper {
   set_card_click_event() {
     const receiver_id = this.game_state.receiver;
     const bottom_cards = this.find_one_player(receiver_id).cards;
-    for (let i in bottom_cards) {
-      const card = document.getElementById(
-        "card_" + bottom_cards[i].toString()
-      );
-      const border = card.style.border;
-      card.addEventListener("click", function () {
-        if (card.style.top === "-25px") {
-          card.style.top = "";
-          card.style.border = border;
-          card.style.zIndex = 0;
-        } else {
-          card.style.top = "-25px";
-          card.style.border = "4px solid #FFD700";
-          card.style.zIndex = 2;
-        }
-        const checker_obj = card_tool.check_clicked_card(receiver_id);
-        const clicked_one = checker_obj.clicked_card === 1;
-        const matching = checker_obj.matching === "True";
-        if (matching && clicked_one) {
-          card_tool.show_play_button();
-        } else {
-          card_tool.hide_play_button();
-        }
-      });
-    }
+    action_util.card_click_event(bottom_cards);
   }
 }

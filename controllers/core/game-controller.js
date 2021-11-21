@@ -39,7 +39,6 @@ exports.loadGameState = async (req, res, next) => {
     } else {
       throw new Error("DB error.");
     }
-    // TODO this should be send as parameter when rendering the game page
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -59,7 +58,7 @@ exports.drawCard = async (req, res, next) => {
     const set_undone_draw = await coreDriver.setUndoneActionDraw(game_id);
     if (card_id && game_user_list && set_undone_draw) {
       await eventsGame.drawCard(game_user_list, card_id, user_id);
-      res.status(200).json({
+      return res.status(200).json({
         status: "success",
       });
     } else {
@@ -78,6 +77,24 @@ exports.pass = async (req, res, next) => {
   const { game_id } = req.body;
   const user_id = req.session.userId;
   try {
+    // Set undone none
+    const reset_undone = await coreDriver.resetUndoneAction(game_id);
+    // Set new current player
+    const updated_current_play = await coreDriver.setNextCurrent(
+      game_id,
+      user_id,
+      "next"
+    );
+    const game_user_list = await coreDriver.getGameUserList(game_id);
+
+    if (reset_undone && updated_current_play && game_user_list) {
+      eventsGame.pass(game_user_list, user_id);
+      res.status(200).json({
+        status: "success",
+      });
+    } else {
+      throw new Error("DB error");
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({

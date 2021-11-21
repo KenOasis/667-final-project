@@ -131,3 +131,23 @@ exports.getCurrentPlayer = async (game_id) => {
     return null;
   }
 };
+
+exports.setCurrentPlayer = async (game_id, user_id, is_current) => {
+  try {
+    const game_user = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_user) {
+      game_user.current_player = is_current;
+      await game_user.save();
+      return true;
+    }
+    return null;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
