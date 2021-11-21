@@ -98,14 +98,13 @@ exports.getUndoneAction = async (id) => {
 
 exports.updateUndoneAction = async (id, undone_action) => {
   try {
-    await Games.update(
-      { undone_action },
-      {
-        where: {
-          id,
-        },
-      }
-    );
+    const game = await Games.findByPk(id);
+    if (game) {
+      game.undone_action = undone_action;
+      await game.save();
+      return true;
+    }
+    return null;
   } catch (err) {
     console.error(err);
     throw new Error("DB error.");

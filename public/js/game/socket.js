@@ -3,9 +3,6 @@ const socket = io(host, {
   reconnectionDelayMax: 10000,
 });
 
-const game_id = JSON.parse(document.getElementById("user_list").value)[0]
-  .game_id;
-
 // socket.on("connect", () => {
 //   console.log(socket.connected); // true
 // });
@@ -20,7 +17,7 @@ socket.on("userDisconnect", (data) => {
   console.log(username + " disconnected");
 });
 
-socket.on("gameUpdate", (data) => {
+socket.on("gameUpdateDrawCard", (data) => {
   const game_state = data.game_state;
   const update = data.update;
   const performer = update.actions[0].performer;
@@ -53,4 +50,12 @@ socket.on("gameUpdate", (data) => {
     }
   }
   game_class.set_deck();
+});
+
+socket.on("gameUpdatePass", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Pass!");
+  console.log(game_state);
+  console.log(update);
 });

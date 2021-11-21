@@ -58,7 +58,7 @@ exports.drawCard = async (req, res, next) => {
     const set_undone_draw = await coreDriver.setUndoneActionDraw(game_id);
     if (card_id && game_user_list && set_undone_draw) {
       await eventsGame.drawCard(game_user_list, card_id, user_id);
-      res.status(200).json({
+      return res.status(200).json({
         status: "success",
       });
     } else {
@@ -80,7 +80,7 @@ exports.pass = async (req, res, next) => {
     // Set undone none
     const reset_undone = await coreDriver.resetUndoneAction(game_id);
     // Set new current player
-    const updated_current_play = await coreDriver.updated_current_play(
+    const updated_current_play = await coreDriver.setNextCurrent(
       game_id,
       user_id,
       "next"
