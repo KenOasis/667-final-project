@@ -19,6 +19,7 @@ socket.on("userDisconnect", (data) => {
   const username = data.username;
   console.log(username + " disconnected");
 });
+
 socket.on("gameUpdate", (data) => {
   const game_state = data.game_state;
   const update = data.update;
