@@ -131,3 +131,21 @@ exports.getCurrentPlayer = async (game_id) => {
     return null;
   }
 };
+
+exports.setCurrentPlayer = async (game_id, user_id, is_current) => {
+  try {
+    await GameUsers.update(
+      { current_player: is_current },
+      {
+        where: {
+          game_id,
+          user_id,
+        },
+      }
+    );
+    return true;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};

@@ -16,6 +16,8 @@ router.post(
 
 router.post("/drawcard", userInGameValidator, gameController.drawCard);
 // Test route for the front end
+
+router.post("/pass", userInGameValidator, gameController.pass);
 router.get("/play_uno", gameController.getGame);
 
 exports.routes = router;

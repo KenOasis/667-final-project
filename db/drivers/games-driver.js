@@ -106,10 +106,8 @@ exports.updateUndoneAction = async (id, undone_action) => {
         },
       }
     );
-
-    return true;
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error("DB error.");
   }
 };

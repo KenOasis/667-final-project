@@ -4,6 +4,7 @@ const gameUsersDriver = require("./game-users-driver");
 const gamesDriver = require("./games-driver");
 
 const shuffle = require("../../util/shuffle");
+const init = require("connect-session-sequelize");
 
 exports.checkUserInGame = async (game_id, user_id) => {
   try {
@@ -188,7 +189,7 @@ exports.setUndoneActionChallenge = async (game_id) => {
   }
 };
 
-exports.resetUndonAction = async (game_id) => {
+exports.resetUndoneAction = async (game_id) => {
   try {
     const undone_action = "none";
     const updatedResult = await gamesDriver.updateUndoneAction(
@@ -196,6 +197,38 @@ exports.resetUndonAction = async (game_id) => {
       undone_action
     );
     return updatedResult;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+exports.setNextCurrent = async (game_id, user_id, action) => {
+  // action type: "next" = move 1, "skip" = move 2
+  const step = action === "next" ? 1 : 2;
+  try {
+    const direction = await gamesDriver.getDirection(game_id);
+    const initial_order = await gameUsersDriver.getGameOrder(game_id);
+    const mod = (n, m) => ((n % m) + m) % m; // js modulo has bug when n is negative
+    if (direction && initial_order) {
+      const current_index = initial_order.findIndex(
+        (element) => element === user_id
+      );
+      const new_index = mod(
+        current_index + direction * step,
+        initial_order.length
+      );
+      const current_player_id = initial_order[current_index];
+      const new_current_player_id = initial_order[new_index];
+      await gameUsersDriver.setCurrentPlayer(game_id, current_player_id, false);
+      await gameUsersDriver.setCurrentPlayer(
+        game_id,
+        new_current_player_id,
+        true
+      );
+      return true;
+    }
+    return null;
   } catch (err) {
     console.error(err);
     return null;
