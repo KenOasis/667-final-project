@@ -6,7 +6,6 @@ exports.joinLobby = (user, currentUserStatus) => {
 
   // This is where established the connection for lobby
   lobby.on("connection", (socket) => {
-    lobby.removeAllListeners();
     // listen to the client event of disconnect
     socket.on("disconnect", () => {
       const gameList = gameListManager.userLeaveLobby(user.user_id);
@@ -14,6 +13,7 @@ exports.joinLobby = (user, currentUserStatus) => {
         user: user,
         gameList: gameList,
       });
+      lobby.removeAllListeners();
     });
     lobby.fetchSockets().then((sockets) => {
       // filter possible garbage info
@@ -97,13 +97,10 @@ exports.initGame = (game_id, users_id) => {
     users_socket = sockets.filter((socket) =>
       users_id.includes(socket.request.session.userId)
     );
-    let time_counter = 0;
     users_socket.forEach((socket) => {
-      time_counter++;
       lobby.to(socket.id).emit("gameReady", {
         game_id: game_id,
-        message: `Game "${game.name}" is ready, will start in few seconds!`,
-        time_counter: time_counter,
+        message: `Game "${game.name}" is ready, will start in 3 seconds!`,
       });
     });
   });

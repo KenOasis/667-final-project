@@ -6,25 +6,15 @@ const gameListManager = require("../../volatile/gameListManager");
 const eventsGame = require("../../socket/eventsGame");
 
 exports.joinGame = async (req, res, next) => {
-  const user_id = req.session.userId;
+  const username = req.session.userName;
   const { game_id } = req.body;
   try {
-    const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
-    if (isInGame) {
-      const user_list = await coreDriver.getGameUserList(game_id);
-      if (user_list && user_list.length) {
-        eventsGame.userJoin(game_id);
-        res
-          .status(200)
-          .render("game", { user_list: JSON.stringify(user_list) });
-      } else {
-        throw new Error("fetch users list failed");
-      }
+    const user_list = await coreDriver.getGameUserList(game_id);
+    if (user_list && user_list.length) {
+      eventsGame.userJoin(game_id, username);
+      res.status(200).render("game", { user_list: JSON.stringify(user_list) });
     } else {
-      res.status(403).json({
-        status: "forbidden",
-        message: "Join game failed. You are not in this game",
-      });
+      throw new Error("fetch users list failed");
     }
   } catch (err) {
     console.error(err);
@@ -40,24 +30,16 @@ exports.loadGameState = async (req, res, next) => {
   const { game_id } = req.body;
 
   try {
-    const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
-    if (isInGame) {
-      const game_state = await coreDriver.getGameState(game_id, user_id);
-      if (game_state) {
-        res.status(200).json({
-          status: "success",
-          game_state: game_state,
-        });
-      } else {
-        throw new Error("DB error.");
-      }
-      // TODO this should be send as parameter when rendering the game page
-    } else {
-      res.status(403).json({
-        status: "forbidden",
-        message: "Join game failed. You are not in this game",
+    const game_state = await coreDriver.getGameState(game_id, user_id);
+    if (game_state) {
+      res.status(200).json({
+        status: "success",
+        game_state: game_state,
       });
+    } else {
+      throw new Error("DB error.");
     }
+    // TODO this should be send as parameter when rendering the game page
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -72,29 +54,34 @@ exports.drawCard = async (req, res, next) => {
   const user_id = req.session.userId;
 
   try {
-    const isInGame = await coreDriver.checkUserInGame(game_id, user_id);
-    if (isInGame) {
-      const card_id = await coreDriver.drawCard(game_id, user_id);
-      const game_user_list = await coreDriver.getGameUserList(game_id);
-      if (card_id && game_user_list) {
-        // TODO brocast the game_state and update object to all users in this game
-        await eventsGame.drawCard(game_user_list, card_id, user_id);
-        res.status(200).json({
-          status: "success",
-        });
-      } else {
-        throw new Error("DB error");
-      }
-    } else {
-      res.status(403).json({
-        status: "forbidden",
-        message: "Request failed: You are not in this game",
+    const card_id = await coreDriver.drawCard(game_id, user_id);
+    const game_user_list = await coreDriver.getGameUserList(game_id);
+    const set_undone_draw = await coreDriver.setUndoneActionDraw(game_id);
+    if (card_id && game_user_list && set_undone_draw) {
+      await eventsGame.drawCard(game_user_list, card_id, user_id);
+      res.status(200).json({
+        status: "success",
       });
+    } else {
+      throw new Error("DB error");
     }
   } catch (err) {
     console.error(err);
     res.status(500).json({
-      status: "forbidden",
+      status: "failed",
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.pass = async (req, res, next) => {
+  const { game_id } = req.body;
+  const user_id = req.session.userId;
+  try {
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
       message: "Internal server error",
     });
   }

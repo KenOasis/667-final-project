@@ -1,12 +1,16 @@
 const coreDriver = require("../db/drivers/core-driver");
 const ActionFactory = require("../factories/ActionFactory");
-const { io } = require("./socket");
-exports.userJoin = (game_id) => {
+exports.userJoin = (game_id, username) => {
   const gameSpace = require("./socket").getNameSpace("game");
   const room = "game-" + game_id;
   gameSpace.on("connect", (socket) => {
-    gameSpace.removeAllListeners();
     socket.join(room);
+    socket.emit("userJoin", { username });
+    socket.on("disconnect", () => {
+      gameSpace.in(room).emit("userDisconnect", { username });
+      socket.leave(room);
+      gameSpace.removeAllListeners();
+    });
   });
 };
 
