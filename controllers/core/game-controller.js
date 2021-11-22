@@ -3,6 +3,7 @@ const coreDriver = require("../../db/drivers/core-driver");
 const gameStateDummy = require("../../volatile/gameStateDummy");
 const gameListManager = require("../../volatile/gameListManager");
 
+const CardFactory = require("../../factories/cardFactory");
 const eventsGame = require("../../socket/eventsGame");
 
 exports.joinGame = async (req, res, next) => {
@@ -13,8 +14,6 @@ exports.joinGame = async (req, res, next) => {
     if (user_list && user_list.length) {
       eventsGame.userJoin(game_id, username);
       res.status(200).render("game", { user_list: JSON.stringify(user_list) });
-    } else {
-      throw new Error("fetch users list failed");
     }
   } catch (err) {
     console.error(err);
@@ -36,8 +35,6 @@ exports.loadGameState = async (req, res, next) => {
         status: "success",
         game_state: game_state,
       });
-    } else {
-      throw new Error("DB error.");
     }
   } catch (err) {
     console.error(err);
@@ -61,8 +58,6 @@ exports.drawCard = async (req, res, next) => {
       return res.status(200).json({
         status: "success",
       });
-    } else {
-      throw new Error("DB error");
     }
   } catch (err) {
     console.error(err);
@@ -92,8 +87,6 @@ exports.pass = async (req, res, next) => {
       res.status(200).json({
         status: "success",
       });
-    } else {
-      throw new Error("DB error");
     }
   } catch (err) {
     console.error(err);
@@ -102,13 +95,6 @@ exports.pass = async (req, res, next) => {
       message: "Internal server error",
     });
   }
-};
-exports.playCard = (req, res, next) => {
-  const game_id = req.body.game_id;
-  const user_id = req.body.user_id;
-  const card_id = req.body.card_id;
-  const wild_color = req.body.wild_status; // if the card is wild card, the current player need to select a color
-  // TODO according the card's action_type to trigger futher action
 };
 
 exports.challenge = (req, res, next) => {
@@ -174,6 +160,24 @@ exports.playCard = (req, res, next) => {
   //    //respond with error
   //    res.status(400)
   //  }
+
+  const { game_id, card_id, undone_action } = req.body;
+  const user_id = req.session.userId;
+  const card = CardFactory.create(card_id);
+
+  try {
+    if (card.type === "number") {
+    } else if (card.type === "action") {
+    } else {
+      // wild
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      stats: "failed",
+      message: "Internal Server Error",
+    });
+  }
 
   return res.status(200).json({});
 };

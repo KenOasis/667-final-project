@@ -10,14 +10,10 @@ exports.checkUserInGame = async (game_id, user_id) => {
   try {
     const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
 
-    if (isInGame !== null) {
-      return isInGame;
-    } else {
-      throw new Error("DB error.");
-    }
+    return isInGame;
   } catch (err) {
-    console.error(err);
-    throw new Error("DB error.");
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -64,8 +60,8 @@ exports.initialGame = async (game_id, users_id) => {
 
     return true;
   } catch (err) {
-    console.error(err);
-    return false;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -83,11 +79,11 @@ exports.getGameUserList = async (game_id) => {
       });
       return user_list;
     } else {
-      return null;
+      throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -138,26 +134,22 @@ exports.getGameState = async (game_id, user_id) => {
         undone_action,
       };
       return game_state;
-    } else {
-      return null;
     }
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
 exports.drawCard = async (game_id, user_id) => {
   try {
-    const card_id = await gameCardsDriver.draw_card(game_id, user_id);
+    const card_id = await gameCardsDriver.drawCard(game_id, user_id);
     if (card_id) {
       return card_id;
-    } else {
-      throw new Error("DB error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error("DB error.");
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -170,8 +162,8 @@ exports.setUndoneActionDraw = async (game_id) => {
     );
     return updatedResult;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -184,8 +176,8 @@ exports.setUndoneActionChallenge = async (game_id) => {
     );
     return updatedResult;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -198,8 +190,8 @@ exports.resetUndoneAction = async (game_id) => {
     );
     return updatedResult;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -228,9 +220,16 @@ exports.setNextCurrent = async (game_id, user_id, action) => {
       );
       return true;
     }
-    return null;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
+  }
+};
+
+exports.discard = async (game_id, card_id) => {
+  try {
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };

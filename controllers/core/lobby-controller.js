@@ -21,6 +21,10 @@ exports.createGame = async (req, res, next) => {
     });
   } catch (err) {
     console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Internal Server Error.",
+    });
   }
 };
 
@@ -48,8 +52,6 @@ exports.joinGame = async (req, res, next) => {
 
         if (isInitialSuccess) {
           // join success
-        } else {
-          throw new Error("DB error.");
         }
       } catch (err) {
         console.error(err);
