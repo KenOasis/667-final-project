@@ -42,7 +42,6 @@ class game_state_helper {
   find_one_player(id) {
     const players = this.game_state.players;
     const player_info = players.filter((player) => player.user_id === id);
-    console.log(player_info);
     return player_info[0];
   }
   /**
@@ -164,25 +163,35 @@ class game_state_helper {
    * highlight the border
    *
    */
-  set_current_player() {
-    const desk = document.getElementById("draw");
+  set_current_player(action) {
+    console.log(action)
     if (this.check_current_is_receiver()) {
-      const uno = document.getElementById("uno");
-      uno.style.zIndex = 2;
-      desk.disabled = false;
+      page_effect.unlock_uno_button();
+      if (action == "draw") {
+        page_effect.show_pass_button();
+        page_effect.lock_desk_button();
+      }
+      //else if(action == "chanllage")
+      else{
+      page_effect.unlock_desk_button();
+      page_effect.unlock_uno_button();
+      }
+      action_util.set_undone_action(action, this.game_state.receiver);
+      
     } else {
       const current_player = this.game_state.current_player;
       page_effect.highlight_current(current_player);
-      desk.disabled = true;
+      page_effect.lock_desk_button();
+      page_effect.lock_uno_button();
     }
   }
   /**
    * set up the click_card_event
    *
    */
-  set_card_click_event() {
+  set_card_click_event(is_current_player) {
     const receiver_id = this.game_state.receiver;
     const bottom_cards = this.find_one_player(receiver_id).cards;
-    action_util.card_click_event(bottom_cards);
+    action_util.card_click_event(bottom_cards, is_current_player);
   }
 }
