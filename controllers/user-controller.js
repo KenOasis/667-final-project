@@ -42,6 +42,9 @@ exports.signUp = async (req, res, next) => {
 
     let newUser = await userDriver.signupUser(username, email, hashPassword);
 
+    if (newUser === null) {
+      throw new Error("DB data error.");
+    }
     return res.status(200).json({
       url: url.format({
         pathname: "/transition",
@@ -53,9 +56,12 @@ exports.signUp = async (req, res, next) => {
         },
       }),
     });
-  } catch (error) {
-    // TODO standarize error ouput
-    console.error(error);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error.",
+    });
   }
 };
 
@@ -101,9 +107,12 @@ exports.login = async (req, res, next) => {
         ],
       });
     }
-  } catch (error) {
-    // TODO standarize error ouput
-    console.error(error);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error.",
+    });
   }
 };
 
@@ -143,10 +152,14 @@ exports.changePassword = async (req, res, next) => {
         });
       }
     } else {
-      throw new Error("db error!");
+      throw new Error("DB data error.");
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error.",
+    });
   }
 };
 
@@ -188,11 +201,14 @@ exports.getProfile = async (req, res, next) => {
         lostrate: 0,
         points: 0,
       });
-      return;
     } else {
       throw new Error("db error");
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error.",
+    });
   }
 };

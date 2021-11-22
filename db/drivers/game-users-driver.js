@@ -25,7 +25,7 @@ exports.getGameUsersByUserId = async (id) => {
     return game_users;
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error(err.message);
   }
 };
 
@@ -47,7 +47,7 @@ exports.getGameUsersByGameId = async (game_id) => {
     return game_users;
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error(err.message);
   }
 };
 
@@ -68,7 +68,7 @@ exports.createGameUsers = async (
     return game_user;
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error(err.message);
   }
 };
 
@@ -88,7 +88,7 @@ exports.checkUserInGame = async (game_id, user_id) => {
     }
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error(err.message);
   }
 };
 
@@ -106,11 +106,12 @@ exports.getGameOrder = async (game_id) => {
       const game_order = game_users.map((game_user) => game_user.user_id);
 
       return game_order;
+    } else {
+      throw new Error("DB data error.");
     }
-    return null;
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error(err.message);
   }
 };
 
@@ -124,10 +125,32 @@ exports.getCurrentPlayer = async (game_id) => {
     });
     if (game) {
       return game.user_id;
+    } else {
+      throw new Error("DB data error");
     }
-    return null;
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error(err.message);
+  }
+};
+
+exports.setCurrentPlayer = async (game_id, user_id, is_current) => {
+  try {
+    const game_user = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_user) {
+      game_user.current_player = is_current;
+      await game_user.save();
+      return true;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.message);
   }
 };

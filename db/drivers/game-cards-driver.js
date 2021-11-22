@@ -5,7 +5,7 @@ const Games = db["games"];
 const GameCards = db["game_cards"];
 const Cards = db["cards"];
 const { Op } = require("sequelize");
-const shuffle = require("../../util/shuffle");
+const sequelize = require("sequelize");
 
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 Games.hasMany(GameUsers, { foreignKey: "game_id" });
@@ -27,8 +27,8 @@ exports.initialGameCards = async (game_id, user_id, card_id, draw_order) => {
 
     return game_card;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -45,7 +45,7 @@ exports.initialPlayersDeck = async (game_id) => {
     if (game_users && game_users.length) {
       user_ids = game_users.map((game_user) => game_user.user_id);
     } else {
-      return null;
+      throw new Error("DB data error.");
     }
 
     for await (const user_id of user_ids) {
@@ -66,8 +66,8 @@ exports.initialPlayersDeck = async (game_id) => {
     }
     return true;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -83,8 +83,8 @@ exports.getCardDeck = async (game_id) => {
 
     return card_deck;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -101,7 +101,7 @@ exports.getPlayers = async (game_id, current_user_id) => {
         user_ids.push(game_user.user_id);
       });
     } else {
-      return null;
+      throw new Error("DB data error.");
     }
     const players = [];
     for await (const user_id of user_ids) {
@@ -125,7 +125,7 @@ exports.getPlayers = async (game_id, current_user_id) => {
         player.user_id = game_user.user_id;
         player.uno = game_user.uno;
       } else {
-        return null;
+        throw new Error("DB data error.");
       }
       if (game_cards && game_cards.length) {
         player.number_of_cards = game_cards.length;
@@ -134,14 +134,14 @@ exports.getPlayers = async (game_id, current_user_id) => {
           player.cards = game_cards.map((game_card) => game_card.card_id);
         }
       } else {
-        return null;
+        throw new Error("DB data error.");
       }
       players.push(player);
     }
     return players;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -167,14 +167,14 @@ exports.getDiscards = async (game_id) => {
     } else if (game_cards) {
       return discards;
     }
-    return null;
+    throw new Error("DB data error. ");
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
-exports.draw_card = async (game_id, user_id) => {
+exports.drawCard = async (game_id, user_id) => {
   try {
     const game_card = await GameCards.findOne({
       where: {
@@ -190,10 +190,39 @@ exports.draw_card = async (game_id, user_id) => {
       game_card.in_deck = false;
       await game_card.save();
       return game_card.card_id;
+    } else {
+      throw new Error("DB data error.");
     }
-    return null;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
+  }
+};
+
+exports.setDiscards = async (game_id, card_id) => {
+  try {
+    const game_card_max_discarded = await GameCards.findOne({
+      where: {
+        game_id,
+      },
+      order: [sequelize.fn("max", sequelize.col("discarded"))],
+      group: ["id"],
+    });
+    const game_card = await GameCards.findOne({
+      where: {
+        game_id,
+        card_id,
+      },
+    });
+    if (game_card_max_discarded && game_card) {
+      game_card.discarded = game_card_max_discarded.discarded + 1;
+      await game_card.save();
+      return true;
+    } else {
+      throw new Error("DB data error.!");
+    }
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };

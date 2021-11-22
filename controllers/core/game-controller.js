@@ -1,8 +1,8 @@
 const coreDriver = require("../../db/drivers/core-driver");
 
-const gameStateDummy = require("../../volatile/gameStateDummy");
 const gameListManager = require("../../volatile/gameListManager");
 
+const CardFactory = require("../../factories/cardFactory");
 const eventsGame = require("../../socket/eventsGame");
 
 exports.joinGame = async (req, res, next) => {
@@ -13,8 +13,6 @@ exports.joinGame = async (req, res, next) => {
     if (user_list && user_list.length) {
       eventsGame.userJoin(game_id, username);
       res.status(200).render("game", { user_list: JSON.stringify(user_list) });
-    } else {
-      throw new Error("fetch users list failed");
     }
   } catch (err) {
     console.error(err);
@@ -36,10 +34,7 @@ exports.loadGameState = async (req, res, next) => {
         status: "success",
         game_state: game_state,
       });
-    } else {
-      throw new Error("DB error.");
     }
-    // TODO this should be send as parameter when rendering the game page
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -59,11 +54,9 @@ exports.drawCard = async (req, res, next) => {
     const set_undone_draw = await coreDriver.setUndoneActionDraw(game_id);
     if (card_id && game_user_list && set_undone_draw) {
       await eventsGame.drawCard(game_user_list, card_id, user_id);
-      res.status(200).json({
+      return res.status(200).json({
         status: "success",
       });
-    } else {
-      throw new Error("DB error");
     }
   } catch (err) {
     console.error(err);
@@ -78,6 +71,22 @@ exports.pass = async (req, res, next) => {
   const { game_id } = req.body;
   const user_id = req.session.userId;
   try {
+    // Set undone none
+    const reset_undone = await coreDriver.resetUndoneAction(game_id);
+    // Set new current player
+    const updated_current_play = await coreDriver.setNextCurrent(
+      game_id,
+      user_id,
+      "next"
+    );
+    const game_user_list = await coreDriver.getGameUserList(game_id);
+
+    if (reset_undone && updated_current_play && game_user_list) {
+      eventsGame.pass(game_user_list, user_id);
+      res.status(200).json({
+        status: "success",
+      });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -85,13 +94,6 @@ exports.pass = async (req, res, next) => {
       message: "Internal server error",
     });
   }
-};
-exports.playCard = (req, res, next) => {
-  const game_id = req.body.game_id;
-  const user_id = req.body.user_id;
-  const card_id = req.body.card_id;
-  const wild_color = req.body.wild_status; // if the card is wild card, the current player need to select a color
-  // TODO according the card's action_type to trigger futher action
 };
 
 exports.challenge = (req, res, next) => {
@@ -104,17 +106,7 @@ exports.challenge = (req, res, next) => {
 
 exports.sayUno = (req, res, next) => {};
 
-exports.generateGameState = (req, res, next) => {
-  const game_state = gameStateDummy.getGameState();
-  res.status(200).json({
-    game_state: game_state,
-  });
-};
-exports.getGame = (req, res, next) => {
-  return res.status(200).render("game");
-};
-
-exports.playCard = (req, res, next) => {
+exports.playCard = async (req, res, next) => {
   //  PSEUDOCODE FOR PLAYING A CARD
 
   //  1) get card info from card that was played
@@ -157,6 +149,25 @@ exports.playCard = (req, res, next) => {
   //    //respond with error
   //    res.status(400)
   //  }
+
+  const { game_id, card_id, undone_action } = req.body;
+  const user_id = req.session.userId;
+  const card = CardFactory.create(card_id);
+
+  try {
+    if (card.type === "number") {
+      await coreDriver.discard(game_id, card_id);
+    } else if (card.type === "action") {
+    } else {
+      // wild
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      stats: "failed",
+      message: "Internal Server Error",
+    });
+  }
 
   return res.status(200).json({});
 };

@@ -54,7 +54,8 @@ const gameListManager = {
     try {
       gameCreated = await gamesDriver.createGame(game_name);
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      throw new Error(err.message);
     }
     const new_game = {
       game_id: gameCreated.id,
@@ -123,8 +124,9 @@ const gameListManager = {
       index--;
       game = gameList[index];
       game.users = game.users.filter(
-        (user) => user.user_id !== user_id || user.status === "playing"
+        (user) => user.status === "playing" || user.user_id !== user_id
       );
+
       if (game.users.length <= 0) {
         gameList.splice(index, 1);
       }

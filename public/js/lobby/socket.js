@@ -1,6 +1,8 @@
 const host = "http://" + location.host + "/lobby";
 const socket = io(host, {
   reconnectionDelayMax: 10000,
+  transports: ["websocket"],
+  upgrade: false,
 });
 
 // socket event listener
@@ -11,11 +13,6 @@ socket.on("userListInitial", (data) => {
 });
 
 socket.on("userJoinLobby", (data) => {
-  if (toastContainer) {
-    const newToast = addToast(data.username + " has joined the lobby!");
-    let toast = new bootstrap.Toast(newToast);
-    toast.show();
-  }
   if (data.username !== whoami) {
     let currentUser = document.getElementById(`user-${data.username}`);
     const user = {
@@ -33,11 +30,6 @@ socket.on("userJoinLobby", (data) => {
 });
 
 socket.on("userLeaveLobby", (data) => {
-  if (toastContainer) {
-    const newToast = addToast(data.user.username + " has left the lobby!");
-    let toast = new bootstrap.Toast(newToast);
-    toast.show();
-  }
   if (data.user.username !== whoami) {
     let currentUser = document.getElementById(`user-${data.user.username}`);
     if (currentUser !== null) {
@@ -122,7 +114,7 @@ socket.on("gameReady", (data) => {
   // console.log(data.time_counter);
   setTimeout(() => {
     startGame(data.game_id);
-  }, 1000);
+  }, 3000);
 });
 
 // test code for socket handshake.
