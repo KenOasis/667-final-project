@@ -1,6 +1,5 @@
 const gameList = [];
 const db = require("../models");
-const Games = db["games"];
 
 const gamesDriver = require("../db/drivers/games-driver");
 const findGameIndexById = (game_id) => {
