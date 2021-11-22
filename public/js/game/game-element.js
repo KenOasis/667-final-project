@@ -107,11 +107,8 @@ class game_state_helper {
   show_discard() {
     const container = document.getElementById("discard_pile");
     const discards = this.game_state.discards;
-    for (let i in discards) {
-      const card = card_tool.set_cards(discards[i], "discard");
-      card.style.pointerEvents = "none";
-      container.appendChild(card);
-    }
+    container.innerHTML = "";
+    container.appendChild(page_effect.show_discard(discards));
   }
   //show matching color and number to players
   set_match() {
@@ -121,12 +118,14 @@ class game_state_helper {
       green: "rgb(60,179,113)",
       yellow: "rgb(255, 210, 71)",
     };
-    const color_match = this.game_state.matching.color;
-    const num_html = document.getElementById("match_number");
-    num_html.innerHTML = this.game_state.matching.number;
-    num_html.style.color = color[color_match];
+    const match_number = this.game_state.matching.number;
+    const match_color = this.game_state.matching.color;
     const direction = this.game_state.game_direction;
-    card_tool.set_game_direction(direction, color[color_match]);
+    const num_html = document.getElementById("match_set");
+
+    num_html.innerHTML =
+      page_effect.show_match_set(match_number, color[match_color]) +
+      page_effect.show_direction(color[match_color], direction);
   }
   set_deck() {
     const deck = document.getElementById("card_deck");
@@ -170,11 +169,10 @@ class game_state_helper {
     if (this.check_current_is_receiver()) {
       const uno = document.getElementById("uno");
       uno.style.zIndex = 2;
-      this.color_match_card();
       desk.disabled = false;
     } else {
       const current_player = this.game_state.current_player;
-      card_tool.highlight_current(current_player);
+      page_effect.highlight_current(current_player);
       desk.disabled = true;
     }
   }

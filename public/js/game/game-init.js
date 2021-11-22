@@ -45,12 +45,15 @@ const loadGameState = () => {
         for (let i = 0; i < game_order.length; i++) {
           player_profile.set_user_name(game_order, user_list[i]);
         }
-        game_class.set_players_location();
-
         return results.game_state;
       } else {
         console.log(resulst.status + " : " + results.message);
       }
+    })
+    .then((game_state) => {
+      const game_class = new game_state_helper(game_state);
+      game_class.set_players_location();
+      return game_state;
     })
     .then((game_state) => {
       const game_class = new game_state_helper(game_state);
