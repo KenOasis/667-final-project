@@ -1,6 +1,8 @@
 const host = "http://" + location.host + "/lobby";
 const socket = io(host, {
   reconnectionDelayMax: 10000,
+  transports: ["websocket"],
+  upgrade: false,
 });
 
 // socket event listener

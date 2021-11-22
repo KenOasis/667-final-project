@@ -6,6 +6,8 @@ exports.joinLobby = (user, currentUserStatus) => {
 
   let userList = [];
 
+  lobbySpace.removeAllListeners();
+
   // This is where established the connection for lobby
   lobbySpace.on("connection", async (socket) => {
     // listen to the client event of disconnect
@@ -28,6 +30,7 @@ exports.joinLobby = (user, currentUserStatus) => {
       let gameUserList = socketsOfGame.filter(
         (socket) => socket.request.session.userName !== user.username
       );
+
       gameUserList = gameUserList.map((socket) => {
         return {
           username: socket.request.session.userName,
@@ -72,6 +75,7 @@ exports.joinLobby = (user, currentUserStatus) => {
       lobbySpace.emit("gameListInitial", gameList);
 
       socket.on("disconnect", () => {
+        console.log("user id in disconnect: " + user.user_id);
         const gameList = gameListManager.userLeaveLobby(user.user_id);
         const userInGame = gameUserList.filter(
           (userInGame) => userInGame.username === user.username
@@ -83,7 +87,6 @@ exports.joinLobby = (user, currentUserStatus) => {
             gameList: gameList,
           });
         }
-        lobbySpace.removeAllListeners();
       });
     } catch (err) {
       console.error(err);

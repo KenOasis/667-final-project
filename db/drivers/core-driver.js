@@ -228,6 +228,7 @@ exports.setNextCurrent = async (game_id, user_id, action) => {
 
 exports.discard = async (game_id, card_id) => {
   try {
+    await gameCardsDriver.setDiscards(game_id, card_id);
   } catch (err) {
     console.error(err.message);
     throw new Error(err.message);
