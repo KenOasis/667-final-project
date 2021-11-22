@@ -27,7 +27,7 @@ exports.initialGameCards = async (game_id, user_id, card_id, draw_order) => {
 
     return game_card;
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     throw new Error(err.message);
   }
 };
@@ -66,7 +66,7 @@ exports.initialPlayersDeck = async (game_id) => {
     }
     return true;
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     throw new Error(err.message);
   }
 };
@@ -83,7 +83,7 @@ exports.getCardDeck = async (game_id) => {
 
     return card_deck;
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     throw new Error(err.message);
   }
 };
@@ -111,13 +111,31 @@ exports.getPlayers = async (game_id, current_user_id) => {
           user_id,
         },
       });
-      const game_cards = await GameCards.findAll({
-        where: {
-          game_id,
-          user_id,
-          in_deck: false,
-          discarded: 0,
+      const game_cards = await Cards.findAll({
+        raw: true,
+        attributes: [
+          "type",
+          "color",
+          "face_value",
+          "game_cards.user_id",
+          "game_cards.card_id",
+        ],
+        include: {
+          model: GameCards,
+          where: {
+            game_id,
+            user_id,
+            in_deck: false,
+            discarded: 0,
+          },
+          attributes: [],
+          required: true,
         },
+        order: [
+          ["color", "ASC"],
+          ["face_value", "ASC"],
+          ["type", "ASC"],
+        ],
       });
       const player = {};
 
@@ -140,7 +158,7 @@ exports.getPlayers = async (game_id, current_user_id) => {
     }
     return players;
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     throw new Error(err.message);
   }
 };
@@ -169,7 +187,7 @@ exports.getDiscards = async (game_id) => {
     }
     throw new Error("DB data error. ");
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     throw new Error(err.message);
   }
 };
@@ -194,7 +212,7 @@ exports.drawCard = async (game_id, user_id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     throw new Error(err.message);
   }
 };
@@ -222,7 +240,7 @@ exports.setDiscards = async (game_id, card_id) => {
       throw new Error("DB data error.!");
     }
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     throw new Error(err.message);
   }
 };
