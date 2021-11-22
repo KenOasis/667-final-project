@@ -75,7 +75,6 @@ exports.joinLobby = (user, currentUserStatus) => {
       lobbySpace.emit("gameListInitial", gameList);
 
       socket.on("disconnect", () => {
-        console.log("user id in disconnect: " + user.user_id);
         const gameList = gameListManager.userLeaveLobby(user.user_id);
         const userInGame = gameUserList.filter(
           (userInGame) => userInGame.username === user.username

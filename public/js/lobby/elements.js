@@ -117,6 +117,7 @@ const constructGameElement = (game) => {
       span_reconnect.className = "btn badge bg-primary rounded-spill mx-1";
       span_reconnect.id = "game-" + game.game_id + "-reconnect";
       span_reconnect.innerHTML = "reconnect";
+      span_reconnect.dataset.game_id = game.game_id;
       // TODO implement the reconnectGame();
       span_reconnect.onclick = reconnectGame;
       buttons_div.appendChild(span_reconnect);
