@@ -56,6 +56,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "none",
       },
+      undone_action: {
+        type: DataTypes.ENUM("none", "draw", "challenge"),
+        allowNull: false,
+        defaultValue: "none",
+      },
     },
     {
       timestamps: false,

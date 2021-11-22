@@ -1,14 +1,14 @@
 const Action = require("./Action");
-
-class SkipAction extends Action {
+class PassAction extends Action {
   constructor(performer) {
     super(performer);
-    this._type = "skip";
+    this._type = "pass";
   }
 
   static getParams() {
     return ["performer"];
   }
+
   action() {
     return {
       performer: this._performer,
@@ -17,4 +17,4 @@ class SkipAction extends Action {
   }
 }
 
-module.exports = SkipAction;
+module.exports = PassAction;

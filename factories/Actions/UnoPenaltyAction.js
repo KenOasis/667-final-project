@@ -10,12 +10,15 @@ class UnoPenaltyAction extends Action {
     }
   }
 
+  static getParams() {
+    return ["performer", "cards", "receiver"];
+  }
   action() {
     const obj = {
       performer: this._performer,
       type: this._type,
     };
-    if (thie._performer === this._receiver) {
+    if (this._performer === this._receiver) {
       obj.cards = this._cards.slice(0);
     }
 

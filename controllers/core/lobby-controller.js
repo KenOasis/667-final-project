@@ -1,12 +1,8 @@
 const gameListManager = require("../../volatile/gameListManager");
-const gameUsersDriver = require("../../db/drivers/game-users-driver");
-const cardsDriver = require("../../db/drivers/card-drivers");
-const gameCardsDriver = require("../../db/drivers/game-cards-driver");
-const gamesDriver = require("../../db/drivers/games-driver");
+
+const coreDriver = require("../../db/drivers/core-driver");
 
 const eventsLobby = require("../../socket/eventsLobby");
-
-const shuffle = require("../../util/shuffle");
 
 exports.createGame = async (req, res, next) => {
   const game_name = req.body.game_name;
@@ -25,6 +21,10 @@ exports.createGame = async (req, res, next) => {
     });
   } catch (err) {
     console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Internal Server Error.",
+    });
   }
 };
 
@@ -37,7 +37,7 @@ exports.joinGame = async (req, res, next) => {
   const game = gameListManager.joinGame(game_id, user);
   if (game) {
     eventsLobby.joinGame(game, user);
-    // If game is full
+    // If game is full, initial game data in db
     if (game.status === "full") {
       const users_id = gameListManager
         .getUserListOfGame(game_id)
@@ -45,47 +45,17 @@ exports.joinGame = async (req, res, next) => {
       eventsLobby.initGame(game_id, users_id);
 
       try {
-        // Step 1 : Generate the random sequence of starting order of user
-        // referrence: async iteration https://2ality.com/2016/10/asynchronous-iteration.html
-        const userIdsShuffled = shuffle(users_id);
-        let userIdsOrderCounter = 1;
+        const isInitialSuccess = await coreDriver.initialGame(
+          game_id,
+          users_id
+        );
 
-        for await (const user_id of userIdsShuffled) {
-          await gameUsersDriver.createGameUsers(
-            game_id,
-            user_id,
-            userIdsOrderCounter === 1 ? true : false,
-            userIdsOrderCounter
-          ); // Game start at the first order player
-          userIdsOrderCounter += 1;
+        if (isInitialSuccess) {
+          // join success
         }
-        // Stpe 2: Generate the 108 game_card rows and give them an random draw order.
-
-        const allCardsIds = await cardsDriver.getAllCardsId();
-
-        const allCardsIdsShuffled = shuffle(allCardsIds);
-
-        let cardIdsOrderCounter = 1;
-
-        for await (const card_id of allCardsIdsShuffled) {
-          await gameCardsDriver.initialGameCards(
-            game_id,
-            userIdsShuffled[0],
-            card_id,
-            cardIdsOrderCounter
-          );
-
-          cardIdsOrderCounter += 1;
-        }
-
-        // Step 3: initial matching
-        await gamesDriver.initialMatching(game_id);
-
-        // Step 4: initial first 7 cards of each player's card deck
-        await gameCardsDriver.initialPlayersDeck(game_id);
       } catch (err) {
         console.error(err);
-        res
+        return res
           .status(202)
           .json({ status: "failed", message: "Initial game failed" });
       }

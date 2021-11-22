@@ -7,7 +7,7 @@
 
 
 
-//FINISH
+
 const game_state = {
  
   game_id: 2,
@@ -50,9 +50,8 @@ const game_state = {
     number_of_cards: 1
   }],
 
-  discards: [25, 28, 10],
+  discards: [25, 28, 10]
   // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
-  undoAction = "none" // could be "draw" or "challenge"
 }
 // After this round he play a card 94 
 
@@ -62,13 +61,13 @@ const game_state = {
 // remember, this is the action return to the front end {{{AFTER}}} you send the request to the backend
 const update = {
   game_id: 5,
-  receiver: 6,
+  reciever: 6,
   // the order of action is their performed-order
   actions: [
     {  // action need to perform in front end (caused by )
       performer: 9,
       action_type: "play_card",
-      card: [94], 
+      card: 94, 
     }, {
       performer: 6,
       action_type: "draw_two", // draw_two should be include the action which skip user's turn,
@@ -83,20 +82,15 @@ const update = {
  */
 
 const drawCardAction = {
-  // reconnect
   performer: 9,
   type: "draw_card",
-  card: [12] // if (is_performer)
+  card_id: 12 // if (is_performer)
 }
 
-const passAction = {
-  performer: 9,
-  type: "pass"
-}
 const playCardAction = {
   performer: 9,
   type = "play_card",
-  card: [12]
+  card_id: 12
 }
 
 const unoAction = {
@@ -134,7 +128,6 @@ const wildAction = {
 
 // for the 1st step of wild draw four (select color)
 const wildDrawFourAction = {
-  // reconnecrt
   performer: 9,
   type: "wild_draw_four",
   color: "blue" 
@@ -156,7 +149,6 @@ const challengeAction = {
 
 // example of do challenge but failed
 const challengeAction = {
-  // reconnect
   performer: 8,
   type: "challenge",
   is_challenged: true,

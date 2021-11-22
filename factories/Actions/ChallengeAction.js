@@ -34,6 +34,18 @@ class ChallengeAction extends Action {
     }
   }
 
+  static getParams() {
+    return [
+      "performer",
+      "is_challenged",
+      "is_success",
+      "penalty_player",
+      "penalty_count",
+      "penalty_cards",
+      "receiver",
+    ];
+  }
+
   action() {
     const obj = {
       performer: this._performer,

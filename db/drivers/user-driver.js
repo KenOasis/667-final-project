@@ -11,8 +11,8 @@ exports.findUserByName = async (username) => {
 
     return user;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -26,8 +26,8 @@ exports.findUserByEmail = async (email) => {
 
     return user;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -37,8 +37,8 @@ exports.findUserById = async (user_id) => {
 
     return user;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };
 
@@ -59,7 +59,7 @@ exports.signupUser = async (username, email, password) => {
 
     return user;
   } catch (err) {
-    console.error(err);
-    return null;
+    console.error(err.message);
+    throw new Error(err.message);
   }
 };

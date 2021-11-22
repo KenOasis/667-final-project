@@ -64,6 +64,7 @@ app.use(errorRoutes.routes);
 let port_number = process.env.PORT || 3000;
 const server = app.listen(port_number);
 
+// socket.io initialize
 const io = socketIO.init(server);
 socketIO.initNameSpace();
 // @references: https://github.com/socketio/socket.io/blob/master/examples/passport-example/index.js
