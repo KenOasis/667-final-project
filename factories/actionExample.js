@@ -52,7 +52,7 @@ const game_state = {
 
   discards: [25, 28, 10],
   // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
-  undoAction = "none" // could be "draw" or "challenge"
+  undone_action = "none" // could be "draw" or "challenge"
 }
 // After this round he play a card 94 
 

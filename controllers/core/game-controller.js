@@ -1,6 +1,5 @@
 const coreDriver = require("../../db/drivers/core-driver");
 
-const gameStateDummy = require("../../volatile/gameStateDummy");
 const gameListManager = require("../../volatile/gameListManager");
 
 const CardFactory = require("../../factories/cardFactory");
@@ -107,17 +106,7 @@ exports.challenge = (req, res, next) => {
 
 exports.sayUno = (req, res, next) => {};
 
-exports.generateGameState = (req, res, next) => {
-  const game_state = gameStateDummy.getGameState();
-  res.status(200).json({
-    game_state: game_state,
-  });
-};
-exports.getGame = (req, res, next) => {
-  return res.status(200).render("game");
-};
-
-exports.playCard = (req, res, next) => {
+exports.playCard = async (req, res, next) => {
   //  PSEUDOCODE FOR PLAYING A CARD
 
   //  1) get card info from card that was played
@@ -167,6 +156,7 @@ exports.playCard = (req, res, next) => {
 
   try {
     if (card.type === "number") {
+      await coreDriver.discard(game_id, card_id);
     } else if (card.type === "action") {
     } else {
       // wild

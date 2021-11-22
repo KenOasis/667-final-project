@@ -3,13 +3,14 @@ const ActionFactory = require("../factories/ActionFactory");
 exports.userJoin = (game_id, username) => {
   const gameSpace = require("./socket").getNameSpace("game");
   const room = "game-" + game_id;
+  gameSpace.removeAllListeners();
+
   gameSpace.on("connect", (socket) => {
     socket.join(room);
     socket.emit("userJoin", { username });
     socket.on("disconnect", () => {
       gameSpace.in(room).emit("userDisconnect", { username });
       socket.leave(room);
-      gameSpace.removeAllListeners();
     });
   });
 };

@@ -5,7 +5,7 @@ const Games = db["games"];
 const GameCards = db["game_cards"];
 const Cards = db["cards"];
 const { Op } = require("sequelize");
-const shuffle = require("../../util/shuffle");
+const sequelize = require("sequelize");
 
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 Games.hasMany(GameUsers, { foreignKey: "game_id" });
@@ -201,6 +201,26 @@ exports.drawCard = async (game_id, user_id) => {
 
 exports.setDiscards = async (game_id, card_id) => {
   try {
+    const game_card_max_discarded = await GameCards.findOne({
+      where: {
+        game_id,
+      },
+      order: [sequelize.fn("max", sequelize.col("discarded"))],
+      group: ["id"],
+    });
+    const game_card = await GameCards.findOne({
+      where: {
+        game_id,
+        card_id,
+      },
+    });
+    if (game_card_max_discarded && game_card) {
+      game_card.discarded = game_card_max_discarded.discarded + 1;
+      await game_card.save();
+      return true;
+    } else {
+      throw new Error("DB data error.!");
+    }
   } catch (err) {
     console.error(err.message);
     throw new Error(err.message);

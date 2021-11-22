@@ -1,6 +1,8 @@
 const host = "http://" + location.host + "/game";
 const socket = io(host, {
   reconnectionDelayMax: 10000,
+  transports: ["websocket"],
+  upgrade: false,
 });
 
 // socket.on("connect", () => {
