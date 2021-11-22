@@ -70,8 +70,18 @@ const leaveGame = (event) => {
     .catch((err) => console.log(err));
 };
 
-const reconnectGame = () => {
-  // TODO
+const reconnectGame = (event) => {
+  const form = document.createElement("form");
+  form.style = "display: none;";
+  form.method = "POST";
+  form.action = "/game/join";
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "game_id";
+  input.value = event.target.dataset.game_id;
+  form.appendChild(input);
+  document.body.append(form);
+  form.submit();
 };
 
 // send chat
