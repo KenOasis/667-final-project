@@ -72,12 +72,11 @@ exports.joinLobby = (user, currentUserStatus) => {
       lobbySpace.emit("gameListInitial", gameList);
 
       socket.on("disconnect", () => {
+        const gameList = gameListManager.userLeaveLobby(user.user_id);
         const userInGame = gameUserList.filter(
           (userInGame) => userInGame.username === user.username
         );
-        if (userInGame.length > 0) {
-          const gameList = gameListManager.userLeaveLobby(user.user_id);
-
+        if (userInGame.length == 0) {
           // if not in game, delete it from user list
           lobbySpace.volatile.emit("userLeaveLobby", {
             user: user,
