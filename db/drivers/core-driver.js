@@ -234,3 +234,11 @@ exports.discard = async (game_id, card_id) => {
     throw new Error(err.message);
   }
 };
+
+exports.setMatching = async (game_id, matching_color, matching_number) => {
+  try {
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err.message);
+  }
+};

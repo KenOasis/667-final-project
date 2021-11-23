@@ -74,8 +74,6 @@ exports.createGameUsers = async (
 
 exports.checkUserInGame = async (game_id, user_id) => {
   try {
-    console.log(game_id);
-    console.log(user_id);
     const gameUser = await GameUsers.findOne({
       where: {
         game_id,

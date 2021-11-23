@@ -74,4 +74,4 @@ const loadGameState = () => {
     .catch((error) => console.log("outside", error));
 };
 
-loadGameState();
+// loadGameState();
