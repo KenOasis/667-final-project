@@ -39,32 +39,44 @@ let action_util = {
   card_click_event(card_list, is_current_player) {
     for (let i in card_list) {
       const card = document.getElementById("card_" + card_list[i].toString());
-      const border = card.style.border;
       card.addEventListener("click", function () {
-        if (card.style.top === "-25px") {
-          card.style.top = "";
-          card.style.border = border;
-          card.style.zIndex = 0;
-        } else {
-          card.style.top = "-25px";
-          card.style.border = "4px solid #FFD700";
-          card.style.zIndex = 2;
-        }
-        if (is_current_player) {
-          const checker_obj = card_tool.check_clicked_card(
-            player_controller.whoima()
-          );
-          const clicked_one = checker_obj.clicked_card === 1;
-          const matching = checker_obj.matching === "True";
-          if (matching && clicked_one) {
-            page_effect.show_play_button();
-          } else {
-            page_effect.hide_play_button();
-          }
-        } else {
-          page_effect.hide_play_button();
-        }
+        clicked_card(card, is_current_player);
+      });
+    }
+  },
+  remove_click_event(card_list) {
+    for (let i in card_list) {
+      const card = document.getElementById("card_" + card_list[i].toString());
+      card.removeEventListener("click", function () {
+        clicked_card(card, is_current_player);
       });
     }
   },
 };
+
+function clicked_card(card, is_current_player) {
+  const border = card.style.border;
+  if (card.style.top === "-25px") {
+    card.style.top = "";
+    card.style.border = border;
+    card.style.zIndex = 0;
+  } else {
+    card.style.top = "-25px";
+    card.style.border = "4px solid #FFD700";
+    card.style.zIndex = 2;
+  }
+  if (is_current_player) {
+    const checker_obj = card_tool.check_clicked_card(
+      player_controller.whoima()
+    );
+    const clicked_one = checker_obj.clicked_card === 1;
+    const matching = checker_obj.matching === "True";
+    if (matching && clicked_one) {
+      page_effect.show_play_button();
+    } else {
+      page_effect.hide_play_button();
+    }
+  } else {
+    page_effect.hide_play_button();
+  }
+}

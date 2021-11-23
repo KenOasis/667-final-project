@@ -9,12 +9,10 @@ let page_effect = {
   cancel_highlinght() {
     const avater = document.querySelectorAll(".avater");
     console.log(avater);
-    for(let i =0; i< avater.length ; i++){
+    for (let i = 0; i < avater.length; i++) {
       avater[i].style.border = "";
       avater[i].style.borderRadius = "";
-
     }
-
   },
 
   show_play_button() {
@@ -36,7 +34,7 @@ let page_effect = {
   },
   show_pass_button() {
     const pass = document.getElementById("pass");
-    play.disabled = true;
+    pass.disabled = false;
     pass.style.zIndex = 4;
   },
   lock_desk_button() {

@@ -30,7 +30,7 @@ html(lang="en")
           height="100px"
           )
         div(class="col-md-2" style="text-align: right;")
-          button(type = "button" id="draw" class = "btn draw_button" onclick="draw_card_action()" disabled) Deck
+          button(type = "button" id="draw" class = "btn draw_button" onclick="draw_card_action()" ) Deck
           h6(id="card_deck" style="left: -30px;position: relative;") 
         #container_top(class="col-md-4 top_bottom ")
           
@@ -74,7 +74,7 @@ html(lang="en")
             input#message(type = "text" class = "form-control")
             div(class = "input-group-append")
               button(type = "button" class = "btn btn-outline-danger") Send
-        #container_bottom(class="col-md-8 top_bottom")
+        #container_bottom(class="col-md-8 top_bottom" style="height:160px; width:640px")
     //-  Modal
     div(class="modal fade" id= "modal" tabindex="-1" role="dialog" aria-labelledby="model_title" aria-hidden="true")
       div(class="modal-dialog modal-dialog-centered" role="document")
