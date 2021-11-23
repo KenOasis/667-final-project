@@ -8,6 +8,15 @@ exports.userJoin = (game_id, username) => {
   gameSpace.on("connect", (socket) => {
     socket.join(room);
     socket.emit("userJoin", { username });
+
+    gameSpace
+      .in(room)
+      .fetchSockets()
+      .then((sockets) => {
+        if (sockets.length === 4) {
+          gameSpace.in(room).emit("gameStart", { game_id });
+        }
+      });
     socket.on("disconnect", () => {
       gameSpace.in(room).emit("userDisconnect", { username });
       socket.leave(room);

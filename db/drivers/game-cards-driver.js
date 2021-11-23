@@ -235,7 +235,6 @@ exports.setDiscards = async (game_id, card_id) => {
     if (game_card_max_discarded && game_card) {
       game_card.discarded = game_card_max_discarded.discarded + 1;
       await game_card.save();
-      return true;
     } else {
       throw new Error("DB data error.!");
     }

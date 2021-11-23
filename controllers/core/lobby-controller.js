@@ -42,7 +42,6 @@ exports.joinGame = async (req, res, next) => {
       const users_id = gameListManager
         .getUserListOfGame(game_id)
         .map((user) => user.user_id);
-      eventsLobby.initGame(game_id, users_id);
 
       try {
         const isInitialSuccess = await coreDriver.initialGame(
@@ -52,6 +51,7 @@ exports.joinGame = async (req, res, next) => {
 
         if (isInitialSuccess) {
           // join success
+          eventsLobby.initGame(game_id, users_id);
         }
       } catch (err) {
         console.error(err);
