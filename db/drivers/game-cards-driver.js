@@ -24,7 +24,6 @@ exports.initialGameCards = async (game_id, user_id, card_id, draw_order) => {
       card_id,
       draw_order,
     });
-
     return game_card;
   } catch (err) {
     console.error(err);
@@ -220,11 +219,12 @@ exports.drawCard = async (game_id, user_id) => {
 exports.setDiscards = async (game_id, card_id) => {
   try {
     const game_card_max_discarded = await GameCards.findOne({
+      attributes: [
+        [sequelize.fn("max", sequelize.col("discarded")), "discarded"],
+      ],
       where: {
         game_id,
       },
-      order: [sequelize.fn("max", sequelize.col("discarded"))],
-      group: ["id"],
     });
     const game_card = await GameCards.findOne({
       where: {

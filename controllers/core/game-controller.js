@@ -155,11 +155,75 @@ exports.playCard = async (req, res, next) => {
   const card = CardFactory.create(card_id);
 
   try {
+    const game_user_list = await coreDriver.getGameUserList(game_id);
+    await coreDriver.discard(game_id, card_id);
+    if (undone_action === "draw") {
+      await coreDriver.resetUndoneAction(game_id);
+    }
     if (card.type === "number") {
-      await coreDriver.discard(game_id, card_id);
+      const matching_color = card.color;
+      const matching_number = card.face_value;
+      const isSetMatchingSuccess = await coreDriver.setMatching(
+        game_id,
+        matching_color,
+        matching_number
+      );
+      const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+        game_id,
+        user_id,
+        "next"
+      );
+      if (isSetMatchingSuccess && isSetCurrentSuccess) {
+        eventsGame.playCard(game_user_list, card_id, user_id, "none");
+      }
     } else if (card.type === "action") {
+      // change matching number (none)
+      const matching_color = card.color;
+      const matching_number = card.face_value; // "none" for non-number card
+      const isSetMatchingSuccess = await coreDriver.setMatching(
+        game_id,
+        matching_color,
+        matching_number
+      );
+      if (card.action === "reverse") {
+        const isChangeDirectionSuccess = await coreDriver.changeDirection(
+          game_id
+        );
+        const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+          game_id,
+          user_id,
+          "next"
+        );
+        if (
+          isSetMatchingSuccess &&
+          isChangeDirectionSuccess &&
+          isSetCurrentSuccess
+        ) {
+          eventsGame.playCard(game_user_list, card_id, user_id, "reverse");
+        }
+      } else if (card.action === "skip") {
+        const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+          game_id,
+          user_id,
+          "skip"
+        );
+        if (isSetMatchingSuccess && isSetCurrentSuccess) {
+          eventsGame.playCard(game_user_list, card_id, user_id, "skip");
+        }
+      } else {
+        // draw two
+        // next player draw two cards
+        // change current player (skip)
+      }
     } else {
-      // wild
+      // change matching color
+      // change current player
+      if (card.action === "wild") {
+        // wild
+      } else {
+        // wild draw four
+        // send challenge to current player (update action)
+      }
     }
   } catch (err) {
     console.error(err.message);

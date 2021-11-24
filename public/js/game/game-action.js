@@ -53,7 +53,8 @@ function play_card_action() {
     .game_id;
   const body = {
     game_id: game_id,
-    card_id: 1,
+    card_id: 83,
+    undone_action: "none", // this should get from previous game_state
   };
   fetch(url, {
     method: "POST",
