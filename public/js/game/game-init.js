@@ -7,6 +7,8 @@ const player_profile = {
     const detail = profile.getElementsByClassName("name")[0];
     detail.innerText = user.username;
     profile.id = "user_" + user.user_id.toString();
+    const avater = profile.getElementsByClassName("avater")[0];
+    avater.id = "avater_" + user.user_id.toString();
   },
   set_user_name(game_order_list, user) {
     const position = game_order_list.indexOf(user.user_id);
@@ -45,8 +47,6 @@ const loadGameState = () => {
         for (let i = 0; i < game_order.length; i++) {
           player_profile.set_user_name(game_order, user_list[i]);
         }
-        game_class.set_players_location();
-
         return results.game_state;
       } else {
         console.log(resulst.status + " : " + results.message);
@@ -54,13 +54,25 @@ const loadGameState = () => {
     })
     .then((game_state) => {
       const game_class = new game_state_helper(game_state);
+      game_class.set_players_location();
+      return game_state;
+    })
+    .then((game_state) => {
+      const game_class = new game_state_helper(game_state);
       const order = game_class.arrange_players();
+      const undone = game_state.undone_action;
       game_class
         .show_top_bottom_card(order[0])
         .then((result) => {
           if (result === "done") {
-            game_class.set_current_player();
-            game_class.set_card_click_event();
+            game_class.color_match_card();
+            game_class.set_current_player(undone);
+            if (game_class.check_current_is_receiver()) {
+              game_class.set_card_click_event(true);
+            } else {
+              game_class.set_card_click_event(false);
+            }
+            game_class.color_match_card();
           }
         })
         .catch((err) => {
@@ -70,6 +82,7 @@ const loadGameState = () => {
       game_class.show_top_bottom_card(order[2]);
       game_class.show_left_right_card(order[3]);
       game_class.set_side_stuff();
+      return game_state;
     })
     .catch((error) => console.log("outside", error));
 };

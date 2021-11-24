@@ -79,7 +79,20 @@ function play_card() {
   const id = parseInt(container.id.replace(/player_/g, ""));
 
   let obj = card_tool.check_clicked_card(id);
-  console.log(obj);
+  let card_info = CardModule.get_card_detail(obj.card_id);
+
+  if (obj.matching === "True") {
+    let card_info = CardModule.get_card_detail(obj.card_id);
+    if (card_info.card_type === "wild") {
+      const play = document.getElementById("play");
+      play.setAttribute("data-bs-toggle", "modal");
+      play.setAttribute("data-bs-target", "#modal_templete");
+      action_util.wild_color_selector();
+      const modal = document.getElementById("modal_templete");
+      modal.style.display = "block";
+    }
+    console.log(card_info);
+  }
   // if(obj.matching ==="True"){
   //   const card = CardModule.get_card_detail(obj.card_id);
   //   if(card.card_value === "wild"){
@@ -89,5 +102,23 @@ function play_card() {
 
   //   }
   // }
+}
+
+function color_selecter(color) {
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const iam = player_controller.whoima();
+  let obj = card_tool.check_clicked_card(iam);
+  const card_id = obj.card_id;
+  const player = document.getElementById("player_", iam.toString());
+  console.log(player);
+  // const player_action = player.getAttribute("undone_action");
+  // const body = {
+  //   game_id: game_id,
+  //   card_id: card_id,
+  //   color: color,
+  //   undone_action: player_action,
+  // };
+  // console.log(body);
 }
 /**Action utility */

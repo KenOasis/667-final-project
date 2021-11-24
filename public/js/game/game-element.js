@@ -42,7 +42,6 @@ class game_state_helper {
   find_one_player(id) {
     const players = this.game_state.players;
     const player_info = players.filter((player) => player.user_id === id);
-    console.log(player_info);
     return player_info[0];
   }
   /**
@@ -107,11 +106,8 @@ class game_state_helper {
   show_discard() {
     const container = document.getElementById("discard_pile");
     const discards = this.game_state.discards;
-    for (let i in discards) {
-      const card = card_tool.set_cards(discards[i], "discard");
-      card.style.pointerEvents = "none";
-      container.appendChild(card);
-    }
+    container.innerHTML = "";
+    container.appendChild(page_effect.show_discard(discards));
   }
   //show matching color and number to players
   set_match() {
@@ -121,12 +117,14 @@ class game_state_helper {
       green: "rgb(60,179,113)",
       yellow: "rgb(255, 210, 71)",
     };
-    const color_match = this.game_state.matching.color;
-    const num_html = document.getElementById("match_number");
-    num_html.innerHTML = this.game_state.matching.number;
-    num_html.style.color = color[color_match];
+    const match_number = this.game_state.matching.number;
+    const match_color = this.game_state.matching.color;
     const direction = this.game_state.game_direction;
-    card_tool.set_game_direction(direction, color[color_match]);
+    const num_html = document.getElementById("match_set");
+
+    num_html.innerHTML =
+      page_effect.show_match_set(match_number, color[match_color]) +
+      page_effect.show_direction(color[match_color], direction);
   }
   set_deck() {
     const deck = document.getElementById("card_deck");
@@ -165,26 +163,46 @@ class game_state_helper {
    * highlight the border
    *
    */
-  set_current_player() {
-    const desk = document.getElementById("draw");
+  set_current_player(action) {
+    console.log("set_current_player", action);
     if (this.check_current_is_receiver()) {
-      const uno = document.getElementById("uno");
-      uno.style.zIndex = 2;
-      this.color_match_card();
-      desk.disabled = false;
+      page_effect.unlock_uno_button();
+      if (action == "draw") {
+        page_effect.show_pass_button();
+        page_effect.lock_desk_button();
+      }
+      //else if(action == "chanllage")
+      else {
+        page_effect.unlock_desk_button();
+        page_effect.unlock_uno_button();
+        page_effect.hide_pass_button();
+      }
+      action_util.set_undone_action(action, this.game_state.receiver);
     } else {
       const current_player = this.game_state.current_player;
-      card_tool.highlight_current(current_player);
-      desk.disabled = true;
+      page_effect.highlight_current(current_player);
+      page_effect.lock_desk_button();
+      page_effect.lock_uno_button();
+      page_effect.hide_pass_button();
     }
   }
   /**
    * set up the click_card_event
    *
    */
-  set_card_click_event() {
+  set_card_click_event(is_current_player) {
     const receiver_id = this.game_state.receiver;
     const bottom_cards = this.find_one_player(receiver_id).cards;
-    action_util.card_click_event(bottom_cards);
+    action_util.remove_click_event(bottom_cards);
+    action_util.card_click_event(bottom_cards, is_current_player);
+  }
+  refresh_hand_card(player_id) {
+    const card_list = this.find_one_player(player_id).cards;
+    const container = document.getElementById("player_" + player_id.toString());
+    container.innerHTML = "";
+    for (let i = 0; i < card_list.length; i++) {
+      const card_html = card_tool.set_cards(card_list[i]);
+      card_tool.card_to_player(player_id, card_html);
+    }
   }
 }
