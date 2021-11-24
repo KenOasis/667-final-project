@@ -1,19 +1,26 @@
 const coreDriver = require("../db/drivers/core-driver");
 const ActionFactory = require("../factories/ActionFactory");
-exports.userJoin = (game_id, username) => {
+exports.userJoin = (game_id, username, user_list) => {
   const gameSpace = require("./socket").getNameSpace("game");
   const room = "game-" + game_id;
   gameSpace.removeAllListeners();
-
+  let users_id = user_list.map(user => user.user_id);
   gameSpace.on("connect", (socket) => {
     socket.join(room);
     socket.emit("userJoin", { username });
-
     gameSpace
       .in(room)
       .fetchSockets()
       .then((sockets) => {
-        if (sockets.length === 4) {
+        sockets.forEach(socket => {
+          // ensure that the 4 connects players is the player in the corresponded game
+          const socket_user_id = socket.request.session.userId;
+          const index = users_id.findIndex(user_id => user_id === socket_user_id);
+          if (index >= 0) {
+            users_id.splice(index, 1);
+          }
+        })
+        if (sockets.length === 4 && users_id.length === 0) {
           gameSpace.in(room).emit("gameStart", { game_id });
         }
       });
