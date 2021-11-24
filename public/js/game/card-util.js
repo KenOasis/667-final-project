@@ -9,7 +9,7 @@ let card_tool = {
     div.setAttribute("position", position);
     leftseat.appendChild(div);
   },
-  // set the card div with card_id
+  // set the card div with card_id // style is normal and discard
   set_cards(card_id, style = "normal") {
     const card = document.createElement("div");
     const card_detail = CardModule.get_card_detail(card_id);

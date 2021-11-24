@@ -175,7 +175,7 @@ class game_state_helper {
       else {
         page_effect.unlock_desk_button();
         page_effect.unlock_uno_button();
-        page_effect.hide_pass_button()
+        page_effect.hide_pass_button();
       }
       action_util.set_undone_action(action, this.game_state.receiver);
     } else {
@@ -183,9 +183,8 @@ class game_state_helper {
       page_effect.highlight_current(current_player);
       page_effect.lock_desk_button();
       page_effect.lock_uno_button();
-      page_effect.hide_pass_button()
+      page_effect.hide_pass_button();
     }
-    this.color_match_card();
   }
   /**
    * set up the click_card_event
@@ -196,5 +195,14 @@ class game_state_helper {
     const bottom_cards = this.find_one_player(receiver_id).cards;
     action_util.remove_click_event(bottom_cards);
     action_util.card_click_event(bottom_cards, is_current_player);
+  }
+  refresh_hand_card(player_id) {
+    const card_list = this.find_one_player(player_id).cards;
+    const container = document.getElementById("player_" + player_id.toString());
+    container.innerHTML = "";
+    for (let i = 0; i < card_list.length; i++) {
+      const card_html = card_tool.set_cards(card_list[i]);
+      card_tool.card_to_player(player_id, card_html);
+    }
   }
 }

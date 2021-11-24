@@ -39,44 +39,80 @@ let action_util = {
   card_click_event(card_list, is_current_player) {
     for (let i in card_list) {
       const card = document.getElementById("card_" + card_list[i].toString());
-      card.addEventListener("click", function () {
-        clicked_card(card, is_current_player);
-      });
+      card.addEventListener("click", clicked_card(card, is_current_player));
     }
   },
   remove_click_event(card_list) {
     for (let i in card_list) {
       const card = document.getElementById("card_" + card_list[i].toString());
-      card.removeEventListener("click", function () {
-        clicked_card(card, is_current_player);
-      });
+      card.style.cssText = "";
+      const clone_card = card.cloneNode(true);
+      card.parentNode.replaceChild(clone_card, card);
     }
   },
+  wild_color_selector() {
+    const modal_title = document.getElementById("model_title");
+    modal_title.innerText = "Choose color";
+    const red = create_button("red");
+    const blue = create_button("blue");
+    const yellow = create_button("yellow");
+    const green = create_button("green");
+    const modal_body = document.getElementById("modal_body");
+    modal_body.innerHTML = "";
+    modal_body.appendChild(red);
+    modal_body.appendChild(blue);
+    modal_body.appendChild(green);
+    modal_body.appendChild(yellow);
+    console.log(modal_body);
+  },
 };
-
-function clicked_card(card, is_current_player) {
-  const border = card.style.border;
-  if (card.style.top === "-25px") {
-    card.style.top = "";
-    card.style.border = border;
-    card.style.zIndex = 0;
-  } else {
-    card.style.top = "-25px";
-    card.style.border = "4px solid #FFD700";
-    card.style.zIndex = 2;
+function create_button(color) {
+  let boot_color;
+  if (color == "red") {
+    boot_color = "danger";
   }
-  if (is_current_player) {
-    const checker_obj = card_tool.check_clicked_card(
-      player_controller.whoima()
-    );
-    const clicked_one = checker_obj.clicked_card === 1;
-    const matching = checker_obj.matching === "True";
-    if (matching && clicked_one) {
-      page_effect.show_play_button();
+  if (color == "green") {
+    boot_color = "success";
+  }
+  if (color == "yellow") {
+    boot_color = "warning";
+  }
+  if (color == "blue") {
+    boot_color = "primary";
+  }
+  const btn = document.createElement("button");
+  btn.className = `btn btn-lg btn-${boot_color} color_select`;
+  btn.id = color;
+  btn.setAttribute("data-bs-dismiss", "modal");
+  btn.addEventListener("click", function () {
+    color_selecter(color);
+  });
+  return btn;
+}
+
+let clicked_card = (card, is_current_player) => {
+  return () => {
+    if (card.style.top === "-25px") {
+      card.style.top = "";
+      card.style.zIndex = 0;
+    } else {
+      card.style.top = "-25px";
+      card.style.zIndex = 2;
+    }
+    if (is_current_player) {
+      const checker_obj = card_tool.check_clicked_card(
+        player_controller.whoima()
+      );
+      console.log("obj", checker_obj);
+      const clicked_one = checker_obj.clicked_card === 1;
+      const matching = checker_obj.matching === "True";
+      if (matching && clicked_one) {
+        page_effect.show_play_button();
+      } else {
+        page_effect.hide_play_button();
+      }
     } else {
       page_effect.hide_play_button();
     }
-  } else {
-    page_effect.hide_play_button();
-  }
-}
+  };
+};

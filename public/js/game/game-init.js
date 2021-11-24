@@ -72,6 +72,7 @@ const loadGameState = () => {
             } else {
               game_class.set_card_click_event(false);
             }
+            game_class.color_match_card();
           }
         })
         .catch((err) => {

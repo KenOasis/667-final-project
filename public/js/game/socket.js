@@ -31,9 +31,10 @@ socket.on("gameUpdateDrawCard", (data) => {
       .add_card_event(add_card)
       .then((result) => {
         if (result === "done") {
-          console.log(game_state.undone_action);
-          action_util.card_click_event(add_card);
+          game_class.refresh_hand_card(performer);
+          game_class.set_card_click_event(true);
           game_class.set_current_player(game_state.undone_action);
+          game_class.color_match_card();
         }
       })
       .catch((err) => {
@@ -69,4 +70,5 @@ socket.on("gameUpdatePass", (data) => {
     game_class.set_card_click_event(false);
   }
   game_class.set_current_player(action);
+  game_class.color_match_card();
 });
