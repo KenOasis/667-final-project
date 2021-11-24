@@ -14,6 +14,10 @@ socket.on("userJoin", (data) => {
   console.log(username + " Join the game");
 });
 
+socket.on("gameStart", (data) => {
+  loadGameState();
+});
+
 socket.on("userDisconnect", (data) => {
   const username = data.username;
   console.log(username + " disconnected");
