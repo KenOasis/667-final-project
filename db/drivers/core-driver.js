@@ -69,7 +69,7 @@ exports.getGameUserList = async (game_id) => {
   try {
     const game_users_list = await gameUsersDriver.getGameUsersByGameId(game_id);
     let user_list = [];
-    if (game_users_list) {
+    if (game_users_list && game_users_list.length) {
       user_list = game_users_list.map((game_users) => {
         return {
           game_id: game_id,
@@ -237,6 +237,40 @@ exports.discard = async (game_id, card_id) => {
 
 exports.setMatching = async (game_id, matching_color, matching_number) => {
   try {
+    const isSuccess = await gamesDriver.setMatching(
+      game_id,
+      matching_color,
+      matching_number
+    );
+    return isSuccess;
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err.message);
+  }
+};
+
+exports.changeDirection = async (game_id) => {
+  try {
+    const isSuccess = await gamesDriver.changeDirection(game_id);
+    return isSuccess;
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err.message);
+  }
+};
+
+exports.nextDrawTwo = async (game_id, user_id) => {
+  try {
+    const direction = await gamesDriver.getDirection(game_id);
+    const initial_order = await gameUsersDriver.getGameOrder(game_id);
+    const mod = (n, m) => ((n % m) + m) % m; // js modulo has bug when n is negative
+
+    if (direction && initial_order) {
+      const current_index = initial_order.findIndex(
+        (element) => element === user_id
+      );
+      const next_index = mod(current_index + direction, initial_order.length);
+    }
   } catch (err) {
     console.error(err.message);
     throw new Error(err.message);

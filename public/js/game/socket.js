@@ -65,3 +65,27 @@ socket.on("gameUpdatePass", (data) => {
   console.log(game_state);
   console.log(update);
 });
+
+socket.on("gameUpdatePlayCard", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("PlayCard!");
+  console.log(game_state);
+  console.log(update);
+});
+
+socket.on("gameUpdateReverse", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Reverse!");
+  console.log(game_state);
+  console.log(update);
+});
+
+socket.on("gameUpdateSkip", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Skip!");
+  console.log(game_state);
+  console.log(update);
+});
