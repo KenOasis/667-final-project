@@ -115,3 +115,37 @@ exports.updateUndoneAction = async (id, undone_action) => {
     throw new Error(err.message);
   }
 };
+
+exports.setMatching = async (game_id, matching_color, matching_number) => {
+  try {
+    const game = await Games.findByPk(game_id);
+    if (game) {
+      game.matching_color = matching_color;
+      game.matching_number = matching_number;
+      await game.save();
+      return true;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.message);
+  }
+};
+
+exports.changeDirection = async (game_id) => {
+  try {
+    const game = await Games.findByPk(game_id);
+    if (game) {
+      const current_direction = game.direction;
+      game.direction = current_direction === 1 ? -1 : 1;
+      await game.save();
+      return true;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.message);
+  }
+};
