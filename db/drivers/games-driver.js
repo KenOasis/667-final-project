@@ -9,8 +9,7 @@ exports.createGame = async (name) => {
 
     return user;
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -27,8 +26,7 @@ exports.getDirection = async (id) => {
       throw new Error("DB data Error");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -56,8 +54,7 @@ exports.initialMatching = async (id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -76,8 +73,7 @@ exports.getMatching = async (id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -95,8 +91,7 @@ exports.getUndoneAction = async (id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -111,8 +106,7 @@ exports.updateUndoneAction = async (id, undone_action) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -128,8 +122,7 @@ exports.setMatching = async (game_id, matching_color, matching_number) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -145,7 +138,6 @@ exports.changeDirection = async (game_id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };

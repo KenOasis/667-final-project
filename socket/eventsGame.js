@@ -104,7 +104,8 @@ exports.pass = async (game_user_list, performer) => {
     console.log(err.message);
   }
 };
-
+// the performer of playCard() is the player who played this card
+// the performet in the next_cation is the performer of the next_action
 exports.playCard = async (game_user_list, card_id, performer, next_action) => {
   const game_id = game_user_list[0].game_id;
   const room = "game-" + game_id;
@@ -128,7 +129,12 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
             card: card,
           });
           update.actions.push(playCardAction);
-          switch (next_action) {
+          // TODO check uno (get penalty or not);
+          const [isUnoPenalty, cards] = await coreDriver.checkUnoPenalty(
+            game_id,
+            performer
+          );
+          switch (next_action.action) {
             case "none":
               {
                 gameSpace.in(socket.id).emit("gameUpdatePlayCard", {
@@ -156,6 +162,46 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
                 });
                 update.actions.push(skipAction);
                 gameSpace.in(socket.id).emit("gameUpdateSkip", {
+                  game_state: game_state,
+                  update: update,
+                });
+              }
+              break;
+            case "draw_two":
+              {
+                const drawTwoAction = ActionFactory.create("draw_two", {
+                  performer: next_action.performer,
+                  cards: next_action.cards,
+                  receiver: user_id,
+                });
+                update.actions.push(drawTwoAction);
+                gameSpace.in(socket.id).emit("gameUpdateDrawTwo", {
+                  game_state: game_state,
+                  update: update,
+                });
+              }
+              break;
+            case "wild":
+              {
+                const wildAction = ActionFactory.create("wild", {
+                  performer: performer,
+                  color: next_action.color,
+                });
+                update.actions.push(wildAction);
+                gameSpace.in(socket.id).emit("gameUpdateWild", {
+                  game_state: game_state,
+                  update: update,
+                });
+              }
+              break;
+            case "wild_draw_four":
+              {
+                const wildAction = ActionFactory.create("wild_draw_four", {
+                  performer: performer,
+                  color: next_action.color,
+                });
+                update.actions.push(wildAction);
+                gameSpace.in(socket.id).emit("gameUpdateWildDrawFour", {
                   game_state: game_state,
                   update: update,
                 });
