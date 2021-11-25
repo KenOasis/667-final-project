@@ -25,7 +25,7 @@ exports.joinGame = async (req, res, next) => {
 
 exports.loadGameState = async (req, res, next) => {
   const user_id = req.session.userId;
-  const game_id = +req.boyd.game_id;
+  const game_id = +req.body.game_id;
 
   try {
     const game_state = await coreDriver.getGameState(game_id, user_id);
