@@ -48,6 +48,7 @@ exports.drawCard = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
 
+  console.log(game_id);
   try {
     const card_id = await coreDriver.drawCard(game_id, user_id);
     const game_user_list = await coreDriver.getGameUserList(game_id);
