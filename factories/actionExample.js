@@ -147,7 +147,7 @@ const wildDrawFourAction = {
 const challengeAction = {
   performer: 8,
   type: "challenge",
-  is_challenged: false,
+  is_challenge: false,
   // is_success is not part of this obj
   penalty_player: 8, // who draw the penalty card
   penalty_count: 4, // how many penalty card draw
@@ -159,7 +159,7 @@ const challengeAction = {
   // reconnect
   performer: 8,
   type: "challenge",
-  is_challenged: true,
+  is_challenge: true,
   is_success: false, 
   penalty_player: 8, // who draw the penalty card
   penalty_count: 6, // how many penalty card draw
@@ -170,7 +170,7 @@ const challengeAction = {
 const challengeAction = {
   performer: 8,
   type: "challenge",
-  is_challenged: true,
+  is_challenge: true,
   is_success: true, // if is_challenge is false, this is not used.
   penalty_player: 5, // who draw the penalty card, at this case is who play the wild draw four
   penalty_count: 4, // how many penalty card draw
