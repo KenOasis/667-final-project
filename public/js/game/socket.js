@@ -124,3 +124,11 @@ socket.on("gameUpdateWildDrawFour", (data) => {
   console.log(game_state);
   console.log(update);
 });
+
+socket.on("sayUnoUpdate", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Uno!");
+  console.log(game_state);
+  console.log(update);
+});
