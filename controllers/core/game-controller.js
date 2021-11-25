@@ -98,19 +98,39 @@ exports.pass = async (req, res, next) => {
 };
 
 exports.challenge = (req, res, next) => {
-  const { color } = req.body;
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   const is_challenge = req.body.is_challenge; // Boolean status as whether to do the challenge
+  let is_success = false;
+  let penalty_id;
+  let penalty_cards;
+  let isSetCurrentSuccess = true;
   try {
     if (is_challenge === true) {
-      // TODO challenge
-      // is chanllenge success
-      // last player contain the matching the color
+      // check challenge and do penalty based on the challenge result
+      [is_success, penalty_id, penalty_cards] = await coreDriver.checkChallenge(
+        game_id,
+        user_id
+      );
     } else {
-      //TODO not challenge
-      // get 4 penalty cards
-      // event
+      //do not challenge
+      penalty_id = user_id;
+      penalty_cards = await coreDriver.drawFour(game_id, user_id);
+      isSetCurrentSuccess = await coreDriver.setNextCurrent(
+        game_id,
+        user_id,
+        "next"
+      );
+    }
+    if (!is_success) {
+      // if not success skip his own round
+      isSetCurrentSuccess = await coreDriver.setNextCurrent(
+        game_id,
+        user_id,
+        "next"
+      );
+    }
+    if (penalty_id && penalty_id && penalty_cards && isSetCurrentSuccess) {
     }
   } catch (err) {
     console.error(err);
@@ -172,9 +192,8 @@ exports.playCard = async (req, res, next) => {
         });
       }
     } else if (card.type === "action") {
-      // change matching number (none)
       const matching_color = card.color;
-      const matching_value = card.action; // "none" for non-number card
+      const matching_value = card.action; // matching_value as type of action card
       const isSetMatchingSuccess = await coreDriver.setMatching(
         game_id,
         matching_color,
@@ -257,7 +276,7 @@ exports.playCard = async (req, res, next) => {
     }
     return res.status(200).json({ status: "success" });
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     res.status(500).json({
       status: "failed",
       message: "Internal Server Error",

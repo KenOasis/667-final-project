@@ -268,6 +268,66 @@ exports.sayUno = async (game_user_list, performer) => {
   }
 };
 
+exports.challenge = async (
+  game_user_list,
+  performer,
+  is_challenge,
+  is_success,
+  penalty_id,
+  penalty_cards
+) => {
+  const game_id = game_user_list[0].game_id;
+  const room = "game-" + game_id;
+  const users_id = game_user_list.map((game_user) => game_user.user_id);
+  const gameSpace = require("./socket").getNameSpace("game");
+  try {
+    const sockets = await gameSpace.in(room).fetchSockets();
+    for await (socket of sockets) {
+      const user_id = socket.request.session.userId;
+      if (users_id.includes(user_id)) {
+        const game_state = await coreDriver.getGameState(game_id, user_id);
+        if (game_state) {
+          const update = {};
+          update.game_id = game_id;
+          update.receiver = user_id;
+          update.actions = [];
+          const challengeAction = ActionFactory.create("challenge", {
+            performer: performer,
+            is_challenge: is_challenge,
+            is_success: is_success,
+            penalty_player: penalty_id,
+            penalty_cards: penalty_cards,
+            receiver: user_id,
+          });
+          update.actions.push(challengeAction);
+          if (is_challenge) {
+            if (is_success) {
+              gameSpace.in(socket.id).emit("challengeSuccessUpdate", {
+                game_state: game_state,
+                update: update,
+              });
+            } else {
+              gameSpace.in(socket.id).emit("challengeFailUpdate", {
+                game_state: game_state,
+                update: update,
+              });
+            }
+          } else {
+            gameSpace.in(socket.id).emit("notChallengeUpdate", {
+              game_state: game_state,
+              update: update,
+            });
+          }
+        }
+      } else {
+        throw new Error("Forbidden");
+      }
+    }
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 // exports.template = async (game_user_list, card_id, performer) => {
 //   const game_id = game_user_list[0].game_id;
 //   const room = "game-" + game_id;

@@ -132,3 +132,27 @@ socket.on("sayUnoUpdate", (data) => {
   console.log(game_state);
   console.log(update);
 });
+
+socket.on("notChallengeUpdate", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Does not challenge!");
+  console.log(game_state);
+  console.log(update);
+});
+
+socket.on("challengeSuccessUpdate", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Challenge success!");
+  console.log(game_state);
+  console.log(update);
+});
+
+socket.on("challengeFailUpdate", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("challenge fail!");
+  console.log(game_state);
+  console.log(update);
+});
