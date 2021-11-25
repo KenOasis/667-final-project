@@ -15,14 +15,25 @@ let page_effect = {
     }
   },
 
-  show_play_button() {
+  show_play_button(show_modal) {
     const play = document.getElementById("play");
+    if (show_modal) {
+      play.setAttribute("data-bs-toggle", "modal");
+      play.setAttribute("data-bs-target", "#color_selector");
+    } else {
+      play.setAttribute("data-bs-toggle", "");
+      play.setAttribute("data-bs-target", "");
+    }
     play.disabled = false;
     play.style.zIndex = 4;
   },
 
   hide_play_button() {
     const play = document.getElementById("play");
+    if (play.hasAttribute("data-bs-target")) {
+      play.removeAttribute("data-bs-target");
+      play.removeAttribute("data-bs-toggle");
+    }
     play.disabled = true;
     play.style.zIndex = 0;
   },
@@ -55,18 +66,17 @@ let page_effect = {
     uno.style.zIndex = 2;
     uno.disabled = false;
   },
-  show_discard(card_list) {
-    const discrd = document.createElement("div");
-    discrd.id = "discard_pile";
-    discrd.className = "col-md-4 hand";
-    for (let i in card_list) {
-      const card = card_tool.set_cards(card_list[i], "discard");
-      card.style.pointerEvents = "none";
-      discrd.appendChild(card);
-    }
-    return discrd;
-  },
-
+  // show_discard(card_list) {
+  //   const discrd = document.createElement("div");
+  //   discrd.id = "discard_pile";
+  //   discrd.className = "col-md-4 hand";
+  //   for (let i in card_list) {
+  //     const card = card_tool.set_cards(card_list[i], "discard");
+  //     card.style.pointerEvents = "none";
+  //     discrd.appendChild(card);
+  //   }
+  //   return discrd;
+  // },
   show_match_set(number, color) {
     const html_string = `<h1 class="match_number" style = "color:${color};"> ${number}</h1>`;
     return html_string;
@@ -79,5 +89,10 @@ let page_effect = {
       direction_sigh = "bi bi-arrow-counterclockwise fs-1";
     }
     return `<i class="${direction_sigh}" style="color:${color};"></i>`;
+  },
+  hide_all_button() {
+    this.hide_play_button();
+    this.hide_pass_button();
+    this.lock_uno_button();
   },
 };

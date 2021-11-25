@@ -30,14 +30,14 @@ socket.on("gameUpdateDrawCard", (data) => {
   const performer = update.actions[0].performer;
   const add_card = update.actions[0].card;
   const game_class = new game_state_helper(game_state);
-  if (performer === player_controller.whoima()) {
+  if (performer === player_controller.whoami()) {
     action_util
       .add_card_event(add_card)
       .then((result) => {
         if (result === "done") {
           game_class.refresh_hand_card(performer);
-          game_class.set_card_click_event(true);
-          game_class.set_current_player(game_state.undone_action);
+          game_class.set_card_click_event();
+          game_class.set_current_player();
           game_class.color_match_card();
         }
       })
@@ -59,44 +59,82 @@ socket.on("gameUpdateDrawCard", (data) => {
 socket.on("gameUpdatePass", (data) => {
   const game_state = data.game_state;
   const update = data.update;
-  const performer = update.actions[0].performer;
-  console.log("performer", performer);
-
   console.log("Pass!");
   console.log(game_state);
   console.log(update);
   page_effect.cancel_highlinght();
-  const action = game_state.undone_action;
   const game_class = new game_state_helper(game_state);
   if (game_class.check_current_is_receiver()) {
-    game_class.set_card_click_event(true);
+    game_class.set_card_click_event();
   } else {
-    game_class.set_card_click_event(false);
+    game_class.delete_click_event();
   }
-  game_class.set_current_player(action);
+  game_class.set_current_player();
   game_class.color_match_card();
 });
 
 socket.on("gameUpdatePlayCard", (data) => {
   const game_state = data.game_state;
   const update = data.update;
+  const performer = update.actions[0].performer;
   console.log("PlayCard!");
   console.log(game_state);
   console.log(update);
+  page_effect.cancel_highlinght();
+  const game_class = new game_state_helper(game_state);
+  if (game_state.receiver == performer) {
+    game_class.refresh_hand_card(performer);
+  }
+  if (game_class.check_current_is_receiver()) {
+    game_class.set_card_click_event();
+  } else {
+    game_class.delete_click_event();
+  }
+  game_class.set_current_player();
+  game_class.color_match_card();
+  game_class.set_side_stuff();
 });
 
 socket.on("gameUpdateReverse", (data) => {
   const game_state = data.game_state;
   const update = data.update;
+  const performer = update.actions[0].performer;
   console.log("Reverse!");
   console.log(game_state);
   console.log(update);
+  page_effect.cancel_highlinght();
+  const game_class = new game_state_helper(game_state);
+  if (game_state.receiver == performer) {
+    game_class.refresh_hand_card(performer);
+  }
+  if (game_class.check_current_is_receiver()) {
+    game_class.set_card_click_event();
+  } else {
+    game_class.delete_click_event();
+  }
+  game_class.set_current_player();
+  game_class.color_match_card();
+  game_class.set_side_stuff();
 });
 
 socket.on("gameUpdateSkip", (data) => {
   const game_state = data.game_state;
   const update = data.update;
+  const performer = update.actions[0].performer;
   console.log("Skip!");
   console.log(game_state);
   console.log(update);
+  page_effect.cancel_highlinght();
+  const game_class = new game_state_helper(game_state);
+  if (game_state.receiver == performer) {
+    game_class.refresh_hand_card(performer);
+  }
+  if (game_class.check_current_is_receiver()) {
+    game_class.set_card_click_event();
+  } else {
+    game_class.delete_click_event();
+  }
+  game_class.set_current_player();
+  game_class.color_match_card();
+  game_class.set_side_stuff();
 });

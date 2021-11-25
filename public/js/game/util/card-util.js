@@ -12,6 +12,7 @@ let card_tool = {
   // set the card div with card_id // style is normal and discard
   set_cards(card_id, style = "normal") {
     const card = document.createElement("div");
+    // CardModule from card.js
     const card_detail = CardModule.get_card_detail(card_id);
     if (style == "normal") {
       card.id = "card_" + card_id.toString();
@@ -44,22 +45,36 @@ let card_tool = {
     const cards = player.getElementsByClassName("card");
     let count = 0;
     let card_id = "";
-    let matching;
+    let match;
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       if (card.style.top == "-25px") {
         count++;
         card_id = card.id;
-        matching = card.getAttribute("matching");
+        match = card.getAttribute("matching");
       }
     }
     const id = parseInt(card_id.replace(/card_/g, ""));
+    let is_wild_card = false;
+    if (count === 1) {
+      // CardModule from card.js
+      is_wild_card = CardModule.get_card_detail(id).card_color === "none";
+    }
+    const clicked_one = count === 1;
+    const matching = match === "True";
+    if (matching && clicked_one) {
+      //page_effect fron page_effect
+      page_effect.show_play_button(is_wild_card);
+    } else {
+      //page_effect fron page_effect
+      page_effect.hide_play_button();
+    }
     let obj = {
       clicked_card: count,
       card_id: id,
-      matching: matching,
+      matching: match,
     };
-
+    console.log(obj);
     return obj;
   },
 };
