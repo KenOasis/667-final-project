@@ -91,6 +91,7 @@ function play_card() {
         card_id: card_id,
         undone_action: undone_action,
       };
+      play_card_action(body);
     }
   }
 }
