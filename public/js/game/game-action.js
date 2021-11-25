@@ -93,7 +93,6 @@ function play_card() {
       };
     }
   }
-  play_card_action(body);
 }
 
 function color_selector(event) {

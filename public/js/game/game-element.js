@@ -63,6 +63,7 @@ class game_state_helper {
         return card;
       }
     });
+
     return match_list;
   }
 
@@ -108,7 +109,8 @@ class game_state_helper {
   // show_discard
   show_discard() {
     const container = document.getElementById("discard_pile");
-    const discards = this.game_state.discards;
+    const discards = this.game_state.discards.reverse();
+
     container.innerHTML = "";
     //action_util from action_util
     container.appendChild(action_util.show_discard(discards));
@@ -125,7 +127,6 @@ class game_state_helper {
     const match_color = this.game_state.matching.color;
     const direction = this.game_state.game_direction;
     const num_html = document.getElementById("match_set");
-
     num_html.innerHTML =
       page_effect.show_match_set(match_number, color[match_color]) +
       page_effect.show_direction(color[match_color], direction);
@@ -198,14 +199,14 @@ class game_state_helper {
   set_card_click_event() {
     const receiver_id = this.game_state.receiver;
     const bottom_cards = this.find_one_player(receiver_id).cards;
-     //action_util.js
+    //action_util.js
     action_util.remove_click_event(bottom_cards);
     action_util.card_click_event(bottom_cards);
   }
   delete_click_event() {
     const receiver_id = this.game_state.receiver;
     const bottom_cards = this.find_one_player(receiver_id).cards;
-     //action_util.js
+    //action_util.js
     action_util.remove_click_event(bottom_cards);
     //page_util.js
     page_effect.hide_all_button();
@@ -215,7 +216,7 @@ class game_state_helper {
     const container = document.getElementById("player_" + player_id.toString());
     container.innerHTML = "";
     for (let i = 0; i < card_list.length; i++) {
-//card_util.js  
+      //card_util.js
       const card_html = card_tool.set_cards(card_list[i]);
       card_tool.card_to_player(player_id, card_html);
     }
