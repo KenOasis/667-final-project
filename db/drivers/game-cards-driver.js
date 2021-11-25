@@ -6,7 +6,7 @@ const GameCards = db["game_cards"];
 const Cards = db["cards"];
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
-
+const coreDriver = require("./core-driver");
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 Games.hasMany(GameUsers, { foreignKey: "game_id" });
 
@@ -207,6 +207,8 @@ exports.drawCard = async (game_id, user_id, number_of_cards) => {
       const draw_card_id_list = game_cards.map(
         (game_card) => game_card.card_id
       );
+      // reset their uno status whenever some one draw card
+      await coreDriver.resetUno(game_id, user_id);
       return draw_card_id_list;
     } else {
       throw new Error("DB data error.");
@@ -244,17 +246,21 @@ exports.setDiscards = async (game_id, card_id) => {
 };
 
 exports.getPlayerCards = async (game_id, user_id) => {
-  const game_cards = await GameCards.findAll({
-    where: {
-      game_id,
-      user_id,
-      in_deck: false,
-      discarded: 0,
-    },
-  });
-  if (game_cards) {
-    return game_cards;
-  } else {
-    throw new Error("DB data error");
+  try {
+    const game_cards = await GameCards.findAll({
+      where: {
+        game_id,
+        user_id,
+        in_deck: false,
+        discarded: 0,
+      },
+    });
+    if (game_cards) {
+      return game_cards;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
   }
 };

@@ -304,6 +304,19 @@ exports.resetUno = async (game_id, user_id) => {
 
 exports.checkUnoPenalty = async (game_id, user_id) => {
   try {
+    const game_cards = await gameCardsDriver.getPlayerCards(game_id, user_id);
+    if (game_cards && game_cards.length) {
+      if (game_cards.length != 1) {
+        return [false, null];
+      } else {
+        const draw_card_id_list = await gameCardsDriver.drawCard(
+          game_id,
+          user_id,
+          2
+        );
+        return [true, draw_card_id_list];
+      }
+    }
   } catch (err) {
     throw err;
   }

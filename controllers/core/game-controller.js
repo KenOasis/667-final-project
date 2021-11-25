@@ -7,7 +7,7 @@ const eventsGame = require("../../socket/eventsGame");
 
 exports.joinGame = async (req, res, next) => {
   const username = req.session.userName;
-  const { game_id } = req.body;
+  const game_id = +req.body.game_id;
   try {
     const user_list = await coreDriver.getGameUserList(game_id);
     if (user_list && user_list.length) {
@@ -25,7 +25,7 @@ exports.joinGame = async (req, res, next) => {
 
 exports.loadGameState = async (req, res, next) => {
   const user_id = req.session.userId;
-  const { game_id } = req.body;
+  const game_id = +req.boyd.game_id;
 
   try {
     const game_state = await coreDriver.getGameState(game_id, user_id);
@@ -45,7 +45,7 @@ exports.loadGameState = async (req, res, next) => {
 };
 
 exports.drawCard = async (req, res, next) => {
-  const { game_id } = req.body;
+  const game_id = +req.body.game_id;
   const user_id = req.session.userId;
 
   try {
@@ -68,7 +68,7 @@ exports.drawCard = async (req, res, next) => {
 };
 
 exports.pass = async (req, res, next) => {
-  const { game_id } = req.body;
+  const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   try {
     // Set undone none
@@ -97,19 +97,36 @@ exports.pass = async (req, res, next) => {
 };
 
 exports.challenge = (req, res, next) => {
-  const game_id = req.body.game_id;
-  const user_id = req.body.user_id;
-  const challenge = req.body.challenge; // Boolean status as whether to do the challenge
-  const wild_color = req.body.card_id; // The color picked by the user to do the challenge (if they try to do the challenge)
-  // TODO updated the game state as the result of the challenge
+  const { color } = req.body;
+  const game_id = +req.body.game_id;
+  const user_id = req.session.userId;
+  const is_challenge = req.body.is_challenge; // Boolean status as whether to do the challenge
+  try {
+    if (is_challenge === true) {
+      // TODO challenge
+      // is chanllenge success
+      // last player contain the matching the color
+    } else {
+      //TODO not challenge
+      // get 4 penalty cards
+      // event
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Internal server error",
+    });
+  }
 };
 
 exports.sayUno = async (req, res, next) => {
-  const { game_id } = req.body;
+  const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   try {
     const isSetUnoSuccess = await coreDriver.setUno(game_id, user_id);
     if (isSetUnoSuccess) {
+      // TODO events
       res.status(200).json({ status: "success" });
     }
   } catch (err) {
@@ -122,7 +139,9 @@ exports.sayUno = async (req, res, next) => {
 };
 
 exports.playCard = async (req, res, next) => {
-  const { game_id, card_id, undone_action } = req.body;
+  const { undone_action } = req.body;
+  const game_id = +req.body.game_id;
+  const card_id = +req.body.card_id;
   const user_id = req.session.userId;
   const card = CardFactory.create(card_id);
 
@@ -209,23 +228,24 @@ exports.playCard = async (req, res, next) => {
       }
     } else {
       const matching_color = req.body.color;
-      const matching_number = card.face_value; // "none"
-      const isSetMatchingSuccess = await coreDriver.setMatching(
-        game_id,
-        matching_color,
-        matching_number
-      );
       const isSetCurrentSuccess = await coreDriver.setNextCurrent(
         game_id,
         user_id,
         "next"
       );
       if (card.action === "wild") {
+        const matching_number = card.face_value; // actually value "none"
+        const isSetMatchingSuccess = await coreDriver.setMatching(
+          game_id,
+          matching_color,
+          matching_number
+        );
         eventsGame.playCard(game_user_list, card_id, user_id, {
           action: "wild",
           color: matching_color,
         });
       } else {
+        // TODO set game.undone action = "matching color" for challenge
         eventsGame.playCard(game_user_list, card_id, user_id, {
           action: "wild_draw_four",
           color: matching_color,

@@ -129,11 +129,22 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
             card: card,
           });
           update.actions.push(playCardAction);
-          // TODO check uno (get penalty or not);
+          // check uno (get penalty or not);
           const [isUnoPenalty, cards] = await coreDriver.checkUnoPenalty(
             game_id,
             performer
           );
+          if (isUnoPenalty) {
+            // has penalty
+            const unoPenaltyAction = ActionFactory.create("uno_penalty", {
+              performer: performer,
+              cards: cards,
+              receiver: user_id,
+            });
+            update.actions.push(unoPenaltyAction);
+            // reset uno of ther performer (who played card)
+            await coreDriver.resetUno(game_id, performer);
+          }
           switch (next_action.action) {
             case "none":
               {
