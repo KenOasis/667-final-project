@@ -24,7 +24,7 @@ const game_state = {
   
   matching: { // matching status for the current turn
     color: "green",
-    number:  9,
+    value:  "one", // "zero" to "night", and "skip", "reverse", "draw_two" for action, "none" for wild
   },
 
   players: [{  // plyers card_deck
@@ -52,7 +52,7 @@ const game_state = {
 
   discards: [25, 28, 10],
   // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
-  undone_action = "none" // could be "draw" or "challenge"
+  undone_action = "none" // could be "draw" or one of ["blue", "yellow", "green", "red"] (which is used for chanllege reloading)
 }
 // After this round he play a card 94 
 

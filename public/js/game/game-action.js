@@ -53,7 +53,8 @@ function play_card_action() {
     .game_id;
   const body = {
     game_id: game_id,
-    card_id: 83,
+    card_id: 106,
+    color: "blue",
     undone_action: "none", // this should get from previous game_state
   };
   fetch(url, {
