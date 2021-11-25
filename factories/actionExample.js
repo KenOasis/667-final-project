@@ -24,7 +24,7 @@ const game_state = {
   
   matching: { // matching status for the current turn
     color: "green",
-    number:  9,
+    value:  "one", // "zero" to "night", and "skip", "reverse", "draw_two" for action, "none" for wild
   },
 
   players: [{  // plyers card_deck

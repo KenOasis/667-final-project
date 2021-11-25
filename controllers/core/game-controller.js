@@ -153,11 +153,11 @@ exports.playCard = async (req, res, next) => {
     }
     if (card.type === "number") {
       const matching_color = card.color;
-      const matching_number = card.face_value;
+      const matching_value = card.face_value;
       const isSetMatchingSuccess = await coreDriver.setMatching(
         game_id,
         matching_color,
-        matching_number
+        matching_value
       );
       const isSetCurrentSuccess = await coreDriver.setNextCurrent(
         game_id,
@@ -172,11 +172,11 @@ exports.playCard = async (req, res, next) => {
     } else if (card.type === "action") {
       // change matching number (none)
       const matching_color = card.color;
-      const matching_number = card.face_value; // "none" for non-number card
+      const matching_value = card.action; // "none" for non-number card
       const isSetMatchingSuccess = await coreDriver.setMatching(
         game_id,
         matching_color,
-        matching_number
+        matching_value
       );
       if (card.action === "reverse") {
         const isChangeDirectionSuccess = await coreDriver.changeDirection(
@@ -234,11 +234,11 @@ exports.playCard = async (req, res, next) => {
         "next"
       );
       if (card.action === "wild") {
-        const matching_number = card.face_value; // actually value "none"
+        const matching_value = card.face_value; // actually value "none"
         const isSetMatchingSuccess = await coreDriver.setMatching(
           game_id,
           matching_color,
-          matching_number
+          matching_value
         );
         eventsGame.playCard(game_user_list, card_id, user_id, {
           action: "wild",

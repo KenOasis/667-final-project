@@ -225,12 +225,12 @@ exports.discard = async (game_id, card_id) => {
   }
 };
 
-exports.setMatching = async (game_id, matching_color, matching_number) => {
+exports.setMatching = async (game_id, matching_color, matching_value) => {
   try {
     const isSuccess = await gamesDriver.setMatching(
       game_id,
       matching_color,
-      matching_number
+      matching_value
     );
     return isSuccess;
   } catch (err) {

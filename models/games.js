@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "none",
       },
-      matching_number: {
+      matching_value: {
         type: DataTypes.ENUM(
           "zero",
           "one",
@@ -51,13 +51,16 @@ module.exports = (sequelize, DataTypes) => {
           "seven",
           "eight",
           "nine",
+          "skip",
+          "reverse",
+          "draw_two",
           "none"
         ),
         allowNull: false,
         defaultValue: "none",
       },
       undone_action: {
-        type: DataTypes.ENUM("none", "draw", "challenge"),
+        type: DataTypes.ENUM("none", "draw", "yellow", "red", "blue", "green"),
         allowNull: false,
         defaultValue: "none",
       },
