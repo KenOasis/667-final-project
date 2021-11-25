@@ -125,9 +125,10 @@ exports.sayUno = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   try {
+    const game_user_list = await coreDriver.getGameUserList(game_id);
     const isSetUnoSuccess = await coreDriver.setUno(game_id, user_id);
-    if (isSetUnoSuccess) {
-      // TODO events
+    if (game_user_list && isSetUnoSuccess) {
+      eventsGame.sayUno(game_user_list, user_id);
       res.status(200).json({ status: "success" });
     }
   } catch (err) {
@@ -228,13 +229,13 @@ exports.playCard = async (req, res, next) => {
         }
       }
     } else {
-      const matching_color = req.body.color;
       const isSetCurrentSuccess = await coreDriver.setNextCurrent(
         game_id,
         user_id,
         "next"
       );
       if (card.action === "wild") {
+        const matching_color = req.body.color;
         const matching_value = card.face_value; // actually value "none"
         const isSetMatchingSuccess = await coreDriver.setMatching(
           game_id,
@@ -246,10 +247,11 @@ exports.playCard = async (req, res, next) => {
           color: matching_color,
         });
       } else {
-        // TODO set game.undone action = "matching color" for challenge
+        const color = req.body.color;
+        coreDriver.setUndoneActionWildDrawFourColor(game_id, color);
         eventsGame.playCard(game_user_list, card_id, user_id, {
           action: "wild_draw_four",
-          color: matching_color,
+          color: color,
         });
       }
     }

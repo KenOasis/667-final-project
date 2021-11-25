@@ -161,19 +161,22 @@ exports.setUndoneActionDraw = async (game_id) => {
   }
 };
 
-exports.setUndoneActionChallenge = async (game_id) => {
+exports.setUndoneActionWildDrawFourColor = async (game_id, color) => {
   try {
-    const undone_action = "challenge";
-    const updatedResult = await gamesDriver.updateUndoneAction(
-      game_id,
-      undone_action
-    );
-    return updatedResult;
+    if (["red", "blue", "yellow", "green"].includes(color)) {
+      const undone_action = color;
+      const updatedResult = await gamesDriver.updateUndoneAction(
+        game_id,
+        undone_action
+      );
+      return updatedResult;
+    } else {
+      throw new Error("Invalid input");
+    }
   } catch (err) {
     throw err;
   }
 };
-
 exports.resetUndoneAction = async (game_id) => {
   try {
     const undone_action = "none";

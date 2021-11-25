@@ -53,7 +53,7 @@ module.exports = {
         defaultValue: "none",
       },
       undone_action: {
-        type: Sequelize.ENUM("none", "draw", "challenge"),
+        type: Sequelize.ENUM("none", "draw", "red", "blue", "yellow", "green"),
         allowNull: false,
         defaultValue: "none",
       },

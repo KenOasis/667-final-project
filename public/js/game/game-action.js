@@ -48,14 +48,14 @@ function pass_action() {
 }
 
 function play_card_action() {
-  const url = "http://" + location.host + "/game/playcard";
+  const url = "http://" + location.host + "/game/sayuno";
   const game_id = JSON.parse(document.getElementById("user_list").value)[0]
     .game_id;
   const body = {
     game_id: game_id,
-    card_id: 106,
-    color: "blue",
-    undone_action: "none", // this should get from previous game_state
+    // card_id: 108,
+    // color: "blue",
+    // undone_action: "none", // this should get from previous game_state
   };
   fetch(url, {
     method: "POST",
