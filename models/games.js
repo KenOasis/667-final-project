@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "none",
       },
       undone_action: {
-        type: DataTypes.ENUM("none", "draw", "yellow", "red", "blue", "green"),
+        type: DataTypes.ENUM("none", "draw", "red", "blue", "yellow", "green"),
         allowNull: false,
         defaultValue: "none",
       },

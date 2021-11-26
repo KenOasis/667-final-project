@@ -2,9 +2,8 @@ const cardsDriver = require("./cards-driver");
 const gameCardsDriver = require("./game-cards-driver");
 const gameUsersDriver = require("./game-users-driver");
 const gamesDriver = require("./games-driver");
-
+const CardFactory = require("../../factories/cardFactory");
 const shuffle = require("../../util/shuffle");
-const init = require("connect-session-sequelize");
 
 exports.checkUserInGame = async (game_id, user_id) => {
   try {
@@ -161,19 +160,22 @@ exports.setUndoneActionDraw = async (game_id) => {
   }
 };
 
-exports.setUndoneActionChallenge = async (game_id) => {
+exports.setUndoneActionWildDrawFourColor = async (game_id, color) => {
   try {
-    const undone_action = "challenge";
-    const updatedResult = await gamesDriver.updateUndoneAction(
-      game_id,
-      undone_action
-    );
-    return updatedResult;
+    if (["red", "blue", "yellow", "green"].includes(color)) {
+      const undone_action = color;
+      const updatedResult = await gamesDriver.updateUndoneAction(
+        game_id,
+        undone_action
+      );
+      return updatedResult;
+    } else {
+      throw new Error("Invalid input");
+    }
   } catch (err) {
     throw err;
   }
 };
-
 exports.resetUndoneAction = async (game_id) => {
   try {
     const undone_action = "none";
@@ -317,6 +319,87 @@ exports.checkUnoPenalty = async (game_id, user_id) => {
         return [true, draw_card_id_list];
       }
     }
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.drawFour = async (game_id, user_id) => {
+  try {
+    const card_id_list = await gameCardsDriver.drawCard(game_id, user_id, 6);
+    if (card_id_list && card_id_list.length === 4) {
+      return card_id_list;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.checkChallenge = async (game_id, user_id) => {
+  try {
+    const direction = await gamesDriver.getDirection(game_id);
+    const initial_order = await gameUsersDriver.getGameOrder(game_id);
+    const mod = (n, m) => ((n % m) + m) % m; // js modulo has bug when n is negative
+    if (direction && initial_order) {
+      const current_index = initial_order.findIndex(
+        (element) => element === user_id
+      );
+      const pre_index = mod(current_index - direction, initial_order.length);
+      const defended_challenger_id = initial_order[pre_index];
+      const game_cards = await gameCardsDriver.getPlayerCards(
+        game_id,
+        defended_challenger_id
+      );
+      const matching = await gamesDriver.getMatching(game_id);
+      if (game_cards && game_cards.length && matching) {
+        const cards = game_cards.map((game_card) => game_card.card_id);
+        let isMatch = false;
+        for (card_id in cards) {
+          const card = CardFactory.create(card_id);
+          if (card.type === "number") {
+            if (
+              card.color === matching.color ||
+              card.face_value === matching.value
+            ) {
+              isMatch = true;
+              break;
+            }
+          } else if (card.type === "action") {
+            if (
+              card.color === matching.color ||
+              card.action === matching.value
+            ) {
+              isMatch = true;
+              break;
+            }
+          } else {
+            // wild card, continue
+            continue;
+          }
+        }
+        let penalty_cards = [];
+        if (isMatch) {
+          // match existed, challenge success
+          penalty_cards = await gameCardsDriver.drawCard(
+            game_id,
+            defended_challenger_id,
+            4
+          );
+          return [true, defended_challenger_id, penalty_cards];
+        } else {
+          // match is not existed, challenge fail
+          penalty_cards = await gameCardsDriver.drawCard(game_id, user_id, 6);
+          return [false, user_id, penalty_cards];
+        }
+      }
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.getWildDrawFourColor = async (game_id) => {
+  try {
   } catch (err) {
     throw err;
   }

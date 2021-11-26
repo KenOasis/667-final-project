@@ -17,4 +17,5 @@ router.post("/pass", userInGameValidator, gameController.pass);
 
 router.post("/playcard", userInGameValidator, gameController.playCard);
 
+router.post("/sayuno", userInGameValidator, gameController.sayUno);
 exports.routes = router;

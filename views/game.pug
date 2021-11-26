@@ -30,7 +30,7 @@ html(lang="en")
           height="100px"
           )
         div(class="col-md-2" style="text-align: right;")
-          button(type = "button" id="draw" class = "btn draw_button" onclick="play_card_action()" disabled) Deck
+          button(type = "button" id="draw" class = "btn draw_button" onclick="draw_card_action()" disabled) Deck
           h6(id="card_deck" style="left: -30px;position: relative;") 
         #container_top(class="col-md-4 top_bottom ")
           
@@ -53,8 +53,8 @@ html(lang="en")
           div(class = "row")
             div(class = "col-md-12" id = "status") System prompt area
           div(class="row" id="discard_setting")
-            div(class="col-md-4 " style="text-align:center" id="match_set")
-            div(class="col-md-8 hand" id = "discard_pile")
+            div(class="col-md-6 " style="text-align:center" id="match_set")
+            div(class="col-md-6 hand" id = "discard_pile")
           div(class="row")
             div(class="col-md-12" style="text-align:end" id ="card_controller")
               button(type = "button" class = "btn btn-outline-danger" id="uno") UNO

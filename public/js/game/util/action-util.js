@@ -31,7 +31,7 @@ let action_util = {
           card_tool.card_to_player(player_id, back_html);
         }, i * 200);
       }
-      setTimeout(resolve, number_cards * 500, "done");
+      setTimeout(resolve, number_cards * 300, "done");
     });
   },
   set_undone_action(action, player_id) {
@@ -64,6 +64,7 @@ let action_util = {
     }
     return discrd;
   },
+
 };
 let clicked_card = (card) => {
   return () => {

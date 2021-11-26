@@ -218,6 +218,11 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
                 });
               }
               break;
+            default:
+              {
+                throw new Error("Events data error!");
+              }
+              break;
           }
         }
       } else {
@@ -229,89 +234,7 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
   }
 };
 
-// exports.reverse = async (game_user_list, card_id, performer) => {
-//   const game_id = game_user_list[0].game_id;
-//   const room = "game-" + game_id;
-//   const users_id = game_user_list.map((game_user) => game_user.user_id);
-//   const gameSpace = require("./socket").getNameSpace("game");
-//   try {
-//     const sockets = await gameSpace.in(room).fetchSockets();
-//     for await (socket of sockets) {
-//       const user_id = socket.request.session.userId;
-//       if (users_id.includes(user_id)) {
-//         const game_state = await coreDriver.getGameState(game_id, user_id);
-//         if (game_state) {
-//           const update = {};
-//           update.game_id = game_id;
-//           update.receiver = user_id;
-//           update.actions = [];
-//           const card = [];
-//           card.push(card_id);
-//           const playCardAction = ActionFactory.create("play_card", {
-//             performer: performer,
-//             card: card,
-//           });
-//           update.actions.push(playCardAction);
-//           const reverseAction = ActionFactory.create("reverse", {
-//             performer: performer,
-//           });
-//           update.actions.push(reverseAction);
-//           gameSpace.in(socket.id).emit("gameUpdateReverse", {
-//             game_state: game_state,
-//             update: update,
-//           });
-//         }
-//       } else {
-//         throw new Error("Forbidden");
-//       }
-//     }
-//   } catch (err) {
-//     console.log(err.message);
-//   }
-// };
-
-// exports.skip = async (game_user_list, card_id, performer) => {
-//   const game_id = game_user_list[0].game_id;
-//   const room = "game-" + game_id;
-//   const users_id = game_user_list.map((game_user) => game_user.user_id);
-//   const gameSpace = require("./socket").getNameSpace("game");
-//   try {
-//     const sockets = await gameSpace.in(room).fetchSockets();
-//     for await (socket of sockets) {
-//       const user_id = socket.request.session.userId;
-//       if (users_id.includes(user_id)) {
-//         const game_state = await coreDriver.getGameState(game_id, user_id);
-//         if (game_state) {
-//           const update = {};
-//           update.game_id = game_id;
-//           update.receiver = user_id;
-//           update.actions = [];
-//           const card = [];
-//           card.push(card_id);
-//           const playCardAction = ActionFactory.create("play_card", {
-//             performer: performer,
-//             card: card,
-//           });
-//           update.actions.push(playCardAction);
-//           const skipAction = ActionFactory.create("skip", {
-//             performer: performer,
-//           });
-//           update.actions.push(skipAction);
-//           gameSpace.in(socket.id).emit("gameUpdateSkip", {
-//             game_state: game_state,
-//             update: update,
-//           });
-//         }
-//       } else {
-//         throw new Error("Forbidden");
-//       }
-//     }
-//   } catch (err) {
-//     console.log(err.message);
-//   }
-// };
-
-exports.template = async (game_user_list, card_id, performer) => {
+exports.sayUno = async (game_user_list, performer) => {
   const game_id = game_user_list[0].game_id;
   const room = "game-" + game_id;
   const users_id = game_user_list.map((game_user) => game_user.user_id);
@@ -327,13 +250,14 @@ exports.template = async (game_user_list, card_id, performer) => {
           update.game_id = game_id;
           update.receiver = user_id;
           update.actions = [];
-          const card = [];
-          card.push(card_id);
-          const playCardAction = ActionFactory.create("play_card", {
+          const unoAction = ActionFactory.create("uno", {
             performer: performer,
-            card: card,
           });
-          update.actions.push(playCardAction);
+          update.actions.push(unoAction);
+          gameSpace.in(socket.id).emit("sayUnoUpdate", {
+            game_state: game_state,
+            update: update,
+          });
         }
       } else {
         throw new Error("Forbidden");
@@ -343,3 +267,96 @@ exports.template = async (game_user_list, card_id, performer) => {
     console.log(err.message);
   }
 };
+
+exports.challenge = async (
+  game_user_list,
+  performer,
+  is_challenge,
+  is_success,
+  penalty_id,
+  penalty_cards
+) => {
+  const game_id = game_user_list[0].game_id;
+  const room = "game-" + game_id;
+  const users_id = game_user_list.map((game_user) => game_user.user_id);
+  const gameSpace = require("./socket").getNameSpace("game");
+  try {
+    const sockets = await gameSpace.in(room).fetchSockets();
+    for await (socket of sockets) {
+      const user_id = socket.request.session.userId;
+      if (users_id.includes(user_id)) {
+        const game_state = await coreDriver.getGameState(game_id, user_id);
+        if (game_state) {
+          const update = {};
+          update.game_id = game_id;
+          update.receiver = user_id;
+          update.actions = [];
+          const challengeAction = ActionFactory.create("challenge", {
+            performer: performer,
+            is_challenge: is_challenge,
+            is_success: is_success,
+            penalty_player: penalty_id,
+            penalty_cards: penalty_cards,
+            receiver: user_id,
+          });
+          update.actions.push(challengeAction);
+          if (is_challenge) {
+            if (is_success) {
+              gameSpace.in(socket.id).emit("challengeSuccessUpdate", {
+                game_state: game_state,
+                update: update,
+              });
+            } else {
+              gameSpace.in(socket.id).emit("challengeFailUpdate", {
+                game_state: game_state,
+                update: update,
+              });
+            }
+          } else {
+            gameSpace.in(socket.id).emit("notChallengeUpdate", {
+              game_state: game_state,
+              update: update,
+            });
+          }
+        }
+      } else {
+        throw new Error("Forbidden");
+      }
+    }
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+// exports.template = async (game_user_list, card_id, performer) => {
+//   const game_id = game_user_list[0].game_id;
+//   const room = "game-" + game_id;
+//   const users_id = game_user_list.map((game_user) => game_user.user_id);
+//   const gameSpace = require("./socket").getNameSpace("game");
+//   try {
+//     const sockets = await gameSpace.in(room).fetchSockets();
+//     for await (socket of sockets) {
+//       const user_id = socket.request.session.userId;
+//       if (users_id.includes(user_id)) {
+//         const game_state = await coreDriver.getGameState(game_id, user_id);
+//         if (game_state) {
+//           const update = {};
+//           update.game_id = game_id;
+//           update.receiver = user_id;
+//           update.actions = [];
+//           const card = [];
+//           card.push(card_id);
+//           const playCardAction = ActionFactory.create("play_card", {
+//             performer: performer,
+//             card: card,
+//           });
+//           update.actions.push(playCardAction);
+//         }
+//       } else {
+//         throw new Error("Forbidden");
+//       }
+//     }
+//   } catch (err) {
+//     console.log(err.message);
+//   }
+// };
