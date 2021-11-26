@@ -97,7 +97,7 @@ exports.pass = async (req, res, next) => {
   }
 };
 
-exports.challenge = (req, res, next) => {
+exports.challenge = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   const is_challenge = req.body.is_challenge; // Boolean status as whether to do the challenge
@@ -106,6 +106,7 @@ exports.challenge = (req, res, next) => {
   let penalty_cards;
   let isSetCurrentSuccess = true;
   try {
+    const game_user_list = await coreDriver.getGameUserList(game_id);
     if (is_challenge === true) {
       // check challenge and do penalty based on the challenge result
       [is_success, penalty_id, penalty_cards] = await coreDriver.checkChallenge(
@@ -122,15 +123,30 @@ exports.challenge = (req, res, next) => {
         "next"
       );
     }
-    if (!is_success) {
-      // if not success skip his own round
+    if (is_success === false) {
+      // if not success (or not challenge as default value false) skip his own round
       isSetCurrentSuccess = await coreDriver.setNextCurrent(
         game_id,
         user_id,
         "next"
       );
     }
-    if (penalty_id && penalty_id && penalty_cards && isSetCurrentSuccess) {
+    if (
+      penalty_id &&
+      penalty_id &&
+      penalty_cards &&
+      isSetCurrentSuccess &&
+      game_user_list &&
+      game_user_list.length
+    ) {
+      eventsGame.challenge(
+        game_user_list,
+        user_id,
+        is_challenge,
+        is_success,
+        penalty_id,
+        penalty_cards
+      );
     }
   } catch (err) {
     console.error(err);
@@ -167,6 +183,9 @@ exports.playCard = async (req, res, next) => {
   const user_id = req.session.userId;
   const card = CardFactory.create(card_id);
 
+  // TODO check if the last card played
+  // if yes, end-game process after action done
+  // special case triger wild_draw_four - no challenge result
   try {
     const game_user_list = await coreDriver.getGameUserList(game_id);
     await coreDriver.discard(game_id, card_id);
