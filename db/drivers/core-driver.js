@@ -398,8 +398,12 @@ exports.checkChallenge = async (game_id, user_id) => {
   }
 };
 
-exports.getWildDrawFourColor = async (game_id) => {
+exports.getUndoneAction = async (game_id) => {
   try {
+    const game = await gamesDriver.getUndoneAction(game_id);
+    if (game) {
+      return game.undone_action;
+    }
   } catch (err) {
     throw err;
   }
