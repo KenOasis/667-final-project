@@ -57,7 +57,7 @@ class game_state_helper {
       const card_detail = CardModule.get_card_detail(card);
       if (
         matching.color === card_detail.card_color ||
-        matching.number === card_detail.card_value ||
+        matching.value === card_detail.card_value ||
         card_detail.card_color === "none"
       ) {
         return card;
@@ -123,7 +123,7 @@ class game_state_helper {
       green: "rgb(60,179,113)",
       yellow: "rgb(255, 210, 71)",
     };
-    const match_number = this.game_state.matching.number;
+    const match_number = this.game_state.matching.value;
     const match_color = this.game_state.matching.color;
     const direction = this.game_state.game_direction;
     const num_html = document.getElementById("match_set");

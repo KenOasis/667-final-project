@@ -1,6 +1,7 @@
 // this is the user_list
 const user_list = JSON.parse(document.getElementById("user_list").value);
 
+
 const player_profile = {
   set_user(html_id, user) {
     const profile = document.getElementById(html_id);

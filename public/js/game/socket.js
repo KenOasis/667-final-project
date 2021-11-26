@@ -138,3 +138,27 @@ socket.on("gameUpdateSkip", (data) => {
   game_class.color_match_card();
   game_class.set_side_stuff();
 });
+
+socket.on("gameUpdateDrawTwo", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Draw_two!");
+  console.log(game_state);
+  console.log(update);
+});
+
+socket.on("gameUpdateWild", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Wild!");
+  console.log(game_state);
+  console.log(update);
+});
+
+socket.on("gameUpdateWildDrawFour", (data) => {
+  const game_state = data.game_state;
+  const update = data.update;
+  console.log("Wild Draw Four!");
+  console.log(game_state);
+  console.log(update);
+});
