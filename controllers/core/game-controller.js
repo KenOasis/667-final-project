@@ -139,6 +139,8 @@ exports.challenge = async (req, res, next) => {
       game_user_list &&
       game_user_list.length
     ) {
+      const matching_color = await coreDriver.getUndoneAction(game_id);
+      await coreDriver.setMatching(game_id, matching_color, "none");
       eventsGame.challenge(
         game_user_list,
         user_id,
@@ -183,9 +185,6 @@ exports.playCard = async (req, res, next) => {
   const user_id = req.session.userId;
   const card = CardFactory.create(card_id);
 
-  // TODO check if the last card played
-  // if yes, end-game process after action done
-  // special case triger wild_draw_four - no challenge result
   try {
     const game_user_list = await coreDriver.getGameUserList(game_id);
     await coreDriver.discard(game_id, card_id);
@@ -293,6 +292,14 @@ exports.playCard = async (req, res, next) => {
         });
       }
     }
+    // TODO check if the last card played in each case
+    // if yes, end-game process after action done
+
+    // if (card.type === "wild_draw_four") {
+    //   // special case triger wild_draw_four - no challenge result
+    // } else {
+    // }
+
     return res.status(200).json({ status: "success" });
   } catch (err) {
     console.error(err);
@@ -301,4 +308,14 @@ exports.playCard = async (req, res, next) => {
       message: "Internal Server Error",
     });
   }
+};
+
+exports.endGame = async (req, res, next) => {
+  // TODO end game process
+  // cal points based of card on hands
+  // modified game finished time;
+  res.status(200).json({
+    status: "success",
+    message: "Game over!",
+  });
 };

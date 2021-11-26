@@ -18,4 +18,8 @@ router.post("/pass", userInGameValidator, gameController.pass);
 router.post("/playcard", userInGameValidator, gameController.playCard);
 
 router.post("/sayuno", userInGameValidator, gameController.sayUno);
+
+router.post("/challenge", userInGameValidator, gameController.challenge);
+
+router.post("/endgame", userInGameValidator, gameController.endGame);
 exports.routes = router;
