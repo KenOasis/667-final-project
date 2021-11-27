@@ -354,7 +354,7 @@ exports.checkChallenge = async (game_id, user_id) => {
       if (game_cards && game_cards.length && matching) {
         const cards = game_cards.map((game_card) => game_card.card_id);
         let isMatch = false;
-        for (card_id in cards) {
+        for (card_id of cards) {
           const card = CardFactory.create(card_id);
           if (card.type === "number") {
             if (
@@ -389,6 +389,7 @@ exports.checkChallenge = async (game_id, user_id) => {
         } else {
           // match is not existed, challenge fail
           penalty_cards = await gameCardsDriver.drawCard(game_id, user_id, 6);
+
           return [false, user_id, penalty_cards];
         }
       }
@@ -400,9 +401,9 @@ exports.checkChallenge = async (game_id, user_id) => {
 
 exports.getUndoneAction = async (game_id) => {
   try {
-    const game = await gamesDriver.getUndoneAction(game_id);
-    if (game) {
-      return game.undone_action;
+    const undone_action = await gamesDriver.getUndoneAction(game_id);
+    if (undone_action) {
+      return undone_action;
     }
   } catch (err) {
     throw err;

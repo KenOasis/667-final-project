@@ -27,8 +27,12 @@ class ChallengeAction extends Action {
 
     this._penalty_player = penalty_player;
     this._receiver = receiver;
+    console.log(penalty_cards.length);
     if (this._penalty_player === this._receiver) {
       this._penalty_cards = penalty_cards.slice(0);
+      this._penalty_count = penalty_cards.length;
+    } else {
+      this._penalty_count = penalty_cards.length;
     }
   }
 
@@ -59,7 +63,7 @@ class ChallengeAction extends Action {
     if (this._penalty_player === this._receiver) {
       obj.penalty_cards = this._penalty_cards.slice(0);
     } else {
-      obj.penalty_count = this._penalty_cards.length;
+      obj.penalty_count = this._penalty_count;
     }
 
     return obj;
