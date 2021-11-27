@@ -53,15 +53,17 @@ class game_state_helper {
     const matching = this.game_state.matching;
     const bottom_player = this.find_one_player(this.game_state.receiver).cards;
     const match_list = bottom_player.filter((card) => {
+      //card_tool from card_util.js
       const card_detail = CardModule.get_card_detail(card);
       if (
         matching.color === card_detail.card_color ||
-        matching.number === card_detail.card_value ||
+        matching.value === card_detail.card_value ||
         card_detail.card_color === "none"
       ) {
         return card;
       }
     });
+
     return match_list;
   }
 
@@ -74,6 +76,7 @@ class game_state_helper {
     const player_info = this.find_one_player(player_id);
     if ("cards" in player_info) {
       const cards = player_info.cards;
+      //action_util from action_util
       return action_util.add_card_event(cards);
     } else {
       const number_cards = player_info.number_of_cards;
@@ -83,6 +86,7 @@ class game_state_helper {
   show_left_right_card(player_id) {
     const player_info = this.find_one_player(player_id);
     const number_of_card = player_info.number_of_cards;
+    //action_util from action_util
     return action_util.add_card_back_event(
       number_of_card,
       "cardcol",
@@ -105,9 +109,11 @@ class game_state_helper {
   // show_discard
   show_discard() {
     const container = document.getElementById("discard_pile");
-    const discards = this.game_state.discards;
+    const discards = this.game_state.discards.reverse();
+
     container.innerHTML = "";
-    container.appendChild(page_effect.show_discard(discards));
+    //action_util from action_util
+    container.appendChild(action_util.show_discard(discards));
   }
   //show matching color and number to players
   set_match() {
@@ -117,11 +123,10 @@ class game_state_helper {
       green: "rgb(60,179,113)",
       yellow: "rgb(255, 210, 71)",
     };
-    const match_number = this.game_state.matching.number;
+    const match_number = this.game_state.matching.value;
     const match_color = this.game_state.matching.color;
     const direction = this.game_state.game_direction;
     const num_html = document.getElementById("match_set");
-
     num_html.innerHTML =
       page_effect.show_match_set(match_number, color[match_color]) +
       page_effect.show_direction(color[match_color], direction);
@@ -163,46 +168,78 @@ class game_state_helper {
    * highlight the border
    *
    */
-  set_current_player(action) {
-    console.log("set_current_player", action);
+  set_current_player() {
+    const action = this.game_state.undone_action;
     if (this.check_current_is_receiver()) {
+      // page_util.js
       page_effect.unlock_uno_button();
       if (action == "draw") {
         page_effect.show_pass_button();
         page_effect.lock_desk_button();
       }
       //else if(action == "chanllage")
-      else {
+      else if (action == "none") {
         page_effect.unlock_desk_button();
         page_effect.unlock_uno_button();
         page_effect.hide_pass_button();
+      } else {
+        page_effect.lock_desk_button();
+        const last_player_id = this.find_last_player();
+        const last_player_name =
+          player_profile.get_user_name(last_player_id).username;
+        action_util.change_modal_body(
+          this.game_state.matching.color,
+          last_player_name
+        );
+        const question_modal = document.getElementById("ChallengeModal");
+        const mymodal = new bootstrap.Modal(question_modal);
+        mymodal.toggle();
+        page_effect.hide_pass_button();
       }
-      action_util.set_undone_action(action, this.game_state.receiver);
     } else {
       const current_player = this.game_state.current_player;
       page_effect.highlight_current(current_player);
       page_effect.lock_desk_button();
-      page_effect.lock_uno_button();
-      page_effect.hide_pass_button();
     }
+    //action_util.js
+    action_util.set_undone_action(action, this.game_state.receiver);
   }
   /**
    * set up the click_card_event
    *
    */
-  set_card_click_event(is_current_player) {
+  set_card_click_event() {
     const receiver_id = this.game_state.receiver;
     const bottom_cards = this.find_one_player(receiver_id).cards;
+    //action_util.js
     action_util.remove_click_event(bottom_cards);
-    action_util.card_click_event(bottom_cards, is_current_player);
+    action_util.card_click_event(bottom_cards);
+  }
+  delete_click_event() {
+    const receiver_id = this.game_state.receiver;
+    const bottom_cards = this.find_one_player(receiver_id).cards;
+    //action_util.js
+    action_util.remove_click_event(bottom_cards);
+    //page_util.js
+    page_effect.hide_all_button();
   }
   refresh_hand_card(player_id) {
     const card_list = this.find_one_player(player_id).cards;
     const container = document.getElementById("player_" + player_id.toString());
     container.innerHTML = "";
     for (let i = 0; i < card_list.length; i++) {
+      //card_util.js
       const card_html = card_tool.set_cards(card_list[i]);
       card_tool.card_to_player(player_id, card_html);
+    }
+  }
+  find_last_player() {
+    const players_list = this.arrange_players();
+    const index = players_list.indexOf(this.game_state.current_player);
+    if (this.game_state.direction === 1) {
+      return players_list[1];
+    } else {
+      return players_list[3];
     }
   }
 }

@@ -22,6 +22,14 @@ const player_profile = {
       this.set_user("right_user", user);
     }
   },
+  get_user_name(id) {
+    const user = user_list.filter((userobj) => {
+      if (userobj.user_id === id) {
+        return userobj;
+      }
+    });
+    return user[0];
+  },
 };
 
 const loadGameState = () => {
@@ -60,18 +68,16 @@ const loadGameState = () => {
     .then((game_state) => {
       const game_class = new game_state_helper(game_state);
       const order = game_class.arrange_players();
-      const undone = game_state.undone_action;
       game_class
         .show_top_bottom_card(order[0])
         .then((result) => {
           if (result === "done") {
-            game_class.color_match_card();
-            game_class.set_current_player(undone);
             if (game_class.check_current_is_receiver()) {
-              game_class.set_card_click_event(true);
+              game_class.set_card_click_event();
             } else {
-              game_class.set_card_click_event(false);
+              game_class.delete_click_event();
             }
+            game_class.set_current_player();
             game_class.color_match_card();
           }
         })
@@ -86,5 +92,3 @@ const loadGameState = () => {
     })
     .catch((error) => console.log("outside", error));
 };
-
-// loadGameState();
