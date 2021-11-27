@@ -32,19 +32,17 @@ class ActionFactory {
         if (check === true) {
           const {
             performer,
-            is_challenged,
+            is_challenge,
             is_success,
             penalty_player,
-            penalty_count,
             penalty_cards,
             receiver,
           } = params;
           return new ChallengeAction(
             performer,
-            is_challenged,
+            is_challenge,
             is_success,
             penalty_player,
-            penalty_count,
             penalty_cards,
             receiver
           ).action();
