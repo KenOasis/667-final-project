@@ -5,8 +5,20 @@ let player_controller = {
     const id = parseInt(container.id.replace(/player_/g, ""));
     return id;
   },
+  last_player(direction) {
+    if (direction === 1) {
+      const right_player = document.getElementById("container_right");
+      let container = right_player.getElementsByClassName("hand")[0];
+      const id = parseInt(container.id.replace(/player_/g, ""));
+      return id;
+    } else {
+      const left_player = document.getElementById("container_left");
+      let container = left_player.getElementsByClassName("hand")[0];
+      const id = parseInt(container.id.replace(/player_/g, ""));
+      return id;
+    }
+  },
 };
-
 let action_util = {
   add_card_event(card_list) {
     const player_id = player_controller.whoami();
@@ -64,7 +76,17 @@ let action_util = {
     }
     return discrd;
   },
-
+  change_modal_body(color, last_player_name) {
+    const color_obj = {
+      red: "rgb(255,0,0)",
+      blue: "rgb(0,0,255)",
+      green: "rgb(60,179,113)",
+      yellow: "rgb(255, 210, 71)",
+    };
+    let body = `<p>${last_player_name} played a +4. if you think they have <span style="color:${color_obj[color]};"> ${color} </span> card in their hand, you can challenge them! (Success +0, Fail +6) </p>`;
+    const modal_body = document.getElementById("modal_body");
+    modal_body.innerHTML = body;
+  },
 };
 let clicked_card = (card) => {
   return () => {

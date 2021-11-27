@@ -100,8 +100,8 @@ function color_selector(event) {
   //card_tool from card_util.js
   let obj = card_tool.check_clicked_card(iam);
   const card_id = obj.card_id;
-  let body;
-  body = {
+ 
+  let body = {
     game_id: game_id,
     card_id: card_id,
     color: color,

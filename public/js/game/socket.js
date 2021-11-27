@@ -188,6 +188,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
     const player = document.getElementById("player_" + performer.toString());
 
     const position = player.getAttribute("position");
+
     if (position === "left" || position === "right") {
       action_util.add_card_back_event(2, "cardcol", performer);
     } else {
@@ -202,9 +203,23 @@ socket.on("gameUpdateDrawTwo", (data) => {
 socket.on("gameUpdateWild", (data) => {
   const game_state = data.game_state;
   const update = data.update;
+  const performer = update.actions[0].performer;
   console.log("Wild!");
   console.log(game_state);
   console.log(update);
+  page_effect.cancel_highlinght();
+  const game_class = new game_state_helper(game_state);
+  if (game_state.receiver == performer) {
+    game_class.refresh_hand_card(performer);
+  }
+  if (game_class.check_current_is_receiver()) {
+    game_class.set_card_click_event();
+  } else {
+    game_class.delete_click_event();
+  }
+  game_class.set_current_player();
+  game_class.color_match_card();
+  game_class.set_side_stuff();
 });
 
 socket.on("gameUpdateWildDrawFour", (data) => {
@@ -213,16 +228,21 @@ socket.on("gameUpdateWildDrawFour", (data) => {
   console.log("Wild Draw Four!");
   console.log(game_state);
   console.log(update);
-  /**
-   *  current -> show challenge Yes or no
-   * in yes or no form
-   *  body {
-       game_id;
-       is_challenge;
-   * }
-   * 
-   *
-  */
+  page_effect.cancel_highlinght();
+  const play_card_player = update.actions.filter((obj) => {
+    if (obj.type == "play_card") {
+      return obj;
+    }
+  });
+  const play_card_user = play_card_player[0].performer;
+  const game_class = new game_state_helper(game_state);
+  if (game_state.receiver == play_card_user) {
+    game_class.refresh_hand_card(play_card_user);
+  }
+  game_class.delete_click_event();
+  game_class.set_current_player();
+  game_class.color_match_card();
+  game_class.set_side_stuff();
 });
 
 socket.on("sayUnoUpdate", (data) => {

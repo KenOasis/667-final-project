@@ -178,12 +178,21 @@ class game_state_helper {
         page_effect.lock_desk_button();
       }
       //else if(action == "chanllage")
-      else {
+      else if (action == "none") {
         page_effect.unlock_desk_button();
         page_effect.unlock_uno_button();
         page_effect.hide_pass_button();
+      } else {
+        page_effect.lock_desk_button();
+        const last_player_id = player_controller.last_player();
+        const last_player_name = player_profile.get_user_name(last_player_id).username;
+        const color = action;
+        action_util.change_modal_body(color, last_player_name);
+        const question_modal = document.getElementById("ChallengeModal");
+        const mymodal = new bootstrap.Modal(question_modal);
+        mymodal.toggle();
+        page_effect.hide_pass_button();
       }
-      console.log("set_current_player", action);
     } else {
       const current_player = this.game_state.current_player;
       page_effect.highlight_current(current_player);

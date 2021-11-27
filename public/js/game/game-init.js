@@ -1,7 +1,6 @@
 // this is the user_list
 const user_list = JSON.parse(document.getElementById("user_list").value);
 
-
 const player_profile = {
   set_user(html_id, user) {
     const profile = document.getElementById(html_id);
@@ -22,6 +21,14 @@ const player_profile = {
     if (position == 3) {
       this.set_user("right_user", user);
     }
+  },
+  get_user_name(id) {
+    const user = user_list.filter((userobj) => {
+      if (userobj.user_id === id) {
+        return userobj;
+      }
+    });
+    return user[0];
   },
 };
 
@@ -85,5 +92,3 @@ const loadGameState = () => {
     })
     .catch((error) => console.log("outside", error));
 };
-
-// loadGameState();
