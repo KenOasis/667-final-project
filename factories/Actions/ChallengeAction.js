@@ -27,7 +27,6 @@ class ChallengeAction extends Action {
 
     this._penalty_player = penalty_player;
     this._receiver = receiver;
-    console.log(penalty_cards.length);
     if (this._penalty_player === this._receiver) {
       this._penalty_cards = penalty_cards.slice(0);
       this._penalty_count = penalty_cards.length;
