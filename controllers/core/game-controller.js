@@ -97,7 +97,7 @@ exports.pass = async (req, res, next) => {
   }
 };
 
-exports.challenge = async(req, res, next) => {
+exports.challenge = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   const is_challenge = req.body.is_challenge; // Boolean status as whether to do the challenge
@@ -106,6 +106,7 @@ exports.challenge = async(req, res, next) => {
   let penalty_cards;
   let isSetCurrentSuccess = true;
   try {
+    const game_user_list = await coreDriver.getGameUserList(game_id);
     if (is_challenge === true) {
       // check challenge and do penalty based on the challenge result
       [is_success, penalty_id, penalty_cards] = await coreDriver.checkChallenge(
@@ -122,15 +123,32 @@ exports.challenge = async(req, res, next) => {
         "next"
       );
     }
-    if (!is_success) {
-      // if not success skip his own round
+    if (is_success === false) {
+      // if not success (or not challenge as default value false) skip his own round
       isSetCurrentSuccess = await coreDriver.setNextCurrent(
         game_id,
         user_id,
         "next"
       );
     }
-    if (penalty_id && penalty_id && penalty_cards && isSetCurrentSuccess) {
+    if (
+      penalty_id &&
+      penalty_id &&
+      penalty_cards &&
+      isSetCurrentSuccess &&
+      game_user_list &&
+      game_user_list.length
+    ) {
+      const matching_color = await coreDriver.getUndoneAction(game_id);
+      await coreDriver.setMatching(game_id, matching_color, "none");
+      eventsGame.challenge(
+        game_user_list,
+        user_id,
+        is_challenge,
+        is_success,
+        penalty_id,
+        penalty_cards
+      );
     }
   } catch (err) {
     console.error(err);
@@ -274,6 +292,14 @@ exports.playCard = async (req, res, next) => {
         });
       }
     }
+    // TODO check if the last card played in each case
+    // if yes, end-game process after action done
+
+    // if (card.type === "wild_draw_four") {
+    //   // special case triger wild_draw_four - no challenge result
+    // } else {
+    // }
+
     return res.status(200).json({ status: "success" });
   } catch (err) {
     console.error(err);
@@ -282,4 +308,14 @@ exports.playCard = async (req, res, next) => {
       message: "Internal Server Error",
     });
   }
+};
+
+exports.endGame = async (req, res, next) => {
+  // TODO end game process
+  // cal points based of card on hands
+  // modified game finished time;
+  res.status(200).json({
+    status: "success",
+    message: "Game over!",
+  });
 };

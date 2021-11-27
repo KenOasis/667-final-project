@@ -100,7 +100,7 @@ function color_selector(event) {
   //card_tool from card_util.js
   let obj = card_tool.check_clicked_card(iam);
   const card_id = obj.card_id;
- 
+
   let body = {
     game_id: game_id,
     card_id: card_id,
@@ -108,4 +108,35 @@ function color_selector(event) {
     undone_action: undone_action,
   };
   play_card_action(body);
+}
+
+function challenge_wild_four(event) {
+  event.preventDefault();
+  const anwers = event.target.id;
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const iam = player_controller.whoami();
+  const player = document.getElementById("player_" + iam);
+  let undone_action = player.getAttribute("undone_action");
+  const is_challenge = anwers === "challenge";
+  const body = {
+    game_id: game_id,
+    is_challenge: is_challenge,
+  };
+  // const url = "http://" + location.host + "/game/challenge";
+  // fetch(url, {
+  //   method: "POST",
+  //   body: JSON.stringify(body),
+  //   credentials: "include",
+  //   headers: new Headers({
+  //     "content-type": "application/json",
+  //   }),
+  // })
+  //   .then((response) => response.json())
+  //   .then((results) => {
+  //     if (results.status !== "success") {
+  //       console.log(results.message);
+  //     }
+  //   })
+  //   .catch((error) => console.log(error));
 }

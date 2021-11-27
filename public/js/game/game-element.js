@@ -184,10 +184,13 @@ class game_state_helper {
         page_effect.hide_pass_button();
       } else {
         page_effect.lock_desk_button();
-        const last_player_id = player_controller.last_player();
-        const last_player_name = player_profile.get_user_name(last_player_id).username;
-        const color = action;
-        action_util.change_modal_body(color, last_player_name);
+        const last_player_id = this.find_last_player();
+        const last_player_name =
+          player_profile.get_user_name(last_player_id).username;
+        action_util.change_modal_body(
+          this.game_state.matching.color,
+          last_player_name
+        );
         const question_modal = document.getElementById("ChallengeModal");
         const mymodal = new bootstrap.Modal(question_modal);
         mymodal.toggle();
@@ -228,6 +231,15 @@ class game_state_helper {
       //card_util.js
       const card_html = card_tool.set_cards(card_list[i]);
       card_tool.card_to_player(player_id, card_html);
+    }
+  }
+  find_last_player() {
+    const players_list = this.arrange_players();
+    const index = players_list.indexOf(this.game_state.current_player);
+    if (this.game_state.direction === 1) {
+      return players_list[1];
+    } else {
+      return players_list[3];
     }
   }
 }
