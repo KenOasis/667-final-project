@@ -14,7 +14,7 @@ const game_state = {
 
   reciever: 9,  // who is recieving this game_state: "who am i", initial game state will be 0;  
   
-  cards_deck: 45,    // how many cards still in the deck
+  card_deck: 45,    // how many cards still in the deck
 
   game_direction: 'clockwise', // game direction
 

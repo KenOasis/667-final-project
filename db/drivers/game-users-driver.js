@@ -32,7 +32,7 @@ exports.getGameUsersByGameId = async (game_id) => {
   try {
     const game_users = await Users.findAll({
       raw: true,
-      attributes: ["id", "username"],
+      attributes: ["id", "username", "game_users.initial_order"],
       include: {
         model: GameUsers,
         where: {

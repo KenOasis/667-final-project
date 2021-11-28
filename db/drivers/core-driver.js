@@ -195,7 +195,9 @@ exports.setNextCurrent = async (game_id, user_id, action) => {
   try {
     const direction = await gamesDriver.getDirection(game_id);
     const initial_order = await gameUsersDriver.getGameOrder(game_id);
-    const mod = (n, m) => ((n % m) + m) % m; // js modulo has bug when n is negative
+    const mod = (n, m) => ((n % m) + m) % m;
+    // js modulo has bug when n is negative
+    let skip_id;
     if (direction && initial_order) {
       const current_index = initial_order.findIndex(
         (element) => element === user_id
@@ -204,6 +206,14 @@ exports.setNextCurrent = async (game_id, user_id, action) => {
         current_index + direction * step,
         initial_order.length
       );
+      if (step === 2) {
+        const skip_index = mod(
+          current_index + direction * 1,
+          initial_order.length
+        );
+        skip_id = initial_order[skip_index];
+      }
+
       const current_player_id = initial_order[current_index];
       const new_current_player_id = initial_order[new_index];
       await gameUsersDriver.setCurrentPlayer(game_id, current_player_id, false);
@@ -212,7 +222,11 @@ exports.setNextCurrent = async (game_id, user_id, action) => {
         new_current_player_id,
         true
       );
-      return true;
+      if (step === 2) {
+        return [true, skip_id];
+      } else {
+        return true;
+      }
     }
   } catch (err) {
     throw err;
