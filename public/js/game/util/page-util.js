@@ -84,5 +84,19 @@ let page_effect = {
     this.hide_pass_button();
     this.lock_uno_button();
   },
-  
+  show_number_card(position, cards_num) {
+    let card_postion;
+    if (position === "left") {
+      card_postion = `${position}_card_number`;
+    }
+    if (position === "top") {
+      card_postion = `${position}_card_number`;
+    }
+    if (position === "right") {
+      card_postion = `${position}_card_number`;
+    }
+    const num_html = document.getElementById(card_postion);
+
+    num_html.innerText = cards_num;
+  },
 };

@@ -84,9 +84,21 @@ const loadGameState = () => {
         .catch((err) => {
           console.log("inside", err);
         });
-      game_class.show_left_right_card(order[1]);
-      game_class.show_top_bottom_card(order[2]);
-      game_class.show_left_right_card(order[3]);
+      if (game_class.check_number_of_card(order[1]) >= 10) {
+        game_class.show_back_card_again(order[1]);
+      } else {
+        game_class.show_left_right_card(order[1]);
+      }
+      if (game_class.check_number_of_card(order[2]) >= 10) {
+        game_class.show_back_card_again(order[2]);
+      } else {
+        game_class.show_top_bottom_card(order[2]);
+      }
+      if (game_class.check_number_of_card(order[3]) >= 10) {
+        game_class.show_back_card_again(order[3]);
+      } else {
+        game_class.show_left_right_card(order[3]);
+      }
       game_class.set_side_stuff();
       return game_state;
     })

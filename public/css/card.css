@@ -13,11 +13,11 @@
   text-align: center;
 }
 
-/* ----------------Setting the boxk fro layout the game page------------------- */
+/* ----------------Setting the layout the game page------------------- */
 
 .left_right {
   /* border: 2px solid blue; */
-  height: 390px;
+  height: 370px;
   width: 220px;
 }
 .top_bottom {
@@ -30,7 +30,7 @@
   text-align: center;
 }
 #status {
-  height: 180px;
+  height: 160px;
   border: 2px solid gray;
 }
 .matching {
@@ -85,6 +85,41 @@
 #discard_setting {
   height: 140px;
 }
+.grid_size {
+  height: 380px;
+  width: 220px;
+}
+#right_card_number {
+  height: 100px;
+  width: 100px;
+  color: white;
+  z-index: 100;
+  position: relative;
+  top: 170px;
+  left: -42px;
+  font-size: 64px;
+}
+#left_card_number {
+  height: 100px;
+  width: 100px;
+  color: white;
+  z-index: 100;
+  position: relative;
+  top: 170px;
+  left: -42px;
+  font-size: 64px;
+}
+#top_card_number {
+  height: 100px;
+  width: 100px;
+  position: relative;
+  z-index: 100;
+  color: white;
+  left: -255px;
+  top: 10px;
+  font-size: 64px;
+}
+
 /*---------------------------------------------------------------- */
 
 .card {
