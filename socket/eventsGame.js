@@ -276,7 +276,7 @@ exports.challenge = async (
   penalty_id,
   penalty_cards
 ) => {
-  console.log();
+  console.log("run here");
   const game_id = game_user_list[0].game_id;
   const room = "game-" + game_id;
   const users_id = game_user_list.map((game_user) => game_user.user_id);

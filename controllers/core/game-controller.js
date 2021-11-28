@@ -115,6 +115,7 @@ exports.challenge = async (req, res, next) => {
       );
     } else {
       //do not challenge
+      console.log("do not challenge");
       penalty_id = user_id;
       penalty_cards = await coreDriver.drawFour(game_id, user_id);
       isSetCurrentSuccess = await coreDriver.setNextCurrent(
@@ -122,6 +123,9 @@ exports.challenge = async (req, res, next) => {
         user_id,
         "next"
       );
+      console.log(penalty_id);
+      console.log(penalty_cards);
+      console.log(isSetCurrentSuccess);
     }
     if (is_success === false) {
       // if not success (or not challenge as default value false) skip his own round
@@ -133,14 +137,15 @@ exports.challenge = async (req, res, next) => {
     }
     if (
       penalty_id &&
-      penalty_id &&
       penalty_cards &&
       isSetCurrentSuccess &&
       game_user_list &&
       game_user_list.length
     ) {
+      console.log("send event");
       const matching_color = await coreDriver.getUndoneAction(game_id);
       await coreDriver.setMatching(game_id, matching_color, "none");
+      await coreDriver.resetUndoneAction(game_id);
       eventsGame.challenge(
         game_user_list,
         user_id,
