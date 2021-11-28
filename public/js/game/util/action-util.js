@@ -74,6 +74,24 @@ let action_util = {
     const modal_body = document.getElementById("modal_body");
     modal_body.innerHTML = body;
   },
+  show_fixed_cards(position, player_id, number_card) {
+    let cardback;
+    if (position === "left" || position === "right") {
+      cardback = "cardcol";
+    }
+    if (position === "top") {
+      cardback = "back";
+    }
+    console.log(position);
+    console.log(cardback);
+    const player_container = document.getElementById("player_" + player_id);
+    player_container.innerHTML = "";
+    for (let i = 0; i < number_card; i++) {
+      const back_html = card_tool.set_card_back(cardback);
+      back_html.style.pointerEvents = "none";
+      card_tool.card_to_player(player_id, back_html);
+    }
+  },
 };
 let clicked_card = (card) => {
   return () => {

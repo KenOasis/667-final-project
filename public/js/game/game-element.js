@@ -201,7 +201,6 @@ class game_state_helper {
       page_effect.highlight_current(current_player);
       page_effect.lock_desk_button();
       page_effect.lock_uno_button();
-
     }
     //action_util.js
     action_util.set_undone_action(action, this.game_state.receiver);
@@ -242,6 +241,42 @@ class game_state_helper {
       return players_list[1];
     } else {
       return players_list[3];
+    }
+  }
+  check_number_of_card(id) {
+    const player = this.find_one_player(id);
+    const number_cards = player.number_of_cards;
+    console.log(number_cards);
+    return number_cards;
+  }
+  find_position(id) {
+    const player_list = this.arrange_players();
+    const position = player_list.indexOf(id);
+    if (position == 1) {
+      return "left";
+    }
+    if (position == 2) {
+      return "top";
+    }
+    if (position == 3) {
+      return "right";
+    }
+  }
+  set_number_of_card(id) {
+    const position = this.find_position(id);
+    const number_cards = this.check_number_of_card(id);
+    page_effect.show_number_card(position, number_cards);
+  }
+  show_back_card_again(id) {
+    const position = this.find_position(id);
+    const number_card = this.check_number_of_card(id);
+    console.log(`id ${id} position: ${position} have ${number_card} cards`);
+    if (number_card >= 10) {
+      action_util.show_fixed_cards(position, id, 10);
+      page_effect.show_number_card(position, number_card);
+    } else {
+      action_util.show_fixed_cards(position, id, number_card);
+      page_effect.show_number_card(position, "");
     }
   }
 }
