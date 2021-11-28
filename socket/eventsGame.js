@@ -169,7 +169,7 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
             case "skip":
               {
                 const skipAction = ActionFactory.create("skip", {
-                  performer: performer,
+                  performer: next_action.performer,
                 });
                 update.actions.push(skipAction);
                 gameSpace.in(socket.id).emit("gameUpdateSkip", {

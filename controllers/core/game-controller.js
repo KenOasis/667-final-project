@@ -123,9 +123,6 @@ exports.challenge = async (req, res, next) => {
         user_id,
         "next"
       );
-      console.log(penalty_id);
-      console.log(penalty_cards);
-      console.log(isSetCurrentSuccess);
     }
     if (is_success === false) {
       // if not success (or not challenge as default value false) skip his own round
@@ -241,14 +238,12 @@ exports.playCard = async (req, res, next) => {
           });
         }
       } else if (card.action === "skip") {
-        const isSetCurrentSuccess = await coreDriver.setNextCurrent(
-          game_id,
-          user_id,
-          "skip"
-        );
+        const [isSetCurrentSuccess, performer] =
+          await coreDriver.setNextCurrent(game_id, user_id, "skip");
         if (isSetMatchingSuccess && isSetCurrentSuccess) {
           eventsGame.playCard(game_user_list, card_id, user_id, {
             action: "skip",
+            performer: performer,
           });
         }
       } else {

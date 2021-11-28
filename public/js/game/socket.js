@@ -26,7 +26,7 @@ socket.on("userDisconnect", (data) => {
 socket.on("gameUpdateDrawCard", (data) => {
   const game_state = data.game_state;
   const update = data.update;
-  console.log("Draw");
+  // console.log("Draw");
   const performer = update.actions[0].performer;
   const add_card = update.actions[0].card;
   const game_class = new game_state_helper(game_state);
@@ -58,14 +58,15 @@ socket.on("gameUpdateDrawCard", (data) => {
     }
   }
   game_class.set_deck();
+  show_action_prompts(update);
 });
 
 socket.on("gameUpdatePass", (data) => {
   const game_state = data.game_state;
   const update = data.update;
-  console.log("Pass!");
-  console.log(game_state);
-  console.log(update);
+  // console.log("Pass!");
+  // console.log(game_state);
+  // console.log(update);
   page_effect.cancel_highlinght();
   const game_class = new game_state_helper(game_state);
   if (game_class.check_current_is_receiver()) {
@@ -76,15 +77,16 @@ socket.on("gameUpdatePass", (data) => {
 
   game_class.set_current_player();
   game_class.color_match_card();
+  show_action_prompts(update);
 });
 
 socket.on("gameUpdatePlayCard", (data) => {
   const game_state = data.game_state;
   const update = data.update;
   const performer = update.actions[0].performer;
-  console.log("PlayCard!");
-  console.log(game_state);
-  console.log(update);
+  // console.log("PlayCard!");
+  // console.log(game_state);
+  // console.log(update);
   page_effect.cancel_highlinght();
   const game_class = new game_state_helper(game_state);
   if (game_state.receiver == performer) {
@@ -100,15 +102,16 @@ socket.on("gameUpdatePlayCard", (data) => {
   game_class.set_current_player();
   game_class.color_match_card();
   game_class.set_side_stuff();
+  show_action_prompts(update);
 });
 
 socket.on("gameUpdateReverse", (data) => {
   const game_state = data.game_state;
   const update = data.update;
   const performer = update.actions[0].performer;
-  console.log("Reverse!");
-  console.log(game_state);
-  console.log(update);
+  // console.log("Reverse!");
+  // console.log(game_state);
+  // console.log(update);
   page_effect.cancel_highlinght();
   const game_class = new game_state_helper(game_state);
   if (game_state.receiver == performer) {
@@ -124,6 +127,7 @@ socket.on("gameUpdateReverse", (data) => {
   game_class.set_current_player();
   game_class.color_match_card();
   game_class.set_side_stuff();
+  show_action_prompts(update);
 });
 
 socket.on("gameUpdateSkip", (data) => {
@@ -148,6 +152,7 @@ socket.on("gameUpdateSkip", (data) => {
   game_class.set_current_player();
   game_class.color_match_card();
   game_class.set_side_stuff();
+  show_action_prompts(update);
 });
 
 socket.on("gameUpdateDrawTwo", (data) => {
@@ -189,7 +194,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
       game_class.refresh_hand_card(play_card_performer);
       game_class.color_match_card();
     } else {
-      game_class.show_back_card_again(performer);
+      game_class.show_back_card_again(play_card_performer);
     }
     if (game_class.check_current_is_receiver()) {
       game_class.set_card_click_event();
@@ -216,6 +221,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
   game_class.set_current_player();
   game_class.set_side_stuff();
   game_class.set_deck();
+  show_action_prompts(update);
 });
 
 socket.on("gameUpdateWild", (data) => {
@@ -240,6 +246,7 @@ socket.on("gameUpdateWild", (data) => {
   game_class.set_current_player();
   game_class.color_match_card();
   game_class.set_side_stuff();
+  show_action_prompts(update);
 });
 
 socket.on("gameUpdateWildDrawFour", (data) => {
@@ -266,6 +273,7 @@ socket.on("gameUpdateWildDrawFour", (data) => {
   game_class.set_current_player();
   game_class.color_match_card();
   game_class.set_side_stuff();
+  show_action_prompts(update);
 });
 
 socket.on("sayUnoUpdate", (data) => {
@@ -275,6 +283,7 @@ socket.on("sayUnoUpdate", (data) => {
   console.log(game_state);
   console.log(update);
   /**
+   * TODO
    * like Draw
    *  base on game_state to update uno state
    *  when uno == true{
@@ -334,7 +343,7 @@ socket.on("notChallengeUpdate", (data) => {
     }
     game_class.set_side_stuff();
   }
-
+  show_action_prompts(update);
   game_class.set_current_player();
   game_class.set_deck();
 });
@@ -389,6 +398,7 @@ socket.on("challengeSuccessUpdate", (data) => {
 
   game_class.set_current_player();
   game_class.set_deck();
+  show_action_prompts(update);
 });
 
 socket.on("challengeFailUpdate", (data) => {
@@ -441,10 +451,11 @@ socket.on("challengeFailUpdate", (data) => {
 
   game_class.set_current_player();
   game_class.set_deck();
+  show_action_prompts(update);
 });
 
 /**
- * final counting
+ * TODO final counting
  *
  *
  *

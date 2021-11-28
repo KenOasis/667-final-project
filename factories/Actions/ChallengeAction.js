@@ -52,6 +52,7 @@ class ChallengeAction extends Action {
       type: this._type,
       is_challenge: this._is_challenge,
       penalty_player: this._penalty_player,
+      penalty_count: this._penalty_count,
     };
     // if do challenge
     if (this._is_challenge) {
@@ -61,10 +62,7 @@ class ChallengeAction extends Action {
     // if reciever is the penalty_player
     if (this._penalty_player === this._receiver) {
       obj.penalty_cards = this._penalty_cards.slice(0);
-    } else {
-      obj.penalty_count = this._penalty_count;
     }
-
     return obj;
   }
 }
