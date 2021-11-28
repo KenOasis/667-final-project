@@ -200,6 +200,8 @@ class game_state_helper {
       const current_player = this.game_state.current_player;
       page_effect.highlight_current(current_player);
       page_effect.lock_desk_button();
+      page_effect.lock_uno_button();
+
     }
     //action_util.js
     action_util.set_undone_action(action, this.game_state.receiver);

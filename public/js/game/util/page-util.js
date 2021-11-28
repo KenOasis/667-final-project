@@ -66,17 +66,6 @@ let page_effect = {
     uno.style.zIndex = 2;
     uno.disabled = false;
   },
-  // show_discard(card_list) {
-  //   const discrd = document.createElement("div");
-  //   discrd.id = "discard_pile";
-  //   discrd.className = "col-md-4 hand";
-  //   for (let i in card_list) {
-  //     const card = card_tool.set_cards(card_list[i], "discard");
-  //     card.style.pointerEvents = "none";
-  //     discrd.appendChild(card);
-  //   }
-  //   return discrd;
-  // },
   show_match_set(number, color) {
     const html_string = `<h1 class="match_number" style = "color:${color};"> ${number}</h1>`;
     return html_string;
@@ -95,4 +84,5 @@ let page_effect = {
     this.hide_pass_button();
     this.lock_uno_button();
   },
+  
 };
