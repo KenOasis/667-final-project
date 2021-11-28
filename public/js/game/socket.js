@@ -271,14 +271,48 @@ socket.on("notChallengeUpdate", (data) => {
   console.log("Does not challenge!");
   console.log(game_state);
   console.log(update);
-  /**
-   * add_card4 to current player
-   * is_challenge === false -> person choose false
-   *
-   *
-   * pass -> next
-   *
-   */
+  page_effect.cancel_highlinght();
+  const game_class = new game_state_helper(game_state);
+  const penalty_player = update.actions[0].penalty_player;
+  if (game_state.receiver === penalty_player) {
+    const card_list = update.actions[0].penalty_cards;
+    action_util
+      .add_card_event(card_list)
+      .then((result) => {
+        if (result === "done") {
+          game_class.refresh_hand_card(penalty_player);
+          game_class.color_match_card();
+          game_class.set_side_stuff();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    const cards_num = update.actions[0].penalty_count;
+    if (game_class.check_current_is_receiver()) {
+      game_class.set_card_click_event();
+      game_class.color_match_card();
+    } else {
+      game_class.delete_click_event();
+      game_class.color_match_card();
+    }
+    const player = document.getElementById(
+      "player_" + penalty_player.toString()
+    );
+
+    const position = player.getAttribute("position");
+
+    if (position === "left" || position === "right") {
+      action_util.add_card_back_event(cards_num, "cardcol", penalty_player);
+    } else {
+      action_util.add_card_back_event(cards_num, "back", penalty_player);
+    }
+    game_class.set_side_stuff();
+  }
+
+  game_class.set_current_player();
+  game_class.set_deck();
 });
 
 socket.on("challengeSuccessUpdate", (data) => {
@@ -287,10 +321,48 @@ socket.on("challengeSuccessUpdate", (data) => {
   console.log("Challenge success!");
   console.log(game_state);
   console.log(update);
+  page_effect.cancel_highlinght();
+  const game_class = new game_state_helper(game_state);
+  const penalty_player = update.actions[0].penalty_player;
+  if (game_state.receiver === penalty_player) {
+    const card_list = update.actions[0].penalty_cards;
+    action_util
+      .add_card_event(card_list)
+      .then((result) => {
+        if (result === "done") {
+          game_class.refresh_hand_card(penalty_player);
+          game_class.color_match_card();
+          game_class.set_side_stuff();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    const cards_num = update.actions[0].penalty_count;
+    if (game_class.check_current_is_receiver()) {
+      game_class.set_card_click_event();
+      game_class.color_match_card();
+    } else {
+      game_class.delete_click_event();
+      game_class.color_match_card();
+    }
+    const player = document.getElementById(
+      "player_" + penalty_player.toString()
+    );
 
-  /**
-   *  penalty_ player, who get penalty cards
-   */
+    const position = player.getAttribute("position");
+
+    if (position === "left" || position === "right") {
+      action_util.add_card_back_event(cards_num, "cardcol", penalty_player);
+    } else {
+      action_util.add_card_back_event(cards_num, "back", penalty_player);
+    }
+    game_class.set_side_stuff();
+  }
+
+  game_class.set_current_player();
+  game_class.set_deck();
 });
 
 socket.on("challengeFailUpdate", (data) => {
@@ -299,6 +371,48 @@ socket.on("challengeFailUpdate", (data) => {
   console.log("challenge fail!");
   console.log(game_state);
   console.log(update);
+  page_effect.cancel_highlinght();
+  const game_class = new game_state_helper(game_state);
+  const penalty_player = update.actions[0].penalty_player;
+  if (game_state.receiver === penalty_player) {
+    const card_list = update.actions[0].penalty_cards;
+    action_util
+      .add_card_event(card_list)
+      .then((result) => {
+        if (result === "done") {
+          game_class.refresh_hand_card(penalty_player);
+          game_class.color_match_card();
+          game_class.set_side_stuff();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    const cards_num = update.actions[0].penalty_count;
+    if (game_class.check_current_is_receiver()) {
+      game_class.set_card_click_event();
+      game_class.color_match_card();
+    } else {
+      game_class.delete_click_event();
+      game_class.color_match_card();
+    }
+    const player = document.getElementById(
+      "player_" + penalty_player.toString()
+    );
+
+    const position = player.getAttribute("position");
+
+    if (position === "left" || position === "right") {
+      action_util.add_card_back_event(cards_num, "cardcol", penalty_player);
+    } else {
+      action_util.add_card_back_event(cards_num, "back", penalty_player);
+    }
+    game_class.set_side_stuff();
+  }
+
+  game_class.set_current_player();
+  game_class.set_deck();
 });
 
 /**
