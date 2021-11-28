@@ -326,7 +326,7 @@ exports.checkUnoPenalty = async (game_id, user_id) => {
 
 exports.drawFour = async (game_id, user_id) => {
   try {
-    const card_id_list = await gameCardsDriver.drawCard(game_id, user_id, 6);
+    const card_id_list = await gameCardsDriver.drawCard(game_id, user_id, 4);
     if (card_id_list && card_id_list.length === 4) {
       return card_id_list;
     }
