@@ -108,7 +108,10 @@ const show_action_prompts = (update) => {
     }
   }
   const prompts_message = prompts.join("<br>");
-  game_status_prompt.innerHTML = prompts_message;
+  const div = document.createElement("div");
+  div.className = "border border-light bg-info p-1";
+  div.innerHTML = prompts_message;
+  game_status_prompt.appendChild(div);
 };
 
 const player_profile = {
@@ -211,9 +214,15 @@ const loadGameState = () => {
       game_class.set_side_stuff();
       const current_player = get_current_player(game_state);
       if (game_state.card_deck === 80) {
-        game_status_prompt.innerText = `Game initial success, ${current_player}'s round`;
+        const div = document.createElement("div");
+        div.className = "border border-light bg-info p-1";
+        div.innerText = `Game initial success, ${current_player}'s round`;
+        game_status_prompt.appendChild(div);
       } else {
-        game_status_prompt.innerText = `Reconnected game successfully, ${current_player}'s round`;
+        const div = document.createElement("div");
+        div.className = "border border-light bg-info p-1";
+        div.innerText = `Reconnected game successfully, ${current_player}'s round`;
+        game_status_prompt.appendChild(div);
       }
       return game_state;
     })

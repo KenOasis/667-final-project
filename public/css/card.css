@@ -29,9 +29,10 @@
   height: 100px;
   text-align: center;
 }
-#status {
+.status-prompt-area {
   height: 160px;
   border: 2px solid gray;
+  overflow-y: auto;
 }
 .matching {
   height: 140px;
