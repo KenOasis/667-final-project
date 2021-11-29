@@ -1,5 +1,6 @@
 extends layout/main-layout.pug
-
+block styles
+  link(rel="stylesheet", href="/css/about.css")
 block title
   title About
 block navbar
@@ -10,4 +11,15 @@ block navbar
       include navbar/nav-logged-out
 
 block content
-    <h1> In construction.......
+    h1 UNO Game Rules
+    ul#rules 
+      li Player can create a game in the lobby and once that game has 4 people, the game begins.
+      li Players can chat in lobby and in-game.
+      li Each player begins with 7 cards.
+      li The game begins with a random first player. 
+      li Player will have the option to draw a card even if they have an executable card.
+      li Player must match either by color or number, or the symbol/Action. 
+      li Action cards follow standard rules except draw four.
+      li Draw four has a little twist where the executer can be challenged by the victim, if challenge is success executer draws 6 cards otherwise victim draws 6 cards.
+      li A successful challenge means the executer doesn't have any other executable card besides draw four and failed challenge means they do.
+      li If player with one card left does not declare uno and they get caught, they will need to draw 4 cards.
