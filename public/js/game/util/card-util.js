@@ -74,7 +74,6 @@ let card_tool = {
       card_id: id,
       matching: match,
     };
-    console.log(obj);
     return obj;
   },
 };

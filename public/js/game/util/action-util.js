@@ -82,8 +82,6 @@ let action_util = {
     if (position === "top") {
       cardback = "back";
     }
-    console.log(position);
-    console.log(cardback);
     const player_container = document.getElementById("player_" + player_id);
     player_container.innerHTML = "";
     for (let i = 0; i < number_card; i++) {

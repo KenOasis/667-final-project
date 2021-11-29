@@ -8,7 +8,6 @@ let page_effect = {
 
   cancel_highlinght() {
     const avater = document.querySelectorAll(".avater");
-    console.log(avater);
     for (let i = 0; i < avater.length; i++) {
       avater[i].style.border = "";
       avater[i].style.borderRadius = "";
