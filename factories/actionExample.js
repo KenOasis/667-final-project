@@ -14,7 +14,7 @@ const game_state = {
 
   reciever: 9,  // who is recieving this game_state: "who am i", initial game state will be 0;  
   
-  cards_deck: 45,    // how many cards still in the deck
+  card_deck: 45,    // how many cards still in the deck
 
   game_direction: 'clockwise', // game direction
 
@@ -24,7 +24,7 @@ const game_state = {
   
   matching: { // matching status for the current turn
     color: "green",
-    number:  9,
+    value:  "one", // "zero" to "nine", and "skip", "reverse", "draw_two" for action, "none" for wild
   },
 
   players: [{  // plyers card_deck
@@ -52,7 +52,7 @@ const game_state = {
 
   discards: [25, 28, 10],
   // the most recently discarded cards, the first one is the most recently discarded, is the state that BEFOR action trigger as below if you are not the action performer
-  undoAction = "none" // could be "draw" or "challenge"
+  undone_action = "none" // could be "draw" or one of ["blue", "yellow", "green", "red"] (which is used for chanllege reloading)
 }
 // After this round he play a card 94 
 
@@ -147,7 +147,7 @@ const wildDrawFourAction = {
 const challengeAction = {
   performer: 8,
   type: "challenge",
-  is_challenged: false,
+  is_challenge: false,
   // is_success is not part of this obj
   penalty_player: 8, // who draw the penalty card
   penalty_count: 4, // how many penalty card draw
@@ -159,7 +159,7 @@ const challengeAction = {
   // reconnect
   performer: 8,
   type: "challenge",
-  is_challenged: true,
+  is_challenge: true,
   is_success: false, 
   penalty_player: 8, // who draw the penalty card
   penalty_count: 6, // how many penalty card draw
@@ -170,7 +170,7 @@ const challengeAction = {
 const challengeAction = {
   performer: 8,
   type: "challenge",
-  is_challenged: true,
+  is_challenge: true,
   is_success: true, // if is_challenge is false, this is not used.
   penalty_player: 5, // who draw the penalty card, at this case is who play the wild draw four
   penalty_count: 4, // how many penalty card draw

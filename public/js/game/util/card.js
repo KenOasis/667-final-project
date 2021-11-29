@@ -321,7 +321,7 @@ let CardModule = {
     },
     {
       card_id: [105, 106, 107, 108],
-      card_color: "yellow",
+      card_color: "none",
       card_type: "wild",
       card_value: "wild_draw_four",
     },

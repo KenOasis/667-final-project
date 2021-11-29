@@ -32,7 +32,7 @@ module.exports = {
         allowNull: false,
         defaultValue: "none",
       },
-      matching_number: {
+      matching_value: {
         type: Sequelize.ENUM(
           "zero",
           "one",
@@ -44,13 +44,16 @@ module.exports = {
           "seven",
           "eight",
           "nine",
+          "skip",
+          "reverse",
+          "draw_two",
           "none"
         ),
         allowNull: false,
         defaultValue: "none",
       },
       undone_action: {
-        type: Sequelize.ENUM("none", "draw", "challenge"),
+        type: Sequelize.ENUM("none", "draw", "red", "blue", "yellow", "green"),
         allowNull: false,
         defaultValue: "none",
       },
@@ -70,7 +73,7 @@ module.exports = {
     await queryInterface.dropTable("games");
     await queryInterface.sequelize
       .query(`DROP TYPE IF EXISTS enum_games_matching_color;
-    DROP TYPE IF EXISTS enum_games_matching_number;
+    DROP TYPE IF EXISTS enum_games_matching_value;
     DROP TYPE IF EXISTS enum_games_undone_action;`);
   },
 };

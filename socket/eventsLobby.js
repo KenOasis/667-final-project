@@ -6,6 +6,8 @@ exports.joinLobby = (user, currentUserStatus) => {
 
   let userList = [];
 
+  lobbySpace.removeAllListeners();
+
   // This is where established the connection for lobby
   lobbySpace.on("connection", async (socket) => {
     // listen to the client event of disconnect
@@ -28,6 +30,7 @@ exports.joinLobby = (user, currentUserStatus) => {
       let gameUserList = socketsOfGame.filter(
         (socket) => socket.request.session.userName !== user.username
       );
+
       gameUserList = gameUserList.map((socket) => {
         return {
           username: socket.request.session.userName,
@@ -83,7 +86,6 @@ exports.joinLobby = (user, currentUserStatus) => {
             gameList: gameList,
           });
         }
-        lobbySpace.removeAllListeners();
       });
     } catch (err) {
       console.error(err);
@@ -146,7 +148,7 @@ exports.initGame = (game_id, users_id) => {
     users_socket.forEach((socket) => {
       lobbySpace.to(socket.id).emit("gameReady", {
         game_id: game_id,
-        message: `Game "${game.name}" is ready, will start in 3 seconds!`,
+        message: `Game "${game.name}" is ready, will start soon!`,
       });
     });
   });

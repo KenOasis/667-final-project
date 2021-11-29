@@ -9,8 +9,7 @@ exports.createGame = async (name) => {
 
     return user;
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -27,8 +26,7 @@ exports.getDirection = async (id) => {
       throw new Error("DB data Error");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -38,7 +36,7 @@ exports.initialMatching = async (id) => {
 
     if (game) {
       game.matching_color = shuffle(["red", "green", "yellow", "blue"])[0];
-      game.matching_number = shuffle([
+      game.matching_value = shuffle([
         "zero",
         "one",
         "two",
@@ -49,6 +47,9 @@ exports.initialMatching = async (id) => {
         "seven",
         "eight",
         "nine",
+        "reverse",
+        "skip",
+        "draw_two",
       ])[0];
       game.save();
       return true;
@@ -56,8 +57,7 @@ exports.initialMatching = async (id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -66,18 +66,17 @@ exports.getMatching = async (id) => {
     const game = await Games.findByPk(id);
 
     if (game) {
-      const { matching_color, matching_number } = game;
+      const { matching_color, matching_value } = game;
 
       return {
         color: matching_color,
-        number: matching_number,
+        value: matching_value,
       };
     } else {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -95,8 +94,7 @@ exports.getUndoneAction = async (id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -111,7 +109,38 @@ exports.updateUndoneAction = async (id, undone_action) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
+  }
+};
+
+exports.setMatching = async (game_id, matching_color, matching_value) => {
+  try {
+    const game = await Games.findByPk(game_id);
+    if (game) {
+      game.matching_color = matching_color;
+      game.matching_value = matching_value;
+      await game.save();
+      return true;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.changeDirection = async (game_id) => {
+  try {
+    const game = await Games.findByPk(game_id);
+    if (game) {
+      const current_direction = game.direction;
+      game.direction = current_direction === 1 ? -1 : 1;
+      await game.save();
+      return true;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
   }
 };

@@ -1,310 +1,338 @@
-
 #flash-message {
-    position: fixed;
-    left: 50%;
-    top: 25%;
-    transform: translate(-50%, 0);
-    color: black;
-    background-color: rgb(243, 243, 7);
-    border: 2px solid #cccccc;
-    box-shadow: 0 3px 3px #888888;
+  position: fixed;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, 0);
+  color: black;
+  background-color: rgb(243, 243, 7);
+  border: 2px solid #cccccc;
+  box-shadow: 0 3px 3px #888888;
 }
 
 #flash-message div {
-    text-align: center;
+  text-align: center;
 }
 
+/* ----------------Setting the layout the game page------------------- */
 
-/* ----------------Setting the boxk fro layout the game page------------------- */
-
-.left_right{
-    /* border: 2px solid blue; */
-    height: 390px;
-    width: 220px;
+.left_right {
+  /* border: 2px solid blue; */
+  height: 370px;
+  width: 220px;
 }
-.top_bottom{
-    /* border: 2px solid blue; */
-    height: 160px;
-    width: 440px;
+.top_bottom {
+  /* border: 2px solid blue; */
+  height: 160px;
+  width: 440px;
 }
-.matching{
-    height:100px;
-    text-align: center;
+.matching {
+  height: 100px;
+  text-align: center;
 }
-#status{
-    height:200px;
-    border: 2px solid gray;
+.status-prompt-area {
+  height: 160px;
+  border: 2px solid gray;
+  overflow-y: auto;
 }
-.matching{
-    height: 140px;
-    /* border: 1px solid gray; */
+.matching {
+  height: 140px;
+  /* border: 1px solid gray; */
 }
-#card_controller{
-    position: relative;
-    height: 38px;
-    width: 440px;
+#card_controller {
+  position: relative;
+  height: 38px;
+  width: 440px;
 }
-.cover{
-    position: relative;
-    background-color: white;
-    height: 39px;
-    width: 420px;
-    top: -38px;
-    z-index: 1;
-
+.cover {
+  position: relative;
+  background-color: white;
+  height: 39px;
+  width: 420px;
+  top: -38px;
+  z-index: 1;
 }
 
-#uno{
-    position: relative;
-    z-index: 0;
+#uno {
+  position: relative;
+  z-index: 0;
 }
-#play{
-    position: relative;
-    z-index: 0;
+#play {
+  position: relative;
+  z-index: 0;
 }
-#pass{
-    position: relative;
-    z-index: 0;
+#pass {
+  position: relative;
+  z-index: 0;
 }
-.color_select{
-    height: 50px;
-    width: 100px;
-    margin: 5px;
+.color_select {
+  height: 50px;
+  width: 100px;
+  margin: 5px;
 }
-.draw_button{
-    height: 125px;
-    width: 75px;
-    border: thick double rgb(160, 38, 38);
-    background-color: rgb(51, 48, 48);
-    text-align: right;
-    font-size:x-large;
-    color: red;
-    font-variant-position: super;
+.draw_button {
+  height: 125px;
+  width: 75px;
+  border: thick double rgb(160, 38, 38);
+  background-color: rgb(51, 48, 48);
+  text-align: right;
+  font-size: x-large;
+  color: red;
+  font-variant-position: super;
 }
-.name{
-    font-size: x-large;
-    font-family:fantasy;
+.name {
+  font-size: x-large;
+  font-family: fantasy;
 }
+#discard_setting {
+  height: 140px;
+}
+.grid_size {
+  height: 380px;
+  width: 220px;
+}
+#right_card_number {
+  height: 100px;
+  width: 100px;
+  color: white;
+  z-index: 100;
+  position: relative;
+  top: 170px;
+  left: -42px;
+  font-size: 64px;
+}
+#left_card_number {
+  height: 100px;
+  width: 100px;
+  color: white;
+  z-index: 100;
+  position: relative;
+  top: 170px;
+  left: -42px;
+  font-size: 64px;
+}
+#top_card_number {
+  height: 100px;
+  width: 100px;
+  position: relative;
+  z-index: 100;
+  color: white;
+  left: -255px;
+  top: 10px;
+  font-size: 64px;
+}
+
 /*---------------------------------------------------------------- */
 
-
-.card{
-    display: inline-block;
-    height: 125px;
-    width: 75px;
-    background-image:url('../images/uno_cards/card-sets.jpg');
-    background-size:1040px 650px;
-    filter: brightness(95%);
-    border: 2px solid black;
+.card {
+  display: inline-block;
+  height: 125px;
+  width: 75px;
+  background-image: url("../images/uno_cards/card-sets.jpg");
+  background-size: 1040px 650px;
+  filter: brightness(95%);
+  border: 2px solid black;
 }
-.hand{
-    position: relative;
+.hand {
+  position: relative;
 }
-.hand .card{
-    position:absolute;
+.hand .card {
+  position: absolute;
 }
-.card:hover{
-    top: -15px;
-    /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
-    width:75px; /*when cards are greater than 50, width 200px will be good*/
-    border-bottom: 50px transparent;
-    z-index: 1;
-    
+.card:hover {
+  top: -15px;
+  /* width:112px; at a certain point we need to dynamically set the width so that the card value can be clearly seen*/
+  width: 75px; /*when cards are greater than 50, width 200px will be good*/
+  border-bottom: 50px transparent;
+  z-index: 1;
 }
 
-.red{
-    background-position-y:-140px;
+.red {
+  background-position-y: -140px;
 }
 
-.yellow{
-    background-position-y:-402px;
+.yellow {
+  background-position-y: -402px;
 }
-.green{
-    background-position-y:-270px;
+.green {
+  background-position-y: -270px;
 }
-.blue{
-    background-position-y:-532px;
-}
-
-.skip{
-    background-position-x: -1px;
-}
-.draw_two{
-    background-position-x: -77px;
-}
-.reverse{
-    background-position-x: -155px;
-}
-.zero{
-    background-position-x: -237px;
-}
-.one{
-    background-position-x: -316px;
-}
-.two{
-    background-position-x: -391px;
-}
-.three{
-    background-position-x: -471px ;
-}
-.four{
-    background-position-x: -556px;
-}
-.five{
-    background-position-x: -637px;
-}
-.six{
-    background-position-x: -721px;
-}
-.seven{
-    background-position-x: -807px;
-}
-.eight{
-    background-position-x: -891px ;
-}
-.nine{
-    background-position-x: -971px;
-}
-.wild{
-    
-    background-position-x: -553px;  
-}
-.wild_draw_four{
-    
-    background-position-x: -471px;
-}
-.back{
-    background-position-x: -392px;
-}
-.hand .card:nth-child(2){
-    left: 20px;
-}
-.hand .card:nth-child(3){
-    left: 40px;
-}
-.hand .card:nth-child(4){
-    left: 60px;
-}
-.hand .card:nth-child(5){
-    left: 80px;
-}
-.hand .card:nth-child(6){
-    left: 100px;
-}
-.hand .card:nth-child(7){
-    left: 120px;
-}
-.hand .card:nth-child(8){
-    left: 140px;
-}
-.hand .card:nth-child(9){
-    left: 160px;
-}
-.hand .card:nth-child(10){
-    left: 180px;
-}
-.hand .card:nth-child(11){
-    left: 200px;
-}
-.hand .card:nth-child(12){
-    left: 220px;
-}
-.hand .card:nth-child(13){
-    left: 240px;
-}
-.hand .card:nth-child(14){
-    left: 260px;
-}
-.hand .card:nth-child(15){
-    left: 280px;
-}
-.hand .card:nth-child(16){
-    left: 300px;
-}
-.hand .card:nth-child(17){
-    left: 320px;
-}
-.hand .card:nth-child(18){
-    left: 340px;
-}
-.hand .card:nth-child(19){
-    left: 360px;
-}
-.hand .card:nth-child(20){
-    left: 380px;
+.blue {
+  background-position-y: -532px;
 }
 
-
-
-
-.cardcol{
-    display: inline-block;
-    width: 125px;
-    height: 75px;
-    background-image:url('../images/uno_cards/backrow.jpg');
-    background-size:125px 75px;
-    filter: brightness(95%);
-    border: 2px solid brown;  
+.skip {
+  background-position-x: -1px;
+}
+.draw_two {
+  background-position-x: -77px;
+}
+.reverse {
+  background-position-x: -155px;
+}
+.zero {
+  background-position-x: -237px;
+}
+.one {
+  background-position-x: -316px;
+}
+.two {
+  background-position-x: -391px;
+}
+.three {
+  background-position-x: -471px;
+}
+.four {
+  background-position-x: -556px;
+}
+.five {
+  background-position-x: -637px;
+}
+.six {
+  background-position-x: -721px;
+}
+.seven {
+  background-position-x: -807px;
+}
+.eight {
+  background-position-x: -891px;
+}
+.nine {
+  background-position-x: -971px;
+}
+.wild {
+  background-position-x: -553px;
+}
+.wild_draw_four {
+  background-position-x: -471px;
+}
+.back {
+  background-position-x: -392px;
+}
+.hand .card:nth-child(2) {
+  left: 20px;
+}
+.hand .card:nth-child(3) {
+  left: 40px;
+}
+.hand .card:nth-child(4) {
+  left: 60px;
+}
+.hand .card:nth-child(5) {
+  left: 80px;
+}
+.hand .card:nth-child(6) {
+  left: 100px;
+}
+.hand .card:nth-child(7) {
+  left: 120px;
+}
+.hand .card:nth-child(8) {
+  left: 140px;
+}
+.hand .card:nth-child(9) {
+  left: 160px;
+}
+.hand .card:nth-child(10) {
+  left: 180px;
+}
+.hand .card:nth-child(11) {
+  left: 200px;
+}
+.hand .card:nth-child(12) {
+  left: 220px;
+}
+.hand .card:nth-child(13) {
+  left: 240px;
+}
+.hand .card:nth-child(14) {
+  left: 260px;
+}
+.hand .card:nth-child(15) {
+  left: 280px;
+}
+.hand .card:nth-child(16) {
+  left: 300px;
+}
+.hand .card:nth-child(17) {
+  left: 320px;
+}
+.hand .card:nth-child(18) {
+  left: 340px;
+}
+.hand .card:nth-child(19) {
+  left: 360px;
+}
+.hand .card:nth-child(20) {
+  left: 380px;
 }
 
+.cardcol {
+  display: inline-block;
+  width: 125px;
+  height: 75px;
+  background-image: url("../images/uno_cards/backrow.jpg");
+  background-size: 125px 75px;
+  filter: brightness(95%);
+  border: 2px solid brown;
+}
 
-.hand .cardcol{
-    position:absolute;
+.hand .cardcol {
+  position: absolute;
 }
-.hand .cardcol:nth-child(2){
-    top: 20px;
+.hand .cardcol:nth-child(2) {
+  top: 20px;
 }
-.hand .cardcol:nth-child(3){
-    top: 40px;
+.hand .cardcol:nth-child(3) {
+  top: 40px;
 }
-.hand .cardcol:nth-child(4){
-    top: 60px;
+.hand .cardcol:nth-child(4) {
+  top: 60px;
 }
-.hand .cardcol:nth-child(5){
-    top: 80px;
+.hand .cardcol:nth-child(5) {
+  top: 80px;
 }
-.hand .cardcol:nth-child(6){
-    top: 100px;
+.hand .cardcol:nth-child(6) {
+  top: 100px;
 }
-.hand .cardcol:nth-child(7){
-    top: 120px;
+.hand .cardcol:nth-child(7) {
+  top: 120px;
 }
-.hand .cardcol:nth-child(8){
-    top: 140px;
+.hand .cardcol:nth-child(8) {
+  top: 140px;
 }
-.hand .cardcol:nth-child(9){
-    top: 160px;
+.hand .cardcol:nth-child(9) {
+  top: 160px;
 }
-.hand .cardcol:nth-child(10){
-    top: 180px;
+.hand .cardcol:nth-child(10) {
+  top: 180px;
 }
-.hand .cardcol:nth-child(11){
-    top: 200px;
+.hand .cardcol:nth-child(11) {
+  top: 200px;
 }
-.hand .cardcol:nth-child(12){
-    top: 220px;
+.hand .cardcol:nth-child(12) {
+  top: 220px;
 }
-.hand .cardcol:nth-child(13){
-    top: 240px;
+.hand .cardcol:nth-child(13) {
+  top: 240px;
 }
-.hand .cardcol:nth-child(14){
-    top: 260px;
+.hand .cardcol:nth-child(14) {
+  top: 260px;
 }
-.hand .cardcol:nth-child(15){
-    top: 280px;
+.hand .cardcol:nth-child(15) {
+  top: 280px;
 }
-.hand .cardcol:nth-child(16){
-    top: 300px;
+.hand .cardcol:nth-child(16) {
+  top: 300px;
 }
-.hand .cardcol:nth-child(17){
-    top: 320px;
+.hand .cardcol:nth-child(17) {
+  top: 320px;
 }
-.hand .cardcol:nth-child(18){
-    top: 340px;
+.hand .cardcol:nth-child(18) {
+  top: 340px;
 }
-.hand .cardcol:nth-child(19){
-    top: 360px;
+.hand .cardcol:nth-child(19) {
+  top: 360px;
 }
-.hand .cardcol:nth-child(20){
-    top: 380px;
+.hand .cardcol:nth-child(20) {
+  top: 380px;
 }

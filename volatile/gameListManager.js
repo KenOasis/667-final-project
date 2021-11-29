@@ -1,6 +1,5 @@
 const gameList = [];
 const db = require("../models");
-const Games = db["games"];
 
 const gamesDriver = require("../db/drivers/games-driver");
 const findGameIndexById = (game_id) => {
@@ -123,10 +122,10 @@ const gameListManager = {
     while (index > 0) {
       index--;
       game = gameList[index];
-      const new_users = game.users.filter(
+      game.users = game.users.filter(
         (user) => user.status === "playing" || user.user_id !== user_id
       );
-      game.users = new_users;
+
       if (game.users.length <= 0) {
         gameList.splice(index, 1);
       }

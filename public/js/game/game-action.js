@@ -1,5 +1,7 @@
 // Action to draw a card
 function draw_card_action() {
+  page_effect.lock_desk_button();
+  page_effect.hide_play_button();
   const url = "http://" + location.host + "/game/drawcard";
   const game_id = JSON.parse(document.getElementById("user_list").value)[0]
     .game_id;
@@ -47,27 +49,96 @@ function pass_action() {
     .catch((error) => console.log(error));
 }
 
-function play_card() {
-  let buttom_player = document.getElementById("container_bottom");
-  let container = buttom_player.getElementsByClassName("hand")[0];
-  const id = parseInt(container.id.replace(/player_/g, ""));
-
-  let obj = card_tool.check_clicked_card(id);
-  console.log(obj);
-  // if(obj.matching ==="True"){
-  //   const card = CardModule.get_card_detail(obj.card_id);
-  //   if(card.card_value === "wild"){
-  //     const modal = document.getElementById("modal");
-  //     modal.classList.add("show");
-  //     modal.style.display="block";
-
-  //   }
-  // }
+function play_card_action(body) {
+  const url = "http://" + location.host + "/game/playcard";
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      "content-type": "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((results) => {
+      if (results.status !== "success") {
+        console.log(results.message);
+      }
+    })
+    .catch((error) => console.log(error));
 }
-const drawCardAction = {
-  performer: 9,
-  type: "draw_card",
-  card_id: [12], // if (is_performer)
-};
 
-/**Action utility */
+function play_card() {
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const iam = player_controller.whoami();
+  const player = document.getElementById("player_" + iam);
+  let undone_action = player.getAttribute("undone_action");
+  //card_tool from card_util.js
+  let obj = card_tool.check_clicked_card(iam);
+  const card_id = obj.card_id;
+  let body;
+  if (obj.matching === "True") {
+    let card_info = CardModule.get_card_detail(obj.card_id);
+    if (card_info.card_color != "none") {
+      body = {
+        game_id: game_id,
+        card_id: card_id,
+        undone_action: undone_action,
+      };
+      play_card_action(body);
+    }
+  }
+}
+
+function color_selector(event) {
+  event.preventDefault();
+  const color = event.target.id;
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const iam = player_controller.whoami();
+  const player = document.getElementById("player_" + iam);
+  let undone_action = player.getAttribute("undone_action");
+  //card_tool from card_util.js
+  let obj = card_tool.check_clicked_card(iam);
+  const card_id = obj.card_id;
+
+  let body = {
+    game_id: game_id,
+    card_id: card_id,
+    color: color,
+    undone_action: undone_action,
+  };
+  play_card_action(body);
+}
+
+function challenge_wild_four(event) {
+  event.preventDefault();
+  const anwers = event.target.id;
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const iam = player_controller.whoami();
+  const player = document.getElementById("player_" + iam);
+  let undone_action = player.getAttribute("undone_action");
+  const is_challenge = anwers === "challenge";
+  const body = {
+    game_id: game_id,
+    is_challenge: is_challenge,
+  };
+  const url = "http://" + location.host + "/game/challenge";
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      "content-type": "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((results) => {
+      if (results.status !== "success") {
+        console.log(results.message);
+      }
+    })
+    .catch((error) => console.log(error));
+}

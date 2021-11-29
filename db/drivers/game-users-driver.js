@@ -24,8 +24,7 @@ exports.getGameUsersByUserId = async (id) => {
 
     return game_users;
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -33,7 +32,7 @@ exports.getGameUsersByGameId = async (game_id) => {
   try {
     const game_users = await Users.findAll({
       raw: true,
-      attributes: ["id", "username"],
+      attributes: ["id", "username", "game_users.initial_order"],
       include: {
         model: GameUsers,
         where: {
@@ -46,8 +45,7 @@ exports.getGameUsersByGameId = async (game_id) => {
 
     return game_users;
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -67,8 +65,7 @@ exports.createGameUsers = async (
 
     return game_user;
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -87,8 +84,7 @@ exports.checkUserInGame = async (game_id, user_id) => {
       return false;
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -110,8 +106,7 @@ exports.getGameOrder = async (game_id) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -129,8 +124,7 @@ exports.getCurrentPlayer = async (game_id) => {
       throw new Error("DB data error");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
   }
 };
 
@@ -150,7 +144,26 @@ exports.setCurrentPlayer = async (game_id, user_id, is_current) => {
       throw new Error("DB data error.");
     }
   } catch (err) {
-    console.error(err);
-    throw new Error(err.message);
+    throw err;
+  }
+};
+
+exports.setUno = async (game_id, user_id, uno_status) => {
+  try {
+    const game_user = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_user) {
+      game_user.uno = uno_status;
+      await game_user.save();
+      return true;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
   }
 };

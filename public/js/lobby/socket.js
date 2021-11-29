@@ -1,6 +1,8 @@
 const host = "http://" + location.host + "/lobby";
 const socket = io(host, {
   reconnectionDelayMax: 10000,
+  transports: ["websocket"],
+  upgrade: false,
 });
 
 // socket event listener
@@ -109,10 +111,10 @@ socket.on("gameReady", (data) => {
     let toast = new bootstrap.Toast(newToast);
     toast.show();
   }
-  // console.log(data.time_counter);
-  setTimeout(() => {
+  setTimeout(function () {
     startGame(data.game_id);
-  }, 3000);
+  }, 1000);
+  // startGame(data.game_id);
 });
 
 // test code for socket handshake.
