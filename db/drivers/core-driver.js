@@ -306,13 +306,17 @@ exports.setUno = async (game_id, user_id) => {
 
 exports.resetUno = async (game_id, user_id) => {
   try {
-    const uno_status = false;
-    const isSuccess = await gameUsersDriver.setUno(
+    const current_uno_status = await gameUsersDriver.getUnoStatus(
       game_id,
-      user_id,
-      uno_status
+      user_id
     );
-    return isSuccess;
+    if (current_uno_status === true) {
+      const isSuccess = await gameUsersDriver.setUno(game_id, user_id, false);
+      return isSuccess;
+    } else {
+      // uno status is true
+      return true;
+    }
   } catch (err) {
     throw err;
   }
@@ -321,16 +325,17 @@ exports.resetUno = async (game_id, user_id) => {
 exports.checkUnoPenalty = async (game_id, user_id) => {
   try {
     const game_cards = await gameCardsDriver.getPlayerCards(game_id, user_id);
+    const uno_status = await gameUsersDriver.getUnoStatus(game_id, user_id);
     if (game_cards && game_cards.length) {
-      if (game_cards.length != 1) {
-        return [false, null];
-      } else {
+      if (game_cards.length == 1 && uno_status === false) {
         const draw_card_id_list = await gameCardsDriver.drawCard(
           game_id,
           user_id,
           2
         );
         return [true, draw_card_id_list];
+      } else {
+        return [false, null];
       }
     }
   } catch (err) {

@@ -74,6 +74,8 @@ exports.pass = async (req, res, next) => {
   try {
     // Set undone none
     const reset_undone = await coreDriver.resetUndoneAction(game_id);
+
+    // TODO If user is under UNO status and click pass as two cards, reset uno status to false
     // Set new current player
     const updated_current_play = await coreDriver.setNextCurrent(
       game_id,

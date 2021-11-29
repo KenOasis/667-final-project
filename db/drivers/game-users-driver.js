@@ -167,3 +167,21 @@ exports.setUno = async (game_id, user_id, uno_status) => {
     throw err;
   }
 };
+
+exports.getUnoStatus = async (game_id, user_id) => {
+  try {
+    const game_user = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_user) {
+      return game_user.uno;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
+  }
+};
