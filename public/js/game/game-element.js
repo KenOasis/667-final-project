@@ -246,7 +246,6 @@ class game_state_helper {
   check_number_of_card(id) {
     const player = this.find_one_player(id);
     const number_cards = player.number_of_cards;
-    console.log(number_cards);
     return number_cards;
   }
   find_position(id) {
@@ -270,7 +269,6 @@ class game_state_helper {
   show_back_card_again(id) {
     const position = this.find_position(id);
     const number_card = this.check_number_of_card(id);
-    console.log(`id ${id} position: ${position} have ${number_card} cards`);
     if (number_card >= 10) {
       action_util.show_fixed_cards(position, id, 10);
       page_effect.show_number_card(position, number_card);

@@ -193,6 +193,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
     if (game_state.receiver == play_card_performer) {
       game_class.refresh_hand_card(play_card_performer);
       game_class.color_match_card();
+      // check play_card_performer have 0 card
     } else {
       game_class.show_back_card_again(play_card_performer);
     }

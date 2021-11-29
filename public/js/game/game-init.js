@@ -111,7 +111,7 @@ const show_action_prompts = (update) => {
   const div = document.createElement("div");
   div.className = "border border-light bg-info p-1";
   div.innerHTML = prompts_message;
-  game_status_prompt.appendChild(div);
+  game_status_prompt.appendChild(div);ç
 };
 
 const player_profile = {
@@ -194,7 +194,7 @@ const loadGameState = () => {
           }
         })
         .catch((err) => {
-          console.log("inside", err);
+          console.log(err);
         });
       if (game_class.check_number_of_card(order[1]) >= 10) {
         game_class.show_back_card_again(order[1]);
@@ -226,5 +226,5 @@ const loadGameState = () => {
       }
       return game_state;
     })
-    .catch((error) => console.log("outside", error));
+    .catch((error) => console.log(error));
 };
