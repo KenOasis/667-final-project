@@ -92,12 +92,9 @@ const show_action_prompts = (update) => {
             // challenge success
             prompts.push(`${action_performer} challenges the wild draw four.`);
             prompts.push(`Chanllenge success.`);
-
-            console.log(action.penalty_player);
-            console.log(user_list[0].user_id);
-            const penalty_player = user_list.filter((user) => {
-              user.user_id === action.penalty_player;
-            })[0].username;
+            const penalty_player = user_list.filter(
+              (user) => user.user_id === action.penalty_player
+            )[0].username;
 
             prompts.push(
               `${penalty_player} draws ${action.penalty_count} cards, ${action_performer} continues his/her round.`
@@ -128,8 +125,8 @@ const player_profile = {
   },
   set_user_name(game_order_list, user) {
     const position = game_order_list.indexOf(user.user_id);
-    if (position == 0){
-      this.set_user("buttom_user",user)
+    if (position == 0) {
+      this.set_user("buttom_user", user);
     }
     if (position == 1) {
       this.set_user("left_user", user);
