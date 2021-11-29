@@ -93,6 +93,8 @@ const show_action_prompts = (update) => {
             prompts.push(`${action_performer} challenges the wild draw four.`);
             prompts.push(`Chanllenge success.`);
 
+            console.log(action.penalty_player);
+            console.log(user_list[0].user_id);
             const penalty_player = user_list.filter((user) => {
               user.user_id === action.penalty_player;
             })[0].username;
@@ -111,7 +113,8 @@ const show_action_prompts = (update) => {
   const div = document.createElement("div");
   div.className = "border border-light bg-info p-1";
   div.innerHTML = prompts_message;
-  game_status_prompt.appendChild(div);ç
+  game_status_prompt.appendChild(div);
+  game_status_prompt.scrollTop = game_status_prompt.scrollHeight;
 };
 
 const player_profile = {
