@@ -142,3 +142,28 @@ function challenge_wild_four(event) {
     })
     .catch((error) => console.log(error));
 }
+
+function call_uno() {
+  page_effect.lock_uno_button()
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const body = {
+    game_id: game_id,
+  };
+  const url = "http://" + location.host + "/game/sayuno";
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      "content-type": "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((results) => {
+      if (results.status !== "success") {
+        console.log(results.message);
+      }
+    })
+    .catch((error) => console.log(error));
+}

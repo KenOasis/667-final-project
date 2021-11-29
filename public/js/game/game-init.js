@@ -128,6 +128,9 @@ const player_profile = {
   },
   set_user_name(game_order_list, user) {
     const position = game_order_list.indexOf(user.user_id);
+    if (position == 0){
+      this.set_user("buttom_user",user)
+    }
     if (position == 1) {
       this.set_user("left_user", user);
     }

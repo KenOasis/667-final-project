@@ -14,30 +14,30 @@ html(lang="en")
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
     link(rel="stylesheet", href="/css/card.css")
 
-  body(style="height: 700px; width: 1600px;")
+  body(style="height: 600px; width: 1400px;")
     header(class = "header") 
     input#user_list(type="hidden" value=(user_list))
     div(class="mh-2")
       br
       br
       div(class="row" id="top_user")
-        div(class="col-2 row" style="margin")
-          div()
-            img(class="card-img-top avater" style="width: 10rem;" src="/images/profile/profile2.gif" alt="Card img top")
-        br
-        div(class="col-6" )   
-          div(class="p-0 item-h1 name" )
+        div(class="col-2")
+          img(
+            src="/images/logo.png"
+            class="rounded mx-auto img-fluid d-block"
+            alt="Responsive image"
+            width="100px"
+            height="100px"
+          )
+        div(class="col-2")
+        div(class="col-3 text-center" )
+          img(class="card-img-top avater" style="width: 9rem;" src="/images/profile/profile2.gif" alt="Card img top")
+          div(class="p-0 item-h1 name" ) 
+        div(class="col-4")  
         div(class="col-1") 
           botton#leave(class="btn btn-outline-danger") Leave 
       div(class="row")
         div(class="col-2")
-          img(
-          src="/images/logo.png"
-          class="rounded mx-auto img-fluid d-block"
-          alt="Responsive image"
-          width="100px"
-          height="100px"
-          )
         div(class="col-2" style="text-align: right;")
           button(type = "button" id="draw" class = "btn draw_button" onclick="draw_card_action()" disabled) Deck
           h6(id="card_deck" style="left: -30px;position: relative;") 
@@ -47,7 +47,7 @@ html(lang="en")
         div(class="col-2" id="left_user") 
           div(class="d-flex flex-column row-h1" )
             div(class="p-2 item-h1")
-              img(class="card-img-top avater" style="width: 10rem;" src="/images/profile/profile1.gif" alt="Card img top")
+              img(class="card-img-top avater" style="width: 9rem;" src="/images/profile/profile1.gif" alt="Card img top")
             div(class="p-2 item-h1 name" ) 
         div(class="col-2 grid-size" )
           div(class = "row" style="text-align:center")
@@ -62,7 +62,7 @@ html(lang="en")
             div(class="col-6 hand" id = "discard_pile")
           div(class="row")
             div(class="col-12" style="text-align:end" id ="card_controller")
-              button(type = "button" class = "btn btn-outline-danger" id="uno") UNO
+              button(type = "button" class = "btn btn-outline-danger" id="uno" onclick="call_uno()") UNO
               button(type = "button" class = "btn btn-outline-danger" id="play" onclick="play_card()") PLAY
               button(type = "button" class = "btn btn-outline-danger" id="pass" onclick="pass_action()") PASS
               div(class="cover" id="cover_button")
@@ -73,16 +73,21 @@ html(lang="en")
         div(class="col-2" id="right_user")
           div(class="d-flex flex-column row-h1" )
             div(class="p-2 item-h1")
-              img(class="card-img-top avater" style="width: 10rem;" src="/images/profile/profile3.gif" alt="Card img top")
+              img(class="card-img-top avater" style="width: 9rem;" src="/images/profile/profile3.gif" alt="Card img top")
             div(class="p-2 item-h1 name" ) 
       div(class = "row mx-5")
         div(class="col-4")
-          #messages(class = "col" style = "border:2px solid #dedede; height:120px; width:400px; overflow-y:auto")
+          #messages(class = "" style = "border:2px solid #dedede; height:120px; width:400px; overflow-y:auto")
           div(class = "input-group mb-3" style = "width:400px")
             input#message(type = "text" class = "form-control")
             div(class = "input-group-append")
               button(type = "button" class = "btn btn-outline-danger") Send
-        #container_bottom(class="col-8 top_bottom" style="height:160px; width:640px")
+        #container_bottom(class="col-6 top_bottom" style="height:160px; width:640px")
+        div(class="col-2" id="buttom_user") 
+          div(class="d-flex flex-column row-h1" )
+            div(class="p-2 item-h1")
+              img(class="card-img-top avater" style="width: 9rem;" src="/images/profile/profile4.gif" alt="Card img top")
+            div(class="p-2 item-h1 name" ) 
     //-  color Modal
     div(class="modal fade" id="color_selector" tabindex="-1" role="dialog" aria-labelledby="askColorTitle" aria-hidden="true")
       div(class="modal-dialog modal-dialog-centered" role="document")

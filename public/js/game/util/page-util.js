@@ -1,7 +1,6 @@
 let page_effect = {
   highlight_current(player_id) {
-    const user = document.getElementById("user_" + player_id.toString());
-    const avater = user.getElementsByClassName("avater")[0];
+    const avater = document.getElementById("avater_" + player_id.toString());
     avater.style.border = "4px solid #FF0000";
     avater.style.borderRadius = "15px";
   },
@@ -97,5 +96,29 @@ let page_effect = {
     const num_html = document.getElementById(card_postion);
 
     num_html.innerText = cards_num;
+  },
+  show_call_uno(player_id) {
+    const avater = document.getElementById("avater_" + player_id);
+    avater.src = "/images/call_uno.png";
+  },
+  back_to_origin_avater(position, player_id) {
+    const avater = document.getElementById("avater_" + player_id);
+    console.log(position);
+    switch (position) {
+      case "left":
+        avater.scr = "/images/profile/profile1.gif";
+        break;
+      case "top":
+        avater.scr = "/images/profile/profile2.gif";
+        break;
+      case "right":
+        avater.scr = "images/profile/profile3.gif";
+        break;
+      case "bottom":
+        avater.scr = "/images/profile/profile4.gif";
+        break
+      default:
+        console.log("errors on back to origin avater");
+    }
   },
 };

@@ -150,15 +150,19 @@ class game_state_helper {
   color_match_card() {
     const bottom = this.find_one_player(this.game_state.receiver).cards;
     const match = this.find_matching_card();
+    let hand_card_matching = [];
     for (let i in bottom) {
       const card = document.getElementById("card_" + bottom[i].toString());
       if (match.includes(bottom[i])) {
+        hand_card_matching.push(bottom[i]);
         card.setAttribute("matching", "True");
         card.style.border = "4px solid #FFA07A";
       } else {
         card.setAttribute("matching", "False");
       }
     }
+    console.log(hand_card_matching);
+    return hand_card_matching;
   }
   /**
    * set current_player state in page
@@ -172,7 +176,7 @@ class game_state_helper {
     const action = this.game_state.undone_action;
     if (this.check_current_is_receiver()) {
       // page_util.js
-      page_effect.unlock_uno_button();
+      this.check_user_uno();
       if (action == "draw") {
         page_effect.show_pass_button();
         page_effect.lock_desk_button();
@@ -180,7 +184,6 @@ class game_state_helper {
       //else if(action == "chanllage")
       else if (action == "none") {
         page_effect.unlock_desk_button();
-        page_effect.unlock_uno_button();
         page_effect.hide_pass_button();
       } else {
         page_effect.lock_desk_button();
@@ -197,11 +200,12 @@ class game_state_helper {
         page_effect.hide_pass_button();
       }
     } else {
-      const current_player = this.game_state.current_player;
-      page_effect.highlight_current(current_player);
       page_effect.lock_desk_button();
       page_effect.lock_uno_button();
     }
+    const current_player = this.game_state.current_player;
+    this.set_call_uno();
+    page_effect.highlight_current(current_player);
     //action_util.js
     action_util.set_undone_action(action, this.game_state.receiver);
   }
@@ -251,6 +255,9 @@ class game_state_helper {
   find_position(id) {
     const player_list = this.arrange_players();
     const position = player_list.indexOf(id);
+    if (position == 0) {
+      return "bottom";
+    }
     if (position == 1) {
       return "left";
     }
@@ -276,5 +283,36 @@ class game_state_helper {
       action_util.show_fixed_cards(position, id, number_card);
       page_effect.show_number_card(position, "");
     }
+  }
+  check_user_uno() {
+    if (this.check_current_is_receiver()) {
+      const hand_card_matching = this.color_match_card();
+      const player = this.find_one_player(this.game_state.receiver);
+      if (player.uno) {
+        page_effect.lock_uno_button();
+      } else {
+        if (
+          hand_card_matching.length <= 2 &&
+          hand_card_matching != 0 &&
+          player.number_of_cards <= 2
+        ) {
+          page_effect.unlock_uno_button();
+        } else {
+          page_effect.lock_uno_button();
+        }
+      }
+    }
+  }
+  set_call_uno() {
+    const players = this.game_state.players;
+    players.map((player) => {
+      const player_id = player.user_id;
+      if (player.uno) {
+        page_effect.show_call_uno(player_id);
+      } else {
+        const position = this.find_position(player_id);
+        page_effect.back_to_origin_avater(position, player_id);
+      }
+    });
   }
 }
