@@ -106,19 +106,20 @@ let page_effect = {
     console.log(position);
     switch (position) {
       case "left":
-        avater.scr = "/images/profile/profile1.gif";
+        avater.src = "/images/profile/profile1.gif";
         break;
       case "top":
-        avater.scr = "/images/profile/profile2.gif";
+        avater.src = "/images/profile/profile2.gif";
         break;
       case "right":
-        avater.scr = "images/profile/profile3.gif";
+        avater.src = "/images/profile/profile3.gif";
         break;
       case "bottom":
-        avater.scr = "/images/profile/profile4.gif";
-        break
+        avater.src = "/images/profile/profile4.gif";
+        break;
       default:
         console.log("errors on back to origin avater");
+        break;
     }
   },
 };
