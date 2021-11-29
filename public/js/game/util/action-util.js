@@ -44,11 +44,14 @@ let action_util = {
     }
   },
   remove_click_event(card_list) {
-    for (let i in card_list) {
-      const card = document.getElementById("card_" + card_list[i].toString());
-      card.style.cssText = "";
-      const clone_card = card.cloneNode(true);
-      card.parentNode.replaceChild(clone_card, card);
+
+    if (card_list.length != 0) {
+      for (let i in card_list) {
+        const card = document.getElementById("card_" + card_list[i].toString());
+        card.style.cssText = "";
+        const clone_card = card.cloneNode(true);
+        card.parentNode.replaceChild(clone_card, card);
+      }
     }
   },
   show_discard(card_list) {

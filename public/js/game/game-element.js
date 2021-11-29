@@ -307,10 +307,12 @@ class game_state_helper {
     const players = this.game_state.players;
     players.map((player) => {
       const player_id = player.user_id;
+      console.log(player_id)
       if (player.uno) {
         page_effect.show_call_uno(player_id);
       } else {
         const position = this.find_position(player_id);
+        console.log(position)
         page_effect.back_to_origin_avater(position, player_id);
       }
     });
