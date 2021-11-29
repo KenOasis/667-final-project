@@ -428,3 +428,18 @@ exports.getUndoneAction = async (game_id) => {
     throw err;
   }
 };
+
+// sepecial case when user say uno but pass instead of play the card. reset uno.
+exports.resetUnoAtPass = async (game_id, user_id) => {
+  try {
+    const game_cards = await gameCardsDriver.getPlayerCards(game_id, user_id);
+    if (game_cards && game_cards.length >= 2) {
+      return this.resetUno(game_id, user_id);
+    } else {
+      // game_cards === 1 uno status valid
+      return true;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
