@@ -14,11 +14,21 @@ const events = require("../socket/eventsLobby");
  * the data will be gone. check dummy_data at the end to see the format
  *
  */
+
 const gameListManager = {
   init: function (list) {
     gameList = list;
   },
   getUserStatus: function (user_id) {
+    /**
+     * TODO
+     * status of the user:
+     *    all id(game_id) in games table which active (start === end time) and
+     *   checked whether user_id is exist in corresponded game_users table and/or game_cards;
+     *       If: == 0    => free
+     *       If: exist in game-user but not in game-cards  => ready
+     *       If: exist in both game-user and game-cards    => playing
+     */
     let status_list = [];
     gameList.forEach((game) =>
       game.users.forEach((user) => {
@@ -36,6 +46,7 @@ const gameListManager = {
     }
   },
   setUserStatus: function (game_id, user_id, user_status) {
+    // TODO check how status respresent..... this should be deprecated
     const gameIndex = findGameIndexById(game_id);
     const game = gameList[gameIndex];
     let username = "";
@@ -49,6 +60,7 @@ const gameListManager = {
     events.userStatusUpdate(username, userStatus);
   },
   createGame: async function (game_name, user) {
+    // TODO, actually add a game_user table for the game
     let gameCreated = null;
     try {
       gameCreated = await gamesDriver.createGame(game_name);
@@ -75,6 +87,7 @@ const gameListManager = {
   },
 
   joinGame: function (game_id, user) {
+    // TODO add add new rows game user tabe
     let gameIndex = findGameIndexById(game_id);
     let game = gameList[gameIndex];
     if (game.users.length >= game.capacity) {
@@ -94,6 +107,7 @@ const gameListManager = {
   },
 
   leaveGame: function (game_id, user) {
+    // TODO delete a game from game_user table
     let gameIndex = findGameIndexById(game_id);
     let game = gameList[gameIndex];
     game.users = game.users.filter(
@@ -109,6 +123,7 @@ const gameListManager = {
     return ["existed", game];
   },
   initGame: function (game_id) {
+    //TODO this should be deprecated .....
     const gameIndex = findGameIndexById(game_id);
     const game = gameList[gameIndex];
     game.users.forEach((user) => {
@@ -118,6 +133,7 @@ const gameListManager = {
     return game;
   },
   userLeaveLobby: function (user_id) {
+    // TODO should delate a row in game user table if it is not started (not game_cards)
     let index = gameList.length;
     while (index > 0) {
       index--;
@@ -133,6 +149,7 @@ const gameListManager = {
     return gameList;
   },
   getUserListOfGame: function (game_id) {
+    // TODO should be genearte from db
     let gameIndex = findGameIndexById(game_id);
     if (gameIndex >= 0) {
       let game = gameList[gameIndex];
@@ -141,6 +158,7 @@ const gameListManager = {
     return null;
   },
   getGameList: function () {
+    // TODO recontruct the game list from db
     return gameList;
   },
 };
