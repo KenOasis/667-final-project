@@ -40,6 +40,7 @@ module.exports = {
         initial_order: {
           type: Sequelize.INTEGER,
           allowNull: false,
+          defaultValue: 0,
         },
         points: {
           type: Sequelize.INTEGER,

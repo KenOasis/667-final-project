@@ -16,18 +16,25 @@ const events = require("../socket/eventsLobby");
  */
 
 const gameListManager = {
-  init: function (list) {
-    gameList = list;
-  },
   getUserStatus: function (user_id) {
     /**
-     * TODO
-     * status of the user:
-     *    all id(game_id) in games table which active (start === end time) and
-     *   checked whether user_id is exist in corresponded game_users table and/or game_cards;
-     *       If: == 0    => free
-     *       If: exist in game-user but not in game-cards  => ready
-     *       If: exist in both game-user and game-cards    => playing
+     * SELECT distinct(games.id) FROM
+     * games INNER JOINS game_users
+     * WHERE games.game_id = game_users.game_id
+     * AND game_users.user_id = (user_id)
+     * AND games.created_at = games.finished_at
+     * AND games_users.initial_order > 0
+     * => playing
+     * if not then:
+     * SELECT distinct(games.id) FROM
+     * games INNER JOINS game_users
+     * WHERE games.game_id = game_users.game_id
+     * AND game_users.user_id = (user_id)
+     * AND games.created_at = games.finished_at
+     * AND game_users.initial_order = 0
+     * => ready
+     * else
+     * => free
      */
     let status_list = [];
     gameList.forEach((game) =>
@@ -183,3 +190,21 @@ const dummy_data = {
   capacity: 4,
   status: "waiting", // "waiting" -> not full; "full" -> game is full soon to start; "playing" -> in the game
 };
+
+// Construct game_list
+/**
+ * SELECT id, name FROM games
+ * WHERE created_at = finished_at
+ * ~game_id = id, ~ name = name
+ * ~capacity = 4, ~status: "waiting"
+ * map => []
+ * forEach
+ * SELECT users.id, users.username, game_users.initial_order
+ * FROM users INNER JOINS game_users
+ * WHERE .....
+ * AND game_users.game_id = (game_id)
+ *
+ * forEach ~user_id = users.id, ~ username = users.username,
+ * ~ status: game_initial_order === 0 ? "ready" : "playing" (also change game.status)
+ *  => push in users[];
+ */
