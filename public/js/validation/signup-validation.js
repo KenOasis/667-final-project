@@ -2,6 +2,7 @@ const username = document.getElementById("username");
 const email = document.getElementById("email");
 const pw = document.getElementById("password");
 const confirmPW = document.getElementById("confirmPassword");
+const acceptRules = document.getElementById("checkbox");
 const liveToast = document.getElementById("signupToast");
 
 const feedback_username = document.getElementById("feedback_username");
@@ -62,10 +63,15 @@ const onSubmitValidation = () => {
   let validateEmail = email_regex.test(email.value);
   let validatePW = pw_regex.test(pw.value);
   let validateConfirmPW = pw.value === confirmPW.value;
+  let validateAcceptRules = acceptRules.checked;
 
-  if (validateUsername && validateEmail && validatePW && validateConfirmPW) {
+  if (validateUsername && validateEmail && validatePW && validateConfirmPW && validateAcceptRules) {
     return true;
-  } else return false;
+  } 
+  else {
+    alert("please fill out all and meet their requirements");
+    return false;
+  }
 };
 const onSubmitSignup = () => {
   const url = "http://" + location.host + "/user/signup";
