@@ -310,9 +310,28 @@ exports.playCard = async (req, res, next) => {
 };
 
 exports.endGame = async (req, res, next) => {
-  // TODO end game process
-  // cal points based of card on hands
-  // modified game finished time;
+  const game_id = +req.body.game_id;
+  try {
+    /**
+     * {
+     *    game_id,
+     *    results: [
+     *      {
+     *        user_id: ""
+     *        rank: 1,
+     *        points: 200
+     *      }...
+     *    ]
+     * }
+     *
+     */
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Internal Server Error",
+    });
+  }
   res.status(200).json({
     status: "success",
     message: "Game over!",
