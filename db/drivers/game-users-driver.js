@@ -62,8 +62,33 @@ exports.createGameUsers = async (
       current_player,
       initial_order,
     });
+    if (game_user) {
+      return game_user;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
 
-    return game_user;
+exports.updateGameUsers = async (
+  game_id,
+  user_id,
+  current_player,
+  initial_order
+) => {
+  try {
+    const game_user = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_user) {
+      game_user.current_player = current_player;
+      game_user.initial_order = initial_order;
+      await game_user.save();
+      return true;
+    }
   } catch (err) {
     throw err;
   }
@@ -180,6 +205,57 @@ exports.getUnoStatus = async (game_id, user_id) => {
       return game_user.uno;
     } else {
       throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+/**
+ * Lobby functions
+ */
+
+exports.getUsersForLobby = async (game_id) => {
+  try {
+    const game_users = await Users.findAll({
+      raw: true,
+      attributes: ["id", "username", "game_users.initial_order"],
+      include: {
+        model: GameUsers,
+        where: {
+          game_id: game_id,
+        },
+        attributes: [],
+        required: true,
+      },
+    });
+    if (game_users && game_users.length) {
+      const users = [];
+      game_users.forEach((game_user) => {
+        const userObj = {};
+        userObj.user_id = game_user.id;
+        userObj.username = game_user.username;
+        userObj.status = game_user.initial_order === 0 ? "ready" : "playing";
+        users.push(userObj);
+      });
+      return users;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.deleteGameUsers = async (game_id, user_id) => {
+  try {
+    const game_user = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_user && game_user.initial_order === 0) {
+      await game_user.destroy();
+      return true;
     }
   } catch (err) {
     throw err;

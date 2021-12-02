@@ -1,6 +1,8 @@
 const db = require("../../models/");
 const Games = db["games"];
+const { Op } = require("sequelize");
 const shuffle = require("../../util/shuffle");
+const { sequelize } = require("../../models/");
 exports.createGame = async (name) => {
   try {
     const user = await Games.create({
@@ -139,6 +141,45 @@ exports.changeDirection = async (game_id) => {
       return true;
     } else {
       throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+/**
+ *  Lobby Drivers
+ */
+
+exports.getAllActiveGame = async () => {
+  try {
+    const games = await Games.findAll({
+      where: {
+        created_at: {
+          [Op.eq]: sequelize.col("finished_at"),
+        },
+      },
+    });
+    if (games) {
+      return games;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.deleteGame = async (game_id) => {
+  try {
+    const game = await Games.findOne({
+      where: {
+        created_at: {
+          [Op.eq]: sequelize.col("finished_at"),
+        },
+      },
+    });
+    if (game) {
+      await game.destroy();
+      return true;
     }
   } catch (err) {
     throw err;

@@ -35,13 +35,7 @@ const joinGame = (event) => {
     }),
   })
     .then((response) => response.json())
-    .then((result) => {
-      if (toastContainer) {
-        const newToast = addToast(result.message);
-        let toast = new bootstrap.Toast(newToast);
-        toast.show();
-      }
-    })
+    .then((result) => {})
     .catch((err) => console.log(err));
 };
 
@@ -60,13 +54,7 @@ const leaveGame = (event) => {
     }),
   })
     .then((response) => response.json())
-    .then((result) => {
-      if (toastContainer) {
-        const newToast = addToast(result.message);
-        let toast = new bootstrap.Toast(newToast);
-        toast.show();
-      }
-    })
+    .then((result) => {})
     .catch((err) => console.log(err));
 };
 

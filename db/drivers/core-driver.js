@@ -23,7 +23,7 @@ exports.initialGame = async (game_id, users_id) => {
     let userIdsOrderCounter = 1;
 
     for await (const user_id of userIdsShuffled) {
-      await gameUsersDriver.createGameUsers(
+      await gameUsersDriver.updateGameUsers(
         game_id,
         user_id,
         userIdsOrderCounter === 1 ? true : false,

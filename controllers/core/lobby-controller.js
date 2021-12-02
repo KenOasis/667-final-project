@@ -1,7 +1,5 @@
 const gameListManager = require("../../volatile/gameListManager");
 
-const coreDriver = require("../../db/drivers/core-driver");
-
 const eventsLobby = require("../../socket/eventsLobby");
 
 exports.createGame = async (req, res, next) => {
@@ -13,8 +11,8 @@ exports.createGame = async (req, res, next) => {
   };
 
   try {
-    const new_game = await gameListManager.createGame(game_name, user);
-    eventsLobby.createGame(new_game);
+    const gameList = await gameListManager.createGame(game_name, user);
+    eventsLobby.gameListUpdate(gameList);
     res.status(200).json({
       status: "success",
       message: "Game: " + game_name + " is created!",
@@ -34,57 +32,52 @@ exports.joinGame = async (req, res, next) => {
     username: req.session.userName,
     user_id: req.session.userId,
   };
-  const game = gameListManager.joinGame(game_id, user);
-  if (game) {
-    eventsLobby.joinGame(game, user);
-    // If game is full, initial game data in db
-    if (game.status === "full") {
-      const users_id = gameListManager
-        .getUserListOfGame(game_id)
-        .map((user) => user.user_id);
-
-      try {
-        const isInitialSuccess = await coreDriver.initialGame(
-          game_id,
-          users_id
-        );
-
-        if (isInitialSuccess) {
-          // join success
-          eventsLobby.initGame(game_id, users_id);
-        }
-      } catch (err) {
-        console.error(err);
-        return res
-          .status(202)
-          .json({ status: "failed", message: "Initial game failed" });
+  try {
+    const gameList = await gameListManager.joinGame(game_id, user);
+    if (gameList && gameList.length) {
+      eventsLobby.gameListUpdate(gameList);
+      const isInitGame = await gameListManager.initGame(game_id);
+      if (isInitGame) {
       }
+      res.status(200).json({
+        status: "success",
+        message: "Join game success!",
+      });
+    } else if (gameList.length === 0) {
+      res.status(409).json({
+        status: "failed",
+        message: "The game is full.",
+      });
     }
-    res.status(200).json({
-      status: "success",
-      message: "You have joint the game " + game.name,
-    });
-  } else {
-    res.status(409).json({
-      status: "failed",
-      message: "The game is full.",
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error.",
     });
   }
 };
 
-exports.leaveGame = (req, res, next) => {
+exports.leaveGame = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user = {
     username: req.session.userName,
     user_id: req.session.userId,
   };
-  const [gameStatus, game] = gameListManager.leaveGame(game_id, user);
-
-  eventsLobby.leaveGame(gameStatus, game, user);
-  res.status(200).json({
-    status: "success",
-    message: "You have leave the game " + game.name,
-  });
+  try {
+    const gameList = await gameListManager.leaveGame(game_id, user);
+    eventsLobby.gameListUpdate(gameList);
+    res.status(200).json({
+      status: "success",
+      message: "You have leave the game",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error.",
+    });
+  }
 };
 
 exports.getLobby = async (req, res, next) => {
@@ -96,9 +89,18 @@ exports.getLobby = async (req, res, next) => {
       username: username,
       user_id: user_id,
     };
-    const userStatus = gameListManager.getUserStatus(user_id);
-    eventsLobby.joinLobby(user, userStatus);
-    return res.status(200).render("lobby", { whoami: username });
+    try {
+      const [userStatus, gameList] = await gameListManager.getUserStatus(
+        user_id
+      );
+      eventsLobby.joinLobby(user, userStatus, gameList);
+      return res.status(200).render("lobby", { whoami: username });
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ status: "error", message: "Internal Server Error." });
+    }
   } else {
     return res.status(401).render("login");
   }

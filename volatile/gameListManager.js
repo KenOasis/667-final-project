@@ -1,12 +1,7 @@
-const gameList = [];
-const db = require("../models");
-
-const gamesDriver = require("../db/drivers/games-driver");
-const findGameIndexById = (game_id) => {
-  return gameList.findIndex((game) => game.game_id === game_id);
-};
-
-const events = require("../socket/eventsLobby");
+const lobbyDriver = require("../db/drivers/lobby-driver");
+const coreDriver = require("../db/drivers/core-driver");
+const eventsLobby = require("../socket/eventsLobby");
+const e = require("cors");
 /**
  * This is the Game List data manager for handler the
  * create/join/leav of game room in the lobby page
@@ -16,26 +11,22 @@ const events = require("../socket/eventsLobby");
  */
 
 const gameListManager = {
-  getUserStatus: function (user_id) {
-    /**
-     * SELECT distinct(games.id) FROM
-     * games INNER JOINS game_users
-     * WHERE games.game_id = game_users.game_id
-     * AND game_users.user_id = (user_id)
-     * AND games.created_at = games.finished_at
-     * AND games_users.initial_order > 0
-     * => playing
-     * if not then:
-     * SELECT distinct(games.id) FROM
-     * games INNER JOINS game_users
-     * WHERE games.game_id = game_users.game_id
-     * AND game_users.user_id = (user_id)
-     * AND games.created_at = games.finished_at
-     * AND game_users.initial_order = 0
-     * => ready
-     * else
-     * => free
-     */
+  getGameList: async function () {
+    try {
+      const gameList = await lobbyDriver.getGameList();
+      return gameList;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  getUserStatus: async function (user_id) {
+    let gameList = [];
+    try {
+      gameList = await this.getGameList();
+    } catch (err) {
+      console.error(err);
+      return "error";
+    }
     let status_list = [];
     gameList.forEach((game) =>
       game.users.forEach((user) => {
@@ -45,128 +36,99 @@ const gameListManager = {
       })
     );
     if (status_list.length === 0) {
-      return "free";
+      return ["free", gameList];
     } else if (status_list.includes("playing")) {
-      return "playing";
+      return ["playing", gameList];
     } else {
-      return "ready";
+      return ["ready", gameList];
     }
   },
-  setUserStatus: function (game_id, user_id, user_status) {
-    // TODO check how status respresent..... this should be deprecated
-    const gameIndex = findGameIndexById(game_id);
-    const game = gameList[gameIndex];
-    let username = "";
-    game.users.forEach((user) => {
-      if (user.user_id === user_id) {
-        user.status = user_status;
-        username = user.username;
-      }
-    });
-    const userStatus = this.getUserStatus(user_id);
-    events.userStatusUpdate(username, userStatus);
-  },
   createGame: async function (game_name, user) {
-    // TODO, actually add a game_user table for the game
-    let gameCreated = null;
     try {
-      gameCreated = await gamesDriver.createGame(game_name);
+      const isGameCreated = await lobbyDriver.createGame(game_name, user);
+
+      if (isGameCreated) {
+        const [userStatus, gameList] = await this.getUserStatus(user.user_id);
+        eventsLobby.userStatusUpdate(user.username, userStatus);
+        return gameList;
+      }
     } catch (err) {
       console.error(err);
       throw new Error(err.message);
     }
-    const new_game = {
-      game_id: gameCreated.id,
-      name: game_name,
-      users: [
-        {
-          user_id: user.user_id,
-          username: user.username,
-          status: "",
-        },
-      ],
-      capacity: 4,
-      status: "waiting",
-    };
-    gameList.push(new_game);
-    this.setUserStatus(new_game.game_id, user.user_id, "ready");
-    return new_game;
   },
 
-  joinGame: function (game_id, user) {
-    // TODO add add new rows game user tabe
-    let gameIndex = findGameIndexById(game_id);
-    let game = gameList[gameIndex];
-    if (game.users.length >= game.capacity) {
-      return false;
-    } else {
-      game.users.push({
-        user_id: user.user_id,
-        username: user.username,
-        status: "",
-      });
-      this.setUserStatus(game_id, user.user_id, "ready");
-      if (game.users.length === game.capacity) {
-        game.status = "full";
+  joinGame: async function (game_id, user) {
+    try {
+      const joinStatus = await lobbyDriver.joinGame(game_id, user);
+      if (joinStatus === true) {
+        const [userStatus, gameList] = await this.getUserStatus(user.user_id);
+        eventsLobby.userStatusUpdate(user.username, userStatus);
+        return gameList;
+      } else if (joinStatus === false) {
+        return [];
       }
-      return game;
+    } catch (err) {
+      console.error(err);
+      throw new Error(err.message);
     }
   },
 
-  leaveGame: function (game_id, user) {
+  leaveGame: async function (game_id, user) {
     // TODO delete a game from game_user table
-    let gameIndex = findGameIndexById(game_id);
-    let game = gameList[gameIndex];
-    game.users = game.users.filter(
-      (element) => element.user_id != user.user_id
-    );
-    const userStatus = gameListManager.getUserStatus(user.user_id);
-    events.userStatusUpdate(user.username, userStatus);
-    if (game.users.length <= 0) {
-      // remove the game without any player
-      gameList.splice(gameIndex, 1);
-      return ["removed", game];
+    try {
+      const isLeft = await lobbyDriver.leaveGame(game_id, user);
+      if (isLeft) {
+        const [userStatus, gameList] = await this.getUserStatus(user.user_id);
+        eventsLobby.userStatusUpdate(user.username, userStatus);
+        return gameList;
+      }
+    } catch (err) {
+      console.error(err);
+      throw new Error(err.message);
     }
-    return ["existed", game];
   },
-  initGame: function (game_id) {
-    //TODO this should be deprecated .....
-    const gameIndex = findGameIndexById(game_id);
-    const game = gameList[gameIndex];
-    game.users.forEach((user) => {
-      this.setUserStatus(game_id, user.user_id, "playing");
-    });
-    game.status = "playing";
-    return game;
+  initGame: async function (game_id) {
+    try {
+      const [isGameFull, user_list] = await lobbyDriver.checkGameFull(game_id);
+      if (isGameFull && user_list && user_list.length) {
+        const user_id_list = user_list.map((user) => user.user_id);
+        const isInitialSuccess = await coreDriver.initialGame(
+          game_id,
+          user_id_list
+        );
+        let gameList = [];
+        let userStatus = "ready";
+        for await (user of user_list) {
+          [userStatus, gameList] = await this.getUserStatus(user.user_id);
+          eventsLobby.userStatusUpdate(user.username, userStatus);
+        }
+        if (isInitialSuccess) {
+          eventsLobby.initGame(game_id, user_id_list, gameList);
+        } else {
+          throw new Error("Initial game failed");
+        }
+      } else {
+        return false;
+      }
+    } catch (err) {
+      throw err;
+    }
   },
   userLeaveLobby: function (user_id) {
     // TODO should delate a row in game user table if it is not started (not game_cards)
-    let index = gameList.length;
-    while (index > 0) {
-      index--;
-      game = gameList[index];
-      game.users = game.users.filter(
-        (user) => user.status === "playing" || user.user_id !== user_id
-      );
-
-      if (game.users.length <= 0) {
-        gameList.splice(index, 1);
-      }
-    }
-    return gameList;
-  },
-  getUserListOfGame: function (game_id) {
-    // TODO should be genearte from db
-    let gameIndex = findGameIndexById(game_id);
-    if (gameIndex >= 0) {
-      let game = gameList[gameIndex];
-      return game.users;
-    }
-    return null;
-  },
-  getGameList: function () {
-    // TODO recontruct the game list from db
-    return gameList;
+    // let index = gameList.length;
+    // while (index > 0) {
+    //   index--;
+    //   game = gameList[index];
+    //   game.users = game.users.filter(
+    //     (user) => user.status === "playing" || user.user_id !== user_id
+    //   );
+    //   if (game.users.length <= 0) {
+    //     gameList.splice(index, 1);
+    //   }
+    // // }
+    // return gameList;
   },
 };
 

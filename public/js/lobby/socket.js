@@ -56,44 +56,9 @@ socket.on("gameListInitial", (data) => {
   initialGameList(data);
 });
 
-socket.on("createGame", (new_game) => {
-  const gameElement = document.getElementById("game-" + new_game.game_id);
-  if (gameElement === null) {
-    const newGameElement = constructGameElement(new_game);
-    gameListContainer.appendChild(newGameElement);
-    if (toastContainer) {
-      const newToast = addToast("Game " + new_game.name + " is created.");
-      let toast = new bootstrap.Toast(newToast);
-      toast.show();
-    }
-  }
-});
-
-socket.on("joinGame", (data) => {
-  if (data.game !== null) {
-    const new_game = data.game;
-    const new_game_li = constructGameElement(new_game);
-    const current_game_li = document.getElementById(
-      `game-${data.game.game_id}`
-    );
-    gameListContainer.insertBefore(new_game_li, current_game_li);
-    gameListContainer.removeChild(current_game_li);
-  }
-});
-
-socket.on("leaveGame", (data) => {
-  if (data.game_status === "existed") {
-    const new_game = data.game;
-    const new_game_li = constructGameElement(new_game);
-    const current_game_li = document.getElementById(
-      `game-${data.game.game_id}`
-    );
-    gameListContainer.insertBefore(new_game_li, current_game_li);
-    gameListContainer.removeChild(current_game_li);
-  } else {
-    // game has no player, remove from the list
-    const game_li = document.getElementById(`game-${data.game.game_id}`);
-    gameListContainer.removeChild(game_li);
+socket.on("updateGameList", (data) => {
+  if (data.game_list) {
+    initialGameList(data.game_list);
   }
 });
 

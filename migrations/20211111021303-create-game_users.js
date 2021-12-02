@@ -31,6 +31,7 @@ module.exports = {
         current_player: {
           type: Sequelize.BOOLEAN,
           allowNull: false,
+          defaultValue: false,
         },
         uno: {
           type: Sequelize.BOOLEAN,

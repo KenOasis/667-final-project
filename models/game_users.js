@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       current_player: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        default: false,
       },
       uno: {
         type: DataTypes.BOOLEAN,
