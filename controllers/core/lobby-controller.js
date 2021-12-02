@@ -1,4 +1,4 @@
-const gameListManager = require("../../volatile/gameListManager");
+const gameListManager = require("../../db/lobby-game-list-manager/gameListManager");
 
 const eventsLobby = require("../../socket/eventsLobby");
 

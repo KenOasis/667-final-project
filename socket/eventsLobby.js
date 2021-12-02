@@ -1,5 +1,4 @@
-const gameListManager = require("../volatile/gameListManager");
-
+const gameListManager = require("../db/lobby-game-list-manager/gameListManager");
 exports.joinLobby = async (user, currentUserStatus, gameList) => {
   const lobbySpace = require("./socket").getNameSpace("lobby");
   const gameSpace = require("./socket").getNameSpace("game");
@@ -35,7 +34,6 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
         return {
           username: socket.request.session.userName,
           user_id: socket.request.session.userId,
-          // status: gameListManager.getUserStatus(socket.request.session.userId),
         };
       });
 
@@ -60,14 +58,6 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
         userListWithStatus.push(userObj);
       }
 
-      // userList = userList.map((user) => {
-      //   return {
-      //     username: user.username,
-      //     status: gameListManager.getUserStatus(user.user_id)[0],
-      //   };
-      // });
-      // Add current user to the front of list
-
       userListWithStatus.unshift({
         username: user.username,
         status: currentUserStatus,
@@ -83,17 +73,9 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
       lobbySpace.emit("gameListInitial", gameList);
 
       socket.on("disconnect", () => {
-        // const gameList = gameListManager.userLeaveLobby(user.user_id);
-        // const userInGame = gameUserList.filter(
-        //   (userInGame) => userInGame.username === user.username
-        // );
-        // if (userInGame.length == 0) {
-        //   // if not in game, delete it from user list
-        //   lobbySpace.volatile.emit("userLeaveLobby", {
-        //     user: user,
-        //     gameList: gameList,
-        //   });
-        // }
+        /* TODO disconnect: You have to manuelly
+         * leave game room or delete the unfinished game if you want to clean data.
+         **/
       });
     } catch (err) {
       console.error(err);

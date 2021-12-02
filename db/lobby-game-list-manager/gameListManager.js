@@ -1,6 +1,6 @@
-const lobbyDriver = require("../db/drivers/lobby-driver");
-const coreDriver = require("../db/drivers/core-driver");
-const eventsLobby = require("../socket/eventsLobby");
+const lobbyDriver = require("../drivers/lobby-driver");
+const coreDriver = require("../drivers/core-driver");
+const eventsLobby = require("../../socket/eventsLobby");
 const e = require("cors");
 /**
  * This is the Game List data manager for handler the
@@ -117,18 +117,6 @@ const gameListManager = {
   },
   userLeaveLobby: function (user_id) {
     // TODO should delate a row in game user table if it is not started (not game_cards)
-    // let index = gameList.length;
-    // while (index > 0) {
-    //   index--;
-    //   game = gameList[index];
-    //   game.users = game.users.filter(
-    //     (user) => user.status === "playing" || user.user_id !== user_id
-    //   );
-    //   if (game.users.length <= 0) {
-    //     gameList.splice(index, 1);
-    //   }
-    // // }
-    // return gameList;
   },
 };
 

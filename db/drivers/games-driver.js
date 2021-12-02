@@ -172,6 +172,7 @@ exports.deleteGame = async (game_id) => {
   try {
     const game = await Games.findOne({
       where: {
+        id: game_id,
         created_at: {
           [Op.eq]: sequelize.col("finished_at"),
         },

@@ -1,6 +1,6 @@
 const coreDriver = require("../../db/drivers/core-driver");
 
-const gameListManager = require("../../volatile/gameListManager");
+const gameListManager = require("../../db/lobby-game-list-manager/gameListManager");
 
 const CardFactory = require("../../factories/cardFactory");
 const eventsGame = require("../../socket/eventsGame");
@@ -47,8 +47,6 @@ exports.loadGameState = async (req, res, next) => {
 exports.drawCard = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
-
-  console.log(game_id);
   try {
     const card_id = await coreDriver.drawCard(game_id, user_id);
     const game_user_list = await coreDriver.getGameUserList(game_id);
@@ -118,7 +116,6 @@ exports.challenge = async (req, res, next) => {
       );
     } else {
       //do not challenge
-      console.log("do not challenge");
       penalty_id = user_id;
       penalty_cards = await coreDriver.drawFour(game_id, user_id);
       isSetCurrentSuccess = await coreDriver.setNextCurrent(
@@ -142,7 +139,6 @@ exports.challenge = async (req, res, next) => {
       game_user_list &&
       game_user_list.length
     ) {
-      console.log("send event");
       const matching_color = await coreDriver.getUndoneAction(game_id);
       await coreDriver.setMatching(game_id, matching_color, "none");
       await coreDriver.resetUndoneAction(game_id);
