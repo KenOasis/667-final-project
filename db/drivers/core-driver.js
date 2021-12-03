@@ -107,8 +107,9 @@ exports.getGameState = async (game_id, user_id) => {
     // console.log(discards);
 
     const undone_action = await gamesDriver.getUndoneAction(game_id);
+
     if (
-      card_deck &&
+      card_deck >= 0 &&
       game_direction &&
       game_order &&
       current_player &&
