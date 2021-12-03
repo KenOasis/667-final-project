@@ -317,4 +317,19 @@ class game_state_helper {
       }
     });
   }
+  check_empty_card(){
+    const players = this.game_state.players;
+    let has_empty_card = false;
+    players.map((player)=>{
+       if(player.number_of_cards == 0){
+          has_empty_card === true;
+       }
+    })
+    if(has_empty_card){
+      //fetch the final counting
+    }
+    
+
+
+  }
 }

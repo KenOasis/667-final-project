@@ -113,16 +113,17 @@ socket.on("gameUpdatePlayCard", (data) => {
           console.log(err);
         });
     }
+    game_class.delete_click_event();
   } else {
+    if (game_class.check_current_is_receiver()) {
+      game_class.set_card_click_event();
+      game_class.color_match_card();
+    } else {
+      game_class.delete_click_event();
+    }
     game_class.show_back_card_again(performer);
   }
-  if (game_class.check_current_is_receiver()) {
-    game_class.set_card_click_event();
-  } else {
-    game_class.delete_click_event();
-  }
   game_class.set_current_player();
-  game_class.color_match_card();
   game_class.set_side_stuff();
   show_action_prompts(update);
 });
