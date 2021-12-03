@@ -291,14 +291,6 @@ exports.playCard = async (req, res, next) => {
         });
       }
     }
-    // TODO check if the last card played in each case
-    // if yes, end-game process after action done
-
-    // if (card.type === "wild_draw_four") {
-    //   // special case triger wild_draw_four - no challenge result
-    // } else {
-    // }
-
     return res.status(200).json({ status: "success" });
   } catch (err) {
     console.error(err);
@@ -312,19 +304,9 @@ exports.playCard = async (req, res, next) => {
 exports.endGame = async (req, res, next) => {
   const game_id = +req.body.game_id;
   try {
-    /**
-     * {
-     *    game_id,
-     *    results: [
-     *      {
-     *        user_id: ""
-     *        rank: 1,
-     *        points: 200
-     *      }...
-     *    ]
-     * }
-     *
-     */
+    const game_results = await coreDriver.endGame(game_id);
+    console.log(game_results);
+    eventsGame.endGame(game_results);
   } catch (err) {
     console.error(err);
     res.status(500).json({

@@ -261,3 +261,23 @@ exports.deleteGameUsers = async (game_id, user_id) => {
     throw err;
   }
 };
+
+exports.setPoints = async (game_id, user_id, points) => {
+  try {
+    const game_users = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_users) {
+      game_users.points = points;
+      await game_users.save();
+      return true;
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
+  }
+};

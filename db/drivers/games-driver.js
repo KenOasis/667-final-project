@@ -147,6 +147,19 @@ exports.changeDirection = async (game_id) => {
   }
 };
 
+exports.setEndGame = async (game_id) => {
+  try {
+    const game = await Games.findByPk(game_id);
+    if (game) {
+      // TODO test
+      game.finished_at = sequelize.fn("NOW");
+    } else {
+      throw new Error("DB data error.");
+    }
+  } catch (err) {
+    throw err;
+  }
+};
 /**
  *  Lobby Drivers
  */
