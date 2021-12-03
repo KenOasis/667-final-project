@@ -307,29 +307,39 @@ class game_state_helper {
     const players = this.game_state.players;
     players.map((player) => {
       const player_id = player.user_id;
-      console.log(player_id)
+      console.log(player_id);
       if (player.uno) {
         page_effect.show_call_uno(player_id);
       } else {
         const position = this.find_position(player_id);
-        console.log(position)
+        console.log(position);
         page_effect.back_to_origin_avater(position, player_id);
       }
     });
   }
-  check_empty_card(){
+  add_back_side_card(player_id, add_number) {
+    const position = this.find_position(player_id);
+    const number_card = this.check_number_of_card(player_id);
+    if (number_card >= 10) {
+      this.show_back_card_again(player_id);
+    } else {
+      if (position === "left" || position === "right") {
+        action_util.add_card_back_event(add_number, "cardcol", player_id);
+      } else {
+        action_util.add_card_back_event(add_number, "back", player_id);
+      }
+    }
+  }
+  check_empty_card() {
     const players = this.game_state.players;
     let has_empty_card = false;
-    players.map((player)=>{
-       if(player.number_of_cards == 0){
-          has_empty_card === true;
-       }
-    })
-    if(has_empty_card){
+    players.map((player) => {
+      if (player.number_of_cards == 0) {
+        has_empty_card === true;
+      }
+    });
+    if (has_empty_card) {
       //fetch the final counting
     }
-    
-
-
   }
 }

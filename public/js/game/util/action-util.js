@@ -44,7 +44,6 @@ let action_util = {
     }
   },
   remove_click_event(card_list) {
-
     if (card_list.length != 0) {
       for (let i in card_list) {
         const card = document.getElementById("card_" + card_list[i].toString());
@@ -92,6 +91,10 @@ let action_util = {
       back_html.style.pointerEvents = "none";
       card_tool.card_to_player(player_id, back_html);
     }
+  },
+  remove_one_card(card_id) {
+    const card = document.getElementById("card_" + card_id);
+    card.remove();
   },
 };
 let clicked_card = (card) => {
