@@ -116,7 +116,7 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
     for await (socket of sockets) {
       const user_id = socket.request.session.userId;
       if (users_id.includes(user_id)) {
-        const game_state = await coreDriver.getGameState(game_id, user_id);
+        let game_state = await coreDriver.getGameState(game_id, user_id);
         if (game_state) {
           const update = {};
           update.game_id = game_id;
@@ -150,6 +150,7 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
               update.actions.push(unoPenaltyAction);
               // reset uno of ther performer (who played card)
               await coreDriver.resetUno(game_id, performer);
+              game_state = await coreDriver.getGameState(game_id, user_id);
             }
           }
           switch (next_action.action) {
