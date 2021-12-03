@@ -443,3 +443,19 @@ exports.resetUnoAtPass = async (game_id, user_id) => {
     throw err;
   }
 };
+
+exports.endGame = async (game_id) => {
+  const gameResults = {};
+  gameResults.game_id = game_id;
+  gameResults.results = [];
+  try {
+    const game_cards = await gameCardsDriver.getEndGameCards(game_id);
+    if (game_cards && game_cards.length) {
+      /**
+       * calculate points and assembly resultObj
+       */
+    }
+  } catch (err) {
+    throw err;
+  }
+};

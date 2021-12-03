@@ -263,3 +263,28 @@ exports.getPlayerCards = async (game_id, user_id) => {
     throw err;
   }
 };
+
+exports.getEndGameCards = async (game_id) => {
+  try {
+    const game_cards = await Cards.findAll({
+      raw: true,
+      attributes: ["id", "type", "face_value", "game_cards.user_id"],
+      include: {
+        model: GameCards,
+        where: {
+          game_id: game_id,
+          in_deck: false,
+          discarded: 0,
+        },
+        attributes: [],
+        required: true,
+      },
+      order: [["game_cards.user_id"]],
+    });
+    if (game_cards && game_cards.length) {
+      return game_cards;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
