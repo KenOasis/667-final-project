@@ -194,7 +194,7 @@ class game_state_helper {
           this.game_state.matching.color,
           last_player_name
         );
-        if (this.check_last_wild_four) {
+        if (this.check_last_wild_four()) {
           last_wild_four();
         } else {
           const question_modal = document.getElementById("ChallengeModal");
