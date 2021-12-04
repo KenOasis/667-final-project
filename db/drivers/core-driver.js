@@ -473,6 +473,8 @@ exports.endGame = async (game_id) => {
     });
     // lowest points is winner, get all others points MINUS his/her own points
     // all others are losers, minus all their points
+    console.log("raw points");
+    console.log(gameResults);
     for (let i = 0; i < gameResults.results.length; ++i) {
       gameResults.results[i].points = 0 - gameResults.results[i].points;
       if (i === 0) {
@@ -486,6 +488,7 @@ exports.endGame = async (game_id) => {
       await gameUsersDriver.setPoints(game_id, user.user_id, user.points);
     }
     // set finished game time;
+    // TODO failed
     await gamesDriver.setEndGame(game_id);
     return gameResults;
   } catch (err) {
