@@ -3,6 +3,7 @@ const gameCardsDriver = require("./game-cards-driver");
 const gameUsersDriver = require("./game-users-driver");
 const gamesDriver = require("./games-driver");
 const CardFactory = require("../../factories/cardFactory");
+const { getPointOfCard } = require("../../config/end_game");
 const shuffle = require("../../util/shuffle");
 
 exports.checkUserInGame = async (game_id, user_id) => {
@@ -107,8 +108,9 @@ exports.getGameState = async (game_id, user_id) => {
     // console.log(discards);
 
     const undone_action = await gamesDriver.getUndoneAction(game_id);
+
     if (
-      card_deck &&
+      card_deck >= 0 &&
       game_direction &&
       game_order &&
       current_player &&
@@ -449,12 +451,43 @@ exports.endGame = async (game_id) => {
   gameResults.game_id = game_id;
   gameResults.results = [];
   try {
-    const game_cards = await gameCardsDriver.getEndGameCards(game_id);
-    if (game_cards && game_cards.length) {
-      /**
-       * calculate points and assembly resultObj
-       */
+    const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
+    for await (game_user of game_users) {
+      const userObj = {};
+      userObj.user_id = game_user.id;
+      userObj.username = game_user.username;
+      const game_cards = await gameCardsDriver.getPlayerCards(
+        game_id,
+        game_user.id
+      );
+      let points = 0;
+      for (game_card of game_cards) {
+        points += getPointOfCard(game_card.card_id);
+      }
+      userObj.points = points;
+      gameResults.results.push(userObj);
     }
+    // sort points by cards ASC
+    gameResults.results.sort((a, b) => {
+      return a.points - a.points;
+    });
+    // lowest points is winner, get all others points MINUS his/her own points
+    // all others are losers, minus all their points
+    for (let i = 0; i < gameResults.results.length; ++i) {
+      gameResults.results[i].points = 0 - gameResults.results[i].points;
+      if (i === 0) {
+        for (let j = 1; j < gameResults.results.length; ++j) {
+          gameResults.results[i].points += gameResults.results[j].points;
+        }
+      }
+    }
+    // set game_users points
+    for await (user of gameResults.results) {
+      await gameUsersDriver.setPoints(game_id, user.user_id, user.points);
+    }
+    // set finished game time;
+    await gamesDriver.setEndGame(game_id);
+    return gameResults;
   } catch (err) {
     throw err;
   }

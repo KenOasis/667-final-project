@@ -67,7 +67,7 @@ exports.drawCard = async (game_user_list, card_id, performer) => {
       }
     }
   } catch (err) {
-    console.log(err.message);
+    console.error(err);
   }
 };
 
@@ -101,7 +101,7 @@ exports.pass = async (game_user_list, performer) => {
       }
     }
   } catch (err) {
-    console.log(err.message);
+    console.error(err);
   }
 };
 // the performer of playCard() is the player who played this card
@@ -238,7 +238,7 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
       }
     }
   } catch (err) {
-    console.log(err.message);
+    console.error(err);
   }
 };
 
@@ -272,7 +272,7 @@ exports.sayUno = async (game_user_list, performer) => {
       }
     }
   } catch (err) {
-    console.log(err.message);
+    console.error(err);
   }
 };
 
@@ -332,10 +332,35 @@ exports.challenge = async (
       }
     }
   } catch (err) {
-    console.log(err.message);
+    console.error(err);
   }
 };
 
+exports.endGame = async (game_results) => {
+  const gameSpace = require("./socket").getNameSpace("game");
+  const game_id = game_results.game_id;
+  const room = `game-${game_id}`;
+  const user_id_list = game_results.results.map((user) => user.user_id);
+  try {
+    const sockets = await gameSpace.in(room).fetchSockets();
+    if (sockets && sockets == 4) {
+      for await (socket of sockets) {
+        const user_id = socket.request.session.userId;
+        if (user_id_list.includes(user_id)) {
+          gameSpace
+            .in(socket.id)
+            .emit("endGameUpdate", { results: game_results });
+        } else {
+          throw new Error("Forbidden");
+        }
+      }
+    } else {
+      throw new Error("Fetch player socket failed!");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
 // exports.template = async (game_user_list, card_id, performer) => {
 //   const game_id = game_user_list[0].game_id;
 //   const room = "game-" + game_id;

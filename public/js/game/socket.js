@@ -589,10 +589,26 @@ socket.on("challengeFailUpdate", (data) => {
 });
 
 /**
- * TODO final counting
+ * results = {
+ *    game_id: 2,
+ *    results: [
+ *      {
+ *          user_id: 2,
+ *          username: "safari00",
+ *          points: 98
+ *      }
+ *      .....
+ *    ]
+ * }
  *
  *
  *
  *
  *
  */
+
+socket.on("endGameUpdate", (data) => {
+  const results = data.results;
+  console.log("Game Over!");
+  console.log(results);
+});
