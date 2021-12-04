@@ -116,6 +116,7 @@ socket.on("gameUpdatePlayCard", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
+      game_class.check_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -169,6 +170,7 @@ socket.on("gameUpdateReverse", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
+      game_class.check_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -222,6 +224,7 @@ socket.on("gameUpdateSkip", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
+      game_class.check_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -298,6 +301,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
       });
   } else {
     if (game_class.check_current_is_receiver()) {
+      game_class.check_empty_card();
       game_class.color_match_card();
       game_class.set_card_click_event();
     } else {
@@ -349,6 +353,7 @@ socket.on("gameUpdateWild", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
+      game_class.check_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -414,6 +419,7 @@ socket.on("gameUpdateWildDrawFour", (data) => {
       game_class.show_back_card_again(performer);
     }
   }
+
   game_class.set_current_player();
   game_class.set_side_stuff();
   show_action_prompts(update);
@@ -446,6 +452,7 @@ socket.on("notChallengeUpdate", (data) => {
       .add_card_event(card_list)
       .then((result) => {
         if (result === "done") {
+          game_class.check_empty_card();
           game_class.refresh_hand_card(penalty_player);
           game_class.color_match_card();
           game_class.set_side_stuff();
@@ -608,7 +615,13 @@ socket.on("challengeFailUpdate", (data) => {
  */
 
 socket.on("endGameUpdate", (data) => {
-  const results = data.results;
+  const results = data.results.results;
   console.log("Game Over!");
   console.log(results);
+  const winner = results[0].username;
+  action_util.add_pointing_modal_title(winner);
+  action_util.add_pointing_modal_body(results);
+  const end_point_modal = document.getElementById("PointingModal");
+  const mymodal = new bootstrap.Modal(end_point_modal);
+  mymodal.toggle();
 });

@@ -115,15 +115,11 @@ html(lang="en")
       div(class="modal-dialog modal-dialog-centered" role="document")
         div(class="modal-content")
           div(class="modal-header")
-            h5(class="modal-title" id="PointingTitle") Player1 Win
+            h5(class="modal-title text-center" id="PointingTitle")
           div(class="modal-body" id="modal_body")
-            div(class="list-group")
-              div(class="list list-group-item") Player1 :  10000
-              div(class="list list-group-item") Player2 :  10000
-              div(class="list list-group-item") Player3 :  10000
-              div(class="list list-group-item") Player4 :  10000
+            div(class="list-group" id="end_game_list")
           div(class="modal-footer")
-            button(class="btn btn-lg btn-success" data-bs-dismiss="modal" id="Leave" type="button") Leave  
+            button(class="btn btn-lg btn-success" onclick ="to_lobby()" data-bs-dismiss="modal" id="end_game_leave" type="button") Leave  
 
     
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous")
