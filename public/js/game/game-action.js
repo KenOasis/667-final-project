@@ -176,6 +176,37 @@ function end_game() {
   const body = {
     game_id: game_id,
   };
+  console.log("in game_action", body);
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      "content-type": "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((results) => {
+      if (results.status !== "success") {
+        console.log(results.message);
+      }
+    })
+    .catch((error) => console.log(error));
+}
+
+function to_lobby() {
+  const url = "http://" + location.host + "/lobby";
+  window.location.href = url;
+}
+function last_wild_four() {
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const is_challenge = false;
+  const body = {
+    game_id: game_id,
+    is_challenge: is_challenge,
+  };
+  const url = "http://" + location.host + "/game/challenge";
   fetch(url, {
     method: "POST",
     body: JSON.stringify(body),

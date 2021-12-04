@@ -96,6 +96,22 @@ let action_util = {
     const card = document.getElementById("card_" + card_id);
     card.remove();
   },
+  add_pointing_modal_title(winner) {
+    const title = document.getElementById("PointingTitle");
+    title.innerText = `${winner} WIN`;
+  },
+  add_pointing_modal_body(players) {
+    const list_modal = document.getElementById("end_game_list");
+    list_modal.innerHTML = "";
+    for (let i = 0; i < players.length; i++) {
+      const a_player = document.createElement("div");
+      a_player.className = "list list-group-item";
+      const player_name = players[i].username;
+      const player_points = players[i].points;
+      a_player.innerText = `${player_name} : ${player_points}`;
+      list_modal.appendChild(a_player);
+    }
+  },
 };
 let clicked_card = (card) => {
   return () => {
