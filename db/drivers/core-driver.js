@@ -469,7 +469,7 @@ exports.endGame = async (game_id) => {
     }
     // sort points by cards ASC
     gameResults.results.sort((a, b) => {
-      return a.points - a.points;
+      return a.points - b.points;
     });
     // lowest points is winner, get all others points MINUS his/her own points
     // all others are losers, minus all their points
@@ -486,6 +486,7 @@ exports.endGame = async (game_id) => {
       await gameUsersDriver.setPoints(game_id, user.user_id, user.points);
     }
     // set finished game time;
+    // TODO failed
     await gamesDriver.setEndGame(game_id);
     return gameResults;
   } catch (err) {
