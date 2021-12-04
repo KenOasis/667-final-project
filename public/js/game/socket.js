@@ -24,6 +24,7 @@ socket.on("userDisconnect", (data) => {
 });
 
 socket.on("gameUpdateDrawCard", (data) => {
+  console.log("draw!");
   const game_state = data.game_state;
   const update = data.update;
   const performer = update.actions[0].performer;
@@ -36,7 +37,7 @@ socket.on("gameUpdateDrawCard", (data) => {
         if (result === "done") {
           game_class.refresh_hand_card(performer);
           game_class.set_card_click_event();
-          game_class.set_current_player();
+          game_class.set_current_player(false);
           game_class.color_match_card();
         }
       })
@@ -61,6 +62,7 @@ socket.on("gameUpdateDrawCard", (data) => {
 });
 
 socket.on("gameUpdatePass", (data) => {
+  console.log("pass!");
   const game_state = data.game_state;
   const update = data.update;
   console.log("Pass!");
@@ -74,12 +76,13 @@ socket.on("gameUpdatePass", (data) => {
     game_class.delete_click_event();
   }
 
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.color_match_card();
   show_action_prompts(update);
 });
 
 socket.on("gameUpdatePlayCard", (data) => {
+  console.log("play");
   const game_state = data.game_state;
   const update = data.update;
   console.log("PlayCard!");
@@ -87,7 +90,7 @@ socket.on("gameUpdatePlayCard", (data) => {
   console.log(update);
   const game_update = new game_update_helper(update);
   const game_class = new game_state_helper(game_state);
-  game_class.check_empty_card();
+  game_class.action_empty_card();
   const play_card_obj = game_update.get_play_card_performer_obj();
   const performer = play_card_obj.performer;
   const check_penalty = game_update.check_card_penalty();
@@ -116,7 +119,7 @@ socket.on("gameUpdatePlayCard", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
-      game_class.check_empty_card();
+      game_class.action_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -129,12 +132,14 @@ socket.on("gameUpdatePlayCard", (data) => {
       game_class.show_back_card_again(performer);
     }
   }
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_side_stuff();
   show_action_prompts(update);
 });
 
 socket.on("gameUpdateReverse", (data) => {
+  console.log("reverse!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Reverse!");
@@ -170,7 +175,7 @@ socket.on("gameUpdateReverse", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
-      game_class.check_empty_card();
+      game_class.action_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -183,12 +188,14 @@ socket.on("gameUpdateReverse", (data) => {
       game_class.show_back_card_again(performer);
     }
   }
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_side_stuff();
   show_action_prompts(update);
 });
 
 socket.on("gameUpdateSkip", (data) => {
+  console.log("skip!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Skip!");
@@ -224,7 +231,7 @@ socket.on("gameUpdateSkip", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
-      game_class.check_empty_card();
+      game_class.action_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -237,12 +244,14 @@ socket.on("gameUpdateSkip", (data) => {
       game_class.show_back_card_again(performer);
     }
   }
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_side_stuff();
   show_action_prompts(update);
 });
 
 socket.on("gameUpdateDrawTwo", (data) => {
+  console.log("draw two!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Draw_two!");
@@ -262,7 +271,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
     if (game_state.receiver === uno_caller) {
       const remove_card = play_card_player.card[0];
       action_util.remove_one_card(remove_card);
-      const penanlty_cards = uno_caller.cards;
+      const penanlty_cards = uno_caller_obj.cards;
       action_util
         .add_card_event(penanlty_cards)
         .then((result) => {
@@ -281,6 +290,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
   } else {
     if (game_state.receiver === play_card_performer) {
       game_class.refresh_hand_card(play_card_performer);
+      game_class.color_match_card(play_card_performer);
       game_class.delete_click_event();
     } else {
       game_class.show_back_card_again(play_card_performer);
@@ -302,23 +312,25 @@ socket.on("gameUpdateDrawTwo", (data) => {
       });
   } else {
     if (game_class.check_current_is_receiver()) {
-      game_class.check_empty_card();
+      game_class.action_empty_card();
       game_class.color_match_card();
       game_class.set_card_click_event();
-    } else {
+    } else if (game_state.receiver != play_card_performer) {
       game_class.delete_click_event();
       game_class.color_match_card();
     }
     game_class.add_back_side_card(draw_card_performer, 2);
   }
 
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_side_stuff();
   game_class.set_deck();
   show_action_prompts(update);
 });
 
 socket.on("gameUpdateWild", (data) => {
+  console.log("wild!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Wild!");
@@ -334,6 +346,7 @@ socket.on("gameUpdateWild", (data) => {
     if (check_penalty) {
       const remove_card = play_card_obj.card[0];
       const uno_caller = game_update.get_uno_penalty_player_obj()[0];
+      console.log(uno_caller);
       action_util.remove_one_card(remove_card);
       const penanlty_cards = uno_caller.cards;
       action_util
@@ -354,7 +367,7 @@ socket.on("gameUpdateWild", (data) => {
     }
   } else {
     if (game_class.check_current_is_receiver()) {
-      game_class.check_empty_card();
+      game_class.action_empty_card();
       game_class.set_card_click_event();
       game_class.color_match_card();
     } else {
@@ -367,12 +380,14 @@ socket.on("gameUpdateWild", (data) => {
       game_class.show_back_card_again(performer);
     }
   }
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_side_stuff();
   show_action_prompts(update);
 });
 
 socket.on("gameUpdateWildDrawFour", (data) => {
+  console.log("draw_four!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Wild Draw Four!");
@@ -420,8 +435,11 @@ socket.on("gameUpdateWildDrawFour", (data) => {
       game_class.show_back_card_again(performer);
     }
   }
-
-  game_class.set_current_player();
+  if (game_class.check_empty) {
+    game_class.set_current_player(true);
+  } else {
+    game_class.set_current_player(false);
+  }
   game_class.set_side_stuff();
   show_action_prompts(update);
 });
@@ -433,7 +451,7 @@ socket.on("sayUnoUpdate", (data) => {
   console.log(game_state);
   console.log(update);
   const game_class = new game_state_helper(game_state);
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_side_stuff();
   game_class.set_deck();
 });
@@ -453,7 +471,7 @@ socket.on("notChallengeUpdate", (data) => {
       .add_card_event(card_list)
       .then((result) => {
         if (result === "done") {
-          game_class.check_empty_card();
+          game_class.action_empty_card();
           game_class.refresh_hand_card(penalty_player);
           game_class.color_match_card();
           game_class.set_side_stuff();
@@ -486,7 +504,7 @@ socket.on("notChallengeUpdate", (data) => {
     game_class.set_side_stuff();
   }
   show_action_prompts(update);
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_deck();
 });
 
@@ -538,7 +556,7 @@ socket.on("challengeSuccessUpdate", (data) => {
     game_class.set_side_stuff();
   }
 
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_deck();
   show_action_prompts(update);
 });
@@ -591,7 +609,7 @@ socket.on("challengeFailUpdate", (data) => {
     game_class.set_side_stuff();
   }
 
-  game_class.set_current_player();
+  game_class.set_current_player(false);
   game_class.set_deck();
   show_action_prompts(update);
 });

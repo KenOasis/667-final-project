@@ -336,10 +336,9 @@ exports.checkUnoPenalty = async (game_id, user_id) => {
           2
         );
         return [true, draw_card_id_list];
-      } else {
-        return [false, null];
       }
     }
+    return [false, null];
   } catch (err) {
     throw err;
   }
@@ -486,7 +485,6 @@ exports.endGame = async (game_id) => {
       await gameUsersDriver.setPoints(game_id, user.user_id, user.points);
     }
     // set finished game time;
-    // TODO failed
     await gamesDriver.setEndGame(game_id);
     return gameResults;
   } catch (err) {

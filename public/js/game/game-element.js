@@ -172,7 +172,7 @@ class game_state_helper {
    * highlight the border
    *
    */
-  set_current_player() {
+  set_current_player(wild_four) {
     const action = this.game_state.undone_action;
     if (this.check_current_is_receiver()) {
       // page_util.js
@@ -194,7 +194,7 @@ class game_state_helper {
           this.game_state.matching.color,
           last_player_name
         );
-        if (this.check_last_wild_four()) {
+        if (this.check_empty()) {
           last_wild_four();
         } else {
           const question_modal = document.getElementById("ChallengeModal");
@@ -334,7 +334,12 @@ class game_state_helper {
       }
     }
   }
-  check_empty_card() {
+  action_empty_card() {
+    if (this.check_empty()) {
+      end_game();
+    }
+  }
+  check_empty() {
     const players = this.game_state.players;
     let has_empty_card = false;
     players.map((player) => {
@@ -343,23 +348,6 @@ class game_state_helper {
         return player;
       }
     });
-    if (has_empty_card) {
-      end_game();
-    }
     return has_empty_card;
-  }
-  check_last_wild_four() {
-    let is_wild_four = false;
-    if (this.check_current_is_receiver()) {
-      const player = this.find_one_player(this.game_state.current_player);
-      if (player.number_of_cards === 1) {
-        const card = player.cards[0];
-        const card_info = CardModule.get_card_detail(card);
-        if (card_info.card_value === "wild_draw_four") {
-          is_wild_four = true;
-        }
-      }
-    }
-    return is_wild_four;
   }
 }

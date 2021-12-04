@@ -112,6 +112,13 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
   const users_id = game_user_list.map((game_user) => game_user.user_id);
   const gameSpace = require("./socket").getNameSpace("game");
   try {
+    const [isUnoPenalty, cards] = await coreDriver.checkUnoPenalty(
+      game_id,
+      performer
+    );
+    if (isUnoPenalty) {
+      await coreDriver.resetUno(game_id, performer);
+    }
     const sockets = await gameSpace.in(room).fetchSockets();
     for await (socket of sockets) {
       const user_id = socket.request.session.userId;
@@ -133,26 +140,19 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
           const current_player_cards_number = game_state.players.filter(
             (player) => player.user_id === performer
           )[0].number_of_cards;
-          // only check one time when socket is the current player && user left one card after
-          // played a card
-          if (current_player_cards_number === 1 && user_id === performer) {
-            const [isUnoPenalty, cards] = await coreDriver.checkUnoPenalty(
-              game_id,
-              performer
-            );
-            if (isUnoPenalty) {
-              // has penalty
-              const unoPenaltyAction = ActionFactory.create("uno_penalty", {
-                performer: performer,
-                cards: cards,
-                receiver: user_id,
-              });
-              update.actions.push(unoPenaltyAction);
-              // reset uno of ther performer (who played card)
-              await coreDriver.resetUno(game_id, performer);
-              game_state = await coreDriver.getGameState(game_id, user_id);
-            }
+
+          if (isUnoPenalty) {
+            // has penalty
+            const unoPenaltyAction = ActionFactory.create("uno_penalty", {
+              performer: performer,
+              cards: cards,
+              receiver: user_id,
+            });
+            update.actions.push(unoPenaltyAction);
+            // reset uno of ther performer (who played card)
+            game_state = await coreDriver.getGameState(game_id, user_id);
           }
+
           switch (next_action.action) {
             case "none":
               {
