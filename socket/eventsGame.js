@@ -343,7 +343,7 @@ exports.endGame = async (game_results) => {
   const user_id_list = game_results.results.map((user) => user.user_id);
   try {
     const sockets = await gameSpace.in(room).fetchSockets();
-    if (sockets && sockets == 4) {
+    if (sockets && sockets.length == 4) {
       for await (socket of sockets) {
         const user_id = socket.request.session.userId;
         if (user_id_list.includes(user_id)) {
