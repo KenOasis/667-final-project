@@ -24,6 +24,7 @@ socket.on("userDisconnect", (data) => {
 });
 
 socket.on("gameUpdateDrawCard", (data) => {
+  console.log("draw!");
   const game_state = data.game_state;
   const update = data.update;
   const performer = update.actions[0].performer;
@@ -61,6 +62,7 @@ socket.on("gameUpdateDrawCard", (data) => {
 });
 
 socket.on("gameUpdatePass", (data) => {
+  console.log("pass!");
   const game_state = data.game_state;
   const update = data.update;
   console.log("Pass!");
@@ -80,6 +82,7 @@ socket.on("gameUpdatePass", (data) => {
 });
 
 socket.on("gameUpdatePlayCard", (data) => {
+  console.log("play");
   const game_state = data.game_state;
   const update = data.update;
   console.log("PlayCard!");
@@ -135,6 +138,8 @@ socket.on("gameUpdatePlayCard", (data) => {
 });
 
 socket.on("gameUpdateReverse", (data) => {
+  console.log("reverse!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Reverse!");
@@ -189,6 +194,8 @@ socket.on("gameUpdateReverse", (data) => {
 });
 
 socket.on("gameUpdateSkip", (data) => {
+  console.log("skip!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Skip!");
@@ -243,6 +250,8 @@ socket.on("gameUpdateSkip", (data) => {
 });
 
 socket.on("gameUpdateDrawTwo", (data) => {
+  console.log("draw two!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Draw_two!");
@@ -320,6 +329,8 @@ socket.on("gameUpdateDrawTwo", (data) => {
 });
 
 socket.on("gameUpdateWild", (data) => {
+  console.log("wild!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Wild!");
@@ -375,6 +386,8 @@ socket.on("gameUpdateWild", (data) => {
 });
 
 socket.on("gameUpdateWildDrawFour", (data) => {
+  console.log("draw_four!");
+
   const game_state = data.game_state;
   const update = data.update;
   console.log("Wild Draw Four!");
