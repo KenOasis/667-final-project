@@ -229,5 +229,10 @@ const loadGameState = () => {
       }
       return game_state;
     })
+    .then((game_state) => {
+      const game_class = new game_state_helper(game_state);
+      console.log("Empty ");
+      game_class.check_empty_card();
+    })
     .catch((error) => console.log(error));
 };

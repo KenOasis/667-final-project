@@ -26,7 +26,6 @@ socket.on("userDisconnect", (data) => {
 socket.on("gameUpdateDrawCard", (data) => {
   const game_state = data.game_state;
   const update = data.update;
-  // console.log("Draw");
   const performer = update.actions[0].performer;
   const add_card = update.actions[0].card;
   const game_class = new game_state_helper(game_state);
@@ -88,6 +87,7 @@ socket.on("gameUpdatePlayCard", (data) => {
   console.log(update);
   const game_update = new game_update_helper(update);
   const game_class = new game_state_helper(game_state);
+  game_class.check_empty_card();
   const play_card_obj = game_update.get_play_card_performer_obj();
   const performer = play_card_obj.performer;
   const check_penalty = game_update.check_card_penalty();

@@ -334,12 +334,15 @@ class game_state_helper {
     const players = this.game_state.players;
     let has_empty_card = false;
     players.map((player) => {
-      if (player.number_of_cards == 0) {
-        has_empty_card === true;
+      if (player.number_of_cards === 0) {
+        has_empty_card = true;
+        return player;
       }
     });
     if (has_empty_card) {
-      //fetch the final counting
+      const Pointing_modal = document.getElementById("PointingModal");
+      const mymodal = new bootstrap.Modal(Pointing_modal);
+      mymodal.toggle();
     }
   }
 }
