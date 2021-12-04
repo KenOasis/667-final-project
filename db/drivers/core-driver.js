@@ -469,12 +469,10 @@ exports.endGame = async (game_id) => {
     }
     // sort points by cards ASC
     gameResults.results.sort((a, b) => {
-      return a.points - a.points;
+      return a.points - b.points;
     });
     // lowest points is winner, get all others points MINUS his/her own points
     // all others are losers, minus all their points
-    console.log("raw points");
-    console.log(gameResults);
     for (let i = 0; i < gameResults.results.length; ++i) {
       gameResults.results[i].points = 0 - gameResults.results[i].points;
       if (i === 0) {

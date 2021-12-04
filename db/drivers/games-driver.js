@@ -153,6 +153,7 @@ exports.setEndGame = async (game_id) => {
     if (game) {
       // TODO test
       game.finished_at = sequelize.fn("NOW");
+      await game.save();
     } else {
       throw new Error("DB data error.");
     }

@@ -268,6 +268,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
         .then((result) => {
           if (result === "done") {
             game_class.refresh_hand_card(play_card_performer);
+            game_class.color_match_card();
             game_class.delete_click_event();
           }
         })
