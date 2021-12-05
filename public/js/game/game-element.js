@@ -161,7 +161,6 @@ class game_state_helper {
         card.setAttribute("matching", "False");
       }
     }
-    console.log(hand_card_matching);
     return hand_card_matching;
   }
   /**
@@ -311,12 +310,12 @@ class game_state_helper {
     const players = this.game_state.players;
     players.map((player) => {
       const player_id = player.user_id;
-      console.log(player_id);
+
       if (player.uno) {
         page_effect.show_call_uno(player_id);
       } else {
         const position = this.find_position(player_id);
-        console.log(position);
+
         page_effect.back_to_origin_avater(position, player_id);
       }
     });
@@ -349,5 +348,11 @@ class game_state_helper {
       }
     });
     return has_empty_card;
+  }
+  action_empty_desk() {
+    const desk = this.game_state.card_deck;
+    if (desk === 0) {
+      end_game();
+    }
   }
 }

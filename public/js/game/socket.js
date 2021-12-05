@@ -30,6 +30,7 @@ socket.on("gameUpdateDrawCard", (data) => {
   const performer = update.actions[0].performer;
   const add_card = update.actions[0].card;
   const game_class = new game_state_helper(game_state);
+  game_class.action_empty_desk();
   if (performer === player_controller.whoami()) {
     action_util
       .add_card_event(add_card)
@@ -45,17 +46,7 @@ socket.on("gameUpdateDrawCard", (data) => {
         console.log(err);
       });
   } else {
-    const position = game_class.find_position(performer);
-    const number_card = game_class.check_number_of_card(performer);
-    if (number_card >= 10) {
-      game_class.show_back_card_again(performer);
-    } else {
-      if (position === "left" || position === "right") {
-        action_util.add_card_back_event(1, "cardcol", performer);
-      } else {
-        action_util.add_card_back_event(1, "back", performer);
-      }
-    }
+    game_class.add_back_side_card(performer, 1);
   }
   game_class.set_deck();
   show_action_prompts(update);
@@ -126,11 +117,7 @@ socket.on("gameUpdatePlayCard", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card();
     }
-    if (check_penalty) {
-      game_class.add_back_side_card(performer, 2);
-    } else {
-      game_class.show_back_card_again(performer);
-    }
+    game_class.show_back_card_again(performer);
   }
   game_class.set_current_player(false);
   game_class.set_side_stuff();
@@ -138,8 +125,6 @@ socket.on("gameUpdatePlayCard", (data) => {
 });
 
 socket.on("gameUpdateReverse", (data) => {
-  console.log("reverse!");
-
   const game_state = data.game_state;
   const update = data.update;
   console.log("Reverse!");
@@ -182,11 +167,7 @@ socket.on("gameUpdateReverse", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card;
     }
-    if (check_penalty) {
-      game_class.add_back_side_card(performer, 2);
-    } else {
-      game_class.show_back_card_again(performer);
-    }
+    game_class.show_back_card_again(performer);
   }
   game_class.set_current_player(false);
   game_class.set_side_stuff();
@@ -238,11 +219,7 @@ socket.on("gameUpdateSkip", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card();
     }
-    if (check_penalty) {
-      game_class.add_back_side_card(performer, 2);
-    } else {
-      game_class.show_back_card_again(performer);
-    }
+    game_class.show_back_card_again(performer);
   }
   game_class.set_current_player(false);
   game_class.set_side_stuff();
@@ -285,7 +262,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
           console.log(err);
         });
     } else {
-      game_class.add_back_side_card(uno_caller, 2);
+      game_class.show_back_card_again(uno_caller);
     }
   } else {
     if (game_state.receiver === play_card_performer) {
@@ -374,11 +351,7 @@ socket.on("gameUpdateWild", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card;
     }
-    if (check_penalty) {
-      game_class.add_back_side_card(performer, 2);
-    } else {
-      game_class.show_back_card_again(performer);
-    }
+    game_class.show_back_card_again(performer);
   }
   game_class.set_current_player(false);
   game_class.set_side_stuff();
@@ -429,11 +402,7 @@ socket.on("gameUpdateWildDrawFour", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card;
     }
-    if (check_penalty) {
-      game_class.add_back_side_card(performer, 2);
-    } else {
-      game_class.show_back_card_again(performer);
-    }
+    game_class.show_back_card_again(performer);
   }
   if (game_class.check_empty) {
     game_class.set_current_player(true);
@@ -489,18 +458,7 @@ socket.on("notChallengeUpdate", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card();
     }
-
-    const position = game_class.find_position(penalty_player);
-    const number_card = game_class.check_number_of_card(penalty_player);
-    if (number_card >= 10) {
-      game_class.show_back_card_again(penalty_player);
-    } else {
-      if (position === "left" || position === "right") {
-        action_util.add_card_back_event(cards_num, "cardcol", penalty_player);
-      } else {
-        action_util.add_card_back_event(cards_num, "back", penalty_player);
-      }
-    }
+    game_class.add_back_side_card(penalty_player, cards_num);
     game_class.set_side_stuff();
   }
   show_action_prompts(update);
@@ -540,19 +498,7 @@ socket.on("challengeSuccessUpdate", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card();
     }
-
-    const position = game_class.find_position(penalty_player);
-
-    const number_card = game_class.check_number_of_card(penalty_player);
-    if (number_card >= 10) {
-      game_class.show_back_card_again(penalty_player);
-    } else {
-      if (position === "left" || position === "right") {
-        action_util.add_card_back_event(cards_num, "cardcol", penalty_player);
-      } else {
-        action_util.add_card_back_event(cards_num, "back", penalty_player);
-      }
-    }
+    game_class.add_back_side_card(penalty_player, cards_num);
     game_class.set_side_stuff();
   }
 
@@ -593,19 +539,7 @@ socket.on("challengeFailUpdate", (data) => {
       game_class.delete_click_event();
       game_class.color_match_card();
     }
-
-    const position = game_class.find_position(penalty_player);
-
-    const number_card = game_class.check_number_of_card(penalty_player);
-    if (number_card >= 10) {
-      game_class.show_back_card_again(penalty_player);
-    } else {
-      if (position === "left" || position === "right") {
-        action_util.add_card_back_event(cards_num, "cardcol", penalty_player);
-      } else {
-        action_util.add_card_back_event(cards_num, "back", penalty_player);
-      }
-    }
+    game_class.add_back_side_card(penalty_player, cards_num);
     game_class.set_side_stuff();
   }
 

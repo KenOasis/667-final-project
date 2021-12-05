@@ -103,7 +103,6 @@ let page_effect = {
   },
   back_to_origin_avater(position, player_id) {
     const avater = document.getElementById("avater_" + player_id);
-    console.log(position);
     switch (position) {
       case "left":
         avater.src = "/images/profile/profile1.gif";

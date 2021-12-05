@@ -231,7 +231,7 @@ const loadGameState = () => {
     })
     .then((game_state) => {
       const game_class = new game_state_helper(game_state);
-      game_class.check_empty_card();
+      game_class.action_empty_card();
     })
     .catch((error) => console.log(error));
 };
