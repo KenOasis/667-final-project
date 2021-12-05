@@ -335,7 +335,7 @@ class game_state_helper {
   }
   action_empty_card() {
     if (this.check_empty()) {
-      end_game();
+      // end_game();
     }
   }
   check_empty() {
@@ -352,7 +352,7 @@ class game_state_helper {
   action_empty_desk() {
     const desk = this.game_state.card_deck;
     if (desk === 0) {
-      end_game();
+      // end_game();
     }
   }
 }
