@@ -549,13 +549,13 @@ socket.on("challengeFailUpdate", (data) => {
 });
 
 socket.on("endGameUpdate", (data) => {
-  const results = data.results.results;
+  const results = data.results;
   console.log("Game Over!");
   console.log(results);
-  const winner = results[0].username;
-  action_util.add_pointing_modal_title(winner);
-  action_util.add_pointing_modal_body(results);
-  const end_point_modal = document.getElementById("PointingModal");
-  const mymodal = new bootstrap.Modal(end_point_modal);
-  mymodal.toggle();
+  // const winner = results[0].username;
+  // action_util.add_pointing_modal_title(winner);
+  // action_util.add_pointing_modal_body(results);
+  // const end_point_modal = document.getElementById("PointingModal");
+  // const mymodal = new bootstrap.Modal(end_point_modal);
+  // mymodal.toggle();
 });

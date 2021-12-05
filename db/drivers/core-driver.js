@@ -355,6 +355,23 @@ exports.drawFour = async (game_id, user_id) => {
   }
 };
 
+exports.getNextPlayerId = async (game_id, user_id) => {
+  try {
+    const direction = await gamesDriver.getDirection(game_id);
+    const initial_order = await gameUsersDriver.getGameOrder(game_id);
+    const mod = (n, m) => ((n % m) + m) % m; // js modulo has bug when n is negative
+    if (direction && initial_order && initial_order.length) {
+      const current_index = initial_order.findIndex(
+        (element) => element === user_id
+      );
+      const next_index = mod(current_index + direction, initial_order.length);
+      const next_id = initial_order[next_index];
+      return next_id;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
 exports.checkChallenge = async (game_id, user_id) => {
   try {
     const direction = await gamesDriver.getDirection(game_id);
@@ -445,9 +462,24 @@ exports.resetUnoAtPass = async (game_id, user_id) => {
   }
 };
 
-exports.endGame = async (game_id) => {
+exports.checkEndGame = async (game_id, user_id, card_id) => {
+  try {
+    const game_card = await gameCardsDriver.getPlayerCards(game_id, user_id);
+    if (game_card && game_card.length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.endGame = async (game_id, draw_card_performer, drawed_cards) => {
   const gameResults = {};
   gameResults.game_id = game_id;
+  gameResults.draw_card_performer = draw_card_performer;
+  gameResults.drawed_cards = drawed_cards;
   gameResults.results = [];
   try {
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);

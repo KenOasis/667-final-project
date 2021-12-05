@@ -185,113 +185,145 @@ exports.playCard = async (req, res, next) => {
   const card_id = +req.body.card_id;
   const user_id = req.session.userId;
   const card = CardFactory.create(card_id);
-
   try {
     const game_user_list = await coreDriver.getGameUserList(game_id);
     await coreDriver.discard(game_id, card_id);
-    if (undone_action === "draw") {
-      await coreDriver.resetUndoneAction(game_id);
-    }
-    if (card.type === "number") {
-      const matching_color = card.color;
-      const matching_value = card.face_value;
-      const isSetMatchingSuccess = await coreDriver.setMatching(
-        game_id,
-        matching_color,
-        matching_value
-      );
-      const isSetCurrentSuccess = await coreDriver.setNextCurrent(
-        game_id,
-        user_id,
-        "next"
-      );
-      if (isSetMatchingSuccess && isSetCurrentSuccess) {
-        eventsGame.playCard(game_user_list, card_id, user_id, {
-          action: "none",
-        });
+    // Check end game
+    const isEndGame = await coreDriver.checkEndGame(game_id, user_id, card_id);
+    if (isEndGame) {
+      let drawed_cards = [];
+      let draw_card_performer = user_id;
+      console.log(card.action);
+      if (card.action === "draw_two") {
+        [drawed_cards, draw_card_performer] = await coreDriver.nextDrawTwo(
+          game_id,
+          user_id
+        );
+      } else if (card.action === "wild_draw_four") {
+        draw_card_performer = await coreDriver.getNextPlayerId(
+          game_id,
+          user_id
+        );
+        drawed_cards = await coreDriver.drawFour(game_id, performer);
       }
-    } else if (card.type === "action") {
-      const matching_color = card.color;
-      const matching_value = card.action; // matching_value as type of action card
-      const isSetMatchingSuccess = await coreDriver.setMatching(
+      const game_results = await coreDriver.endGame(
         game_id,
-        matching_color,
-        matching_value
+        draw_card_performer,
+        drawed_cards
       );
-      if (card.action === "reverse") {
-        const isChangeDirectionSuccess = await coreDriver.changeDirection(
-          game_id
+      const game_state = await coreDriver.getGameState(game_id, user_id);
+      console.log(game_state);
+      console.log(game_results);
+      eventsGame.endGame(game_results);
+      res.status(200).json({
+        status: "success",
+        message: "Game over!",
+      });
+    } else {
+      if (undone_action === "draw") {
+        await coreDriver.resetUndoneAction(game_id);
+      }
+      if (card.type === "number") {
+        const matching_color = card.color;
+        const matching_value = card.face_value;
+        const isSetMatchingSuccess = await coreDriver.setMatching(
+          game_id,
+          matching_color,
+          matching_value
         );
         const isSetCurrentSuccess = await coreDriver.setNextCurrent(
           game_id,
           user_id,
           "next"
         );
-        if (
-          isSetMatchingSuccess &&
-          isChangeDirectionSuccess &&
-          isSetCurrentSuccess
-        ) {
-          eventsGame.playCard(game_user_list, card_id, user_id, {
-            action: "reverse",
-          });
-        }
-      } else if (card.action === "skip") {
-        const [isSetCurrentSuccess, performer] =
-          await coreDriver.setNextCurrent(game_id, user_id, "skip");
         if (isSetMatchingSuccess && isSetCurrentSuccess) {
           eventsGame.playCard(game_user_list, card_id, user_id, {
-            action: "skip",
-            performer: performer,
+            action: "none",
           });
         }
-      } else {
-        // draw two
-        const [draw_card_id_list, performer] = await coreDriver.nextDrawTwo(
-          game_id,
-          user_id
-        );
-        const isSetCurrentSuccess = await coreDriver.setNextCurrent(
-          game_id,
-          user_id,
-          "skip"
-        );
-        if (draw_card_id_list && isSetCurrentSuccess) {
-          eventsGame.playCard(game_user_list, card_id, user_id, {
-            action: "draw_two",
-            performer: performer,
-            cards: draw_card_id_list,
-          });
-        }
-      }
-    } else {
-      const isSetCurrentSuccess = await coreDriver.setNextCurrent(
-        game_id,
-        user_id,
-        "next"
-      );
-      if (card.action === "wild") {
-        const matching_color = req.body.color;
-        const matching_value = card.face_value; // actually value "none"
+      } else if (card.type === "action") {
+        const matching_color = card.color;
+        const matching_value = card.action; // matching_value as type of action card
         const isSetMatchingSuccess = await coreDriver.setMatching(
           game_id,
           matching_color,
           matching_value
         );
-        eventsGame.playCard(game_user_list, card_id, user_id, {
-          action: "wild",
-          color: matching_color,
-        });
+        if (card.action === "reverse") {
+          const isChangeDirectionSuccess = await coreDriver.changeDirection(
+            game_id
+          );
+          const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+            game_id,
+            user_id,
+            "next"
+          );
+          if (
+            isSetMatchingSuccess &&
+            isChangeDirectionSuccess &&
+            isSetCurrentSuccess
+          ) {
+            eventsGame.playCard(game_user_list, card_id, user_id, {
+              action: "reverse",
+            });
+          }
+        } else if (card.action === "skip") {
+          const [isSetCurrentSuccess, performer] =
+            await coreDriver.setNextCurrent(game_id, user_id, "skip");
+          if (isSetMatchingSuccess && isSetCurrentSuccess) {
+            eventsGame.playCard(game_user_list, card_id, user_id, {
+              action: "skip",
+              performer: performer,
+            });
+          }
+        } else {
+          // draw two
+          const [draw_card_id_list, performer] = await coreDriver.nextDrawTwo(
+            game_id,
+            user_id
+          );
+          const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+            game_id,
+            user_id,
+            "skip"
+          );
+          if (draw_card_id_list && isSetCurrentSuccess) {
+            eventsGame.playCard(game_user_list, card_id, user_id, {
+              action: "draw_two",
+              performer: performer,
+              cards: draw_card_id_list,
+            });
+          }
+        }
       } else {
-        const color = req.body.color;
-        coreDriver.setUndoneActionWildDrawFourColor(game_id, color);
-        eventsGame.playCard(game_user_list, card_id, user_id, {
-          action: "wild_draw_four",
-          color: color,
-        });
+        const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+          game_id,
+          user_id,
+          "next"
+        );
+        if (card.action === "wild") {
+          const matching_color = req.body.color;
+          const matching_value = card.face_value; // actually value "none"
+          const isSetMatchingSuccess = await coreDriver.setMatching(
+            game_id,
+            matching_color,
+            matching_value
+          );
+          eventsGame.playCard(game_user_list, card_id, user_id, {
+            action: "wild",
+            color: matching_color,
+          });
+        } else {
+          const color = req.body.color;
+          coreDriver.setUndoneActionWildDrawFourColor(game_id, color);
+          eventsGame.playCard(game_user_list, card_id, user_id, {
+            action: "wild_draw_four",
+            color: color,
+          });
+        }
       }
+      return res.status(200).json({ status: "success" });
     }
-    return res.status(200).json({ status: "success" });
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -305,7 +337,6 @@ exports.endGame = async (req, res, next) => {
   const game_id = +req.body.game_id;
   try {
     const game_results = await coreDriver.endGame(game_id);
-    console.log(game_results);
     eventsGame.endGame(game_results);
   } catch (err) {
     console.error(err);
