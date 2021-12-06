@@ -5,6 +5,15 @@ let player_controller = {
     const id = parseInt(container.id.replace(/player_/g, ""));
     return id;
   },
+  find_position_by_page(player_id) {
+    let player = document.getElementById("player_" + player_id);
+    let position = player.getAttribute("position");
+    return position;
+  },
+  remove_first_card(player_id) {
+    let player = document.getElementById("player_" + player_id);
+    player.removeChild(player.firstChild);
+  },
 };
 let action_util = {
   add_card_event(card_list) {
