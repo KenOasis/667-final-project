@@ -333,20 +333,20 @@ exports.playCard = async (req, res, next) => {
   }
 };
 
-exports.endGame = async (req, res, next) => {
-  const game_id = +req.body.game_id;
-  try {
-    const game_results = await coreDriver.endGame(game_id);
-    eventsGame.endGame(game_results);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "failed",
-      message: "Internal Server Error",
-    });
-  }
-  res.status(200).json({
-    status: "success",
-    message: "Game over!",
-  });
-};
+// exports.endGame = async (req, res, next) => {
+//   const game_id = +req.body.game_id;
+//   try {
+//     const game_results = await coreDriver.endGame(game_id);
+//     eventsGame.endGame(game_results);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({
+//       status: "failed",
+//       message: "Internal Server Error",
+//     });
+//   }
+//   res.status(200).json({
+//     status: "success",
+//     message: "Game over!",
+//   });
+// };
