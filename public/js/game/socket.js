@@ -24,13 +24,11 @@ socket.on("userDisconnect", (data) => {
 });
 
 socket.on("gameUpdateDrawCard", (data) => {
-  console.log("draw!");
   const game_state = data.game_state;
   const update = data.update;
   const performer = update.actions[0].performer;
   const add_card = update.actions[0].card;
   const game_class = new game_state_helper(game_state);
-  // game_class.action_empty_desk();
   if (performer === player_controller.whoami()) {
     action_util
       .add_card_event(add_card)
@@ -79,7 +77,7 @@ socket.on("gameUpdatePlayCard", (data) => {
   console.log("PlayCard!");
   console.log(game_state);
   console.log(update);
-  
+
   const game_update = new game_update_helper(update);
   const game_class = new game_state_helper(game_state);
   // game_class.action_empty_card();
@@ -128,6 +126,7 @@ socket.on("gameUpdatePlayCard", (data) => {
 socket.on("gameUpdateReverse", (data) => {
   const game_state = data.game_state;
   const update = data.update;
+  new Audio("/audio/reverse.m4a").play();
   console.log("Reverse!");
   console.log(game_state);
   console.log(update);
@@ -177,7 +176,7 @@ socket.on("gameUpdateReverse", (data) => {
 
 socket.on("gameUpdateSkip", (data) => {
   console.log("skip!");
-
+  new Audio("/audio/skip.m4a").play();
   const game_state = data.game_state;
   const update = data.update;
   console.log("Skip!");
@@ -229,7 +228,7 @@ socket.on("gameUpdateSkip", (data) => {
 
 socket.on("gameUpdateDrawTwo", (data) => {
   console.log("draw two!");
-
+  new Audio("/audio/draw_two.m4a").play();
   const game_state = data.game_state;
   const update = data.update;
   console.log("Draw_two!");
@@ -307,7 +306,7 @@ socket.on("gameUpdateDrawTwo", (data) => {
 
 socket.on("gameUpdateWild", (data) => {
   console.log("wild!");
-
+  new Audio("/audio/wild.m4a").play();
   const game_state = data.game_state;
   const update = data.update;
   console.log("Wild!");
@@ -360,6 +359,7 @@ socket.on("gameUpdateWild", (data) => {
 
 socket.on("gameUpdateWildDrawFour", (data) => {
   console.log("draw_four!");
+  new Audio("/audio/wild_draw_four.m4a").play();
 
   const game_state = data.game_state;
   const update = data.update;
@@ -412,6 +412,7 @@ socket.on("gameUpdateWildDrawFour", (data) => {
 
 socket.on("sayUnoUpdate", (data) => {
   const game_state = data.game_state;
+  new Audio("/audio/uno.m4a").play();
   const update = data.update;
   console.log("Uno!");
   console.log(game_state);
