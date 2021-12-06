@@ -570,7 +570,7 @@ socket.on("endGameUpdate", (data) => {
       game_class.show_back_card_again(draw_card_performer);
     }
     game_class.show_back_card_again(game_state.current_player);
-    mymodad.toggle();
+    mymodal.toggle();
   }
   game_class.set_side_stuff();
 });
