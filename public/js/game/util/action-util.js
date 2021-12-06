@@ -107,7 +107,7 @@ let action_util = {
   },
   add_pointing_modal_title(winner) {
     const title = document.getElementById("PointingTitle");
-    title.innerText = `${winner} WIN`;
+    title.innerText = `${winner} Win`;
   },
   add_pointing_modal_body(players) {
     const list_modal = document.getElementById("end_game_list");
