@@ -7,6 +7,7 @@ const Cards = db["cards"];
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
 const coreDriver = require("./core-driver");
+const shuffle = require("../../util/shuffle");
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 Games.hasMany(GameUsers, { foreignKey: "game_id" });
 
@@ -188,7 +189,7 @@ exports.getDiscards = async (game_id) => {
 
 exports.drawCard = async (game_id, user_id, number_of_cards) => {
   try {
-    const game_cards = await GameCards.findAll({
+    let game_cards = await GameCards.findAll({
       where: {
         game_id,
         in_deck: true,
@@ -197,6 +198,48 @@ exports.drawCard = async (game_id, user_id, number_of_cards) => {
       order: [["draw_order", "ASC"]],
       limit: number_of_cards,
     });
+
+    // Not enough cards to draw, shuffle discarded cards and replendish the draw pile deck
+    if (game_cards && game_cards.length < number_of_cards) {
+      // get all cards in discarded pile
+      const discarded_game_cards = await GameCards.findAll({
+        where: {
+          game_id,
+          in_deck: false,
+          discarded: {
+            [Op.gt]: 0,
+          },
+        },
+        order: [["draw_order", "ASC"]],
+      });
+
+      if (discarded_game_cards && discarded_game_cards.length) {
+        const draw_orders = discarded_game_cards.map(
+          (game_card) => game_card.draw_order
+        );
+        const shuffle_draw_orders = shuffle(draw_orders);
+        let index_of_draw_orders = 0;
+        for await (game_card of discarded_game_cards) {
+          game_card.in_deck = true;
+          game_card.draw_order = shuffle_draw_orders[index_of_draw_orders];
+          game_card.discarded = 0;
+          await game_card.save();
+          index_of_draw_orders++;
+        }
+        // redo action of drawCard;
+        game_cards = await GameCards.findAll({
+          where: {
+            game_id,
+            in_deck: true,
+            discarded: 0,
+          },
+          order: [["draw_order", "ASC"]],
+          limit: number_of_cards,
+        });
+      } else {
+        throw new Error("Reshuffle card failed.");
+      }
+    }
     if (game_cards && game_cards.length === number_of_cards) {
       for await (const game_card of game_cards) {
         game_card.user_id = user_id;

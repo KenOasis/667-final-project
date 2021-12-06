@@ -5,6 +5,15 @@ let player_controller = {
     const id = parseInt(container.id.replace(/player_/g, ""));
     return id;
   },
+  find_position_by_page(player_id) {
+    let player = document.getElementById("player_" + player_id);
+    let position = player.getAttribute("position");
+    return position;
+  },
+  remove_first_card(player_id) {
+    let player = document.getElementById("player_" + player_id);
+    player.removeChild(player.firstChild);
+  },
 };
 let action_util = {
   add_card_event(card_list) {
@@ -98,7 +107,7 @@ let action_util = {
   },
   add_pointing_modal_title(winner) {
     const title = document.getElementById("PointingTitle");
-    title.innerText = `${winner} WIN`;
+    title.innerText = `${winner} Win`;
   },
   add_pointing_modal_body(players) {
     const list_modal = document.getElementById("end_game_list");

@@ -347,9 +347,12 @@ exports.endGame = async (game_results) => {
       for await (socket of sockets) {
         const user_id = socket.request.session.userId;
         if (user_id_list.includes(user_id)) {
+          const game_state = await coreDriver.getGameState(game_id, user_id);
           gameSpace
             .in(socket.id)
-            .emit("endGameUpdate", { results: game_results });
+            .emit("endGameUpdate", {
+              game_state, 
+              results: game_results });
         } else {
           throw new Error("Forbidden");
         }
