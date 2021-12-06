@@ -197,6 +197,10 @@ exports.drawCard = async (game_id, user_id, number_of_cards) => {
       order: [["draw_order", "ASC"]],
       limit: number_of_cards,
     });
+
+    // Not enough cards to draw, shuffle discarded cards and replendish the draw pile deck
+    if (game_cards && game_cards.length < number_of_cards) {
+    }
     if (game_cards && game_cards.length === number_of_cards) {
       for await (const game_card of game_cards) {
         game_card.user_id = user_id;

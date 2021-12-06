@@ -347,6 +347,7 @@ exports.endGame = async (game_results) => {
       for await (socket of sockets) {
         const user_id = socket.request.session.userId;
         if (user_id_list.includes(user_id)) {
+          game_results.receiver = user_id;
           gameSpace
             .in(socket.id)
             .emit("endGameUpdate", { results: game_results });
