@@ -545,68 +545,32 @@ socket.on("challengeFailUpdate", (data) => {
 });
 
 socket.on("endGameUpdate", (data) => {
+  const game_state = data.game_state;
   const results = data.results;
   console.log("Game Over!");
   console.log(results);
+  console.log(game_state);
   const winner = results.results[0].username;
-  const winner_id = results.results[0].user_id;
-  let length = 0;
   action_util.add_pointing_modal_title(winner);
   action_util.add_pointing_modal_body(results.results);
   const end_point_modal = document.getElementById("PointingModal");
   const mymodal = new bootstrap.Modal(end_point_modal);
-
-  if (results.draw_card_performer === results.receiver) {
-    if (results.drawed_cards.length > 0) {
-      length = results.drawed_cards.length;
-      const add_card = results.drawed_cards;
-      action_util
-        .add_card_event(add_card)
-        .then((result) => {
-          if (result === "done") {
-            mymodal.toggle();
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      player_controller.remove_first_card(results.receiver);
+  const game_class = new game_state_helper(game_state);
+  const draw_card_performer = results.draw_card_performer;
+  if (game_class.check_current_is_receiver()) {
+    game_class.refresh_hand_card(game_state.current_player);
+    if (draw_card_performer != game_state.current_player) {
+      game_class.show_back_card_again(draw_card_performer);
     }
+    mymodal.toggle();
   } else {
-    if (length != 0) {
-      const position = player_controller.find_position_by_page(
-        results.draw_card_performer
-      );
-      if (position === "left" || position === "right") {
-        action_util
-          .add_card_back_event(
-            add_number,
-            "cardcol",
-            results.draw_card_performer
-          )
-          .then((result) => {
-            if (result === "done") {
-              mymodal.toggle();
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else if (position === "top") {
-        action_util
-          .add_card_back_event(add_number, "back", results.draw_card_performer)
-          .then((result) => {
-            if (result === "done") {
-              mymodal.toggle();
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+    if (draw_card_performer === game_state.receiver) {
+      game_class.refresh_hand_card(game_state.receiver);
     } else {
-      player_controller.remove_first_card(winner_id);
+      game_class.show_back_card_again(draw_card_performer);
     }
+    game_class.show_back_card_again(game_state.current_player);
+    mymodad.toggle();
   }
+  game_class.set_side_stuff();
 });

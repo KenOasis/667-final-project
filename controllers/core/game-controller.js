@@ -204,7 +204,7 @@ exports.playCard = async (req, res, next) => {
           game_id,
           user_id
         );
-        drawed_cards = await coreDriver.drawFour(game_id, performer);
+        drawed_cards = await coreDriver.drawFour(game_id, draw_card_performer);
       }
       const game_results = await coreDriver.endGame(
         game_id,
