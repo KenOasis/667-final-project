@@ -79,6 +79,7 @@ socket.on("gameUpdatePlayCard", (data) => {
   console.log("PlayCard!");
   console.log(game_state);
   console.log(update);
+  
   const game_update = new game_update_helper(update);
   const game_class = new game_state_helper(game_state);
   // game_class.action_empty_card();
