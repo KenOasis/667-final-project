@@ -171,7 +171,7 @@ class game_state_helper {
    * highlight the border
    *
    */
-  set_current_player(wild_four) {
+  set_current_player() {
     const action = this.game_state.undone_action;
     if (this.check_current_is_receiver()) {
       // page_util.js
@@ -193,13 +193,9 @@ class game_state_helper {
           this.game_state.matching.color,
           last_player_name
         );
-        if (this.check_empty()) {
-          last_wild_four();
-        } else {
-          const question_modal = document.getElementById("ChallengeModal");
-          const mymodal = new bootstrap.Modal(question_modal);
-          mymodal.toggle();
-        }
+        const question_modal = document.getElementById("ChallengeModal");
+        const mymodal = new bootstrap.Modal(question_modal);
+        mymodal.toggle();
         page_effect.hide_pass_button();
       }
     } else {
@@ -333,26 +329,26 @@ class game_state_helper {
       }
     }
   }
-  action_empty_card() {
-    if (this.check_empty()) {
-      // end_game();
-    }
-  }
-  check_empty() {
-    const players = this.game_state.players;
-    let has_empty_card = false;
-    players.map((player) => {
-      if (player.number_of_cards === 0) {
-        has_empty_card = true;
-        return player;
-      }
-    });
-    return has_empty_card;
-  }
-  action_empty_desk() {
-    const desk = this.game_state.card_deck;
-    if (desk === 0) {
-      // end_game();
-    }
-  }
+  // action_empty_card() {
+  //   if (this.check_empty()) {
+  //     // end_game();
+  //   }
+  // }
+  // check_empty() {
+  //   const players = this.game_state.players;
+  //   let has_empty_card = false;
+  //   players.map((player) => {
+  //     if (player.number_of_cards === 0) {
+  //       has_empty_card = true;
+  //       return player;
+  //     }
+  //   });
+  //   return has_empty_card;
+  // }
+  // action_empty_desk() {
+  //   const desk = this.game_state.card_deck;
+  //   if (desk === 0) {
+  //     // end_game();
+  //   }
+  // }
 }

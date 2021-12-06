@@ -229,9 +229,5 @@ const loadGameState = () => {
       }
       return game_state;
     })
-    .then((game_state) => {
-      const game_class = new game_state_helper(game_state);
-      game_class.action_empty_card();
-    })
     .catch((error) => console.log(error));
 };
