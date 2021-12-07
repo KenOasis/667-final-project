@@ -232,11 +232,11 @@ exports.getUsersForLobby = async (game_id) => {
     if (game_users && game_users.length) {
       const users = [];
       game_users.forEach((game_user) => {
-        const userObj = {};
-        userObj.user_id = game_user.id;
-        userObj.username = game_user.username;
-        userObj.status = game_user.initial_order === 0 ? "ready" : "playing";
-        users.push(userObj);
+        const user_obj = {};
+        user_obj.user_id = game_user.id;
+        user_obj.username = game_user.username;
+        user_obj.status = game_user.initial_order === 0 ? "ready" : "playing";
+        users.push(user_obj);
       });
       return users;
     }

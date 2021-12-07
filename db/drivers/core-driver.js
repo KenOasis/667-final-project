@@ -8,9 +8,51 @@ const shuffle = require("../../util/shuffle");
 
 exports.checkUserInGame = async (game_id, user_id) => {
   try {
-    const isInGame = await gameUsersDriver.checkUserInGame(game_id, user_id);
+    const is_in_game = await gameUsersDriver.checkUserInGame(game_id, user_id);
+    return is_in_game;
+  } catch (err) {
+    throw err;
+  }
+};
 
-    return isInGame;
+exports.checkActionValidation = async (game_id, user_id, card_id = 0) => {
+  try {
+    let is_current_player = false;
+    const current_player = await gameUsersDriver.getCurrentPlayer(game_id);
+    if (current_player === user_id) {
+      is_current_player = true;
+    }
+    if (card_id === 0 && current_player) {
+      return true;
+    } else if (card_id !== 0) {
+      const player_cards = await gameCardsDriver.getPlayerCards(
+        game_id,
+        user_id
+      );
+      const cards = player_cards.map((card) => card.card_id);
+      const is_card_onhand = cards.includes(card_id);
+      const matching = await gamesDriver.getMatching(game_id);
+      let is_card_matching = false;
+      const Card = CardFactory.create(card_id);
+      if (
+        Card.type === "number" &&
+        (Card.color === matching.color || Card.face_value === matching.value)
+      ) {
+        is_card_matching = true;
+      } else if (
+        Card.type === "action" &&
+        (Card.color === matching.color || Card.action === matching.value)
+      ) {
+        is_card_matching = true;
+      } else if (Card.type === "wild") {
+        is_card_matching = true;
+      }
+
+      if (is_card_onhand && is_card_matching) {
+        return true;
+      }
+    }
+    return false;
   } catch (err) {
     throw err;
   }
@@ -20,35 +62,35 @@ exports.initialGame = async (game_id, users_id) => {
   try {
     // Step 1 : Generate the random sequence of starting order of user
     // referrence: async iteration https://2ality.com/2016/10/asynchronous-iteration.html
-    const userIdsShuffled = shuffle(users_id);
-    let userIdsOrderCounter = 1;
+    const user_id_list_shuffled = shuffle(users_id);
+    let game_order_counter = 1;
 
-    for await (const user_id of userIdsShuffled) {
+    for await (const user_id of user_id_list_shuffled) {
       await gameUsersDriver.updateGameUsers(
         game_id,
         user_id,
-        userIdsOrderCounter === 1 ? true : false,
-        userIdsOrderCounter
+        game_order_counter === 1 ? true : false,
+        game_order_counter
       ); // Game start at the first order player
-      userIdsOrderCounter += 1;
+      game_order_counter += 1;
     }
     // Stpe 2: Generate the 108 game_card rows and give them an random draw order.
 
-    const allCardsIds = await cardsDriver.getAllCardsId();
+    const card_id_list = await cardsDriver.getAllCardsId();
 
-    const allCardsIdsShuffled = shuffle(allCardsIds);
+    const card_id_list_shuffled = shuffle(card_id_list);
 
-    let cardIdsOrderCounter = 1;
+    let draw_order_counter = 1;
 
-    for await (const card_id of allCardsIdsShuffled) {
+    for await (const card_id of card_id_list_shuffled) {
       await gameCardsDriver.initialGameCards(
         game_id,
-        userIdsShuffled[0],
+        user_id_list_shuffled[0], // initial value to match the table unqiue check
         card_id,
-        cardIdsOrderCounter
+        draw_order_counter
       );
 
-      cardIdsOrderCounter += 1;
+      draw_order_counter += 1;
     }
 
     // Step 3: initial matching
@@ -65,14 +107,14 @@ exports.initialGame = async (game_id, users_id) => {
 
 exports.getGameUserList = async (game_id) => {
   try {
-    const game_users_list = await gameUsersDriver.getGameUsersByGameId(game_id);
+    const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
     let user_list = [];
-    if (game_users_list && game_users_list.length) {
-      user_list = game_users_list.map((game_users) => {
+    if (game_users && game_users.length) {
+      user_list = game_users.map((game_user) => {
         return {
           game_id: game_id,
-          user_id: game_users.id,
-          username: game_users.username,
+          user_id: game_user.id,
+          username: game_user.username,
         };
       });
       return user_list;
@@ -152,11 +194,11 @@ exports.drawCard = async (game_id, user_id) => {
 exports.setUndoneActionDraw = async (game_id) => {
   try {
     const undone_action = "draw";
-    const updatedResult = await gamesDriver.updateUndoneAction(
+    const updated_result = await gamesDriver.updateUndoneAction(
       game_id,
       undone_action
     );
-    return updatedResult;
+    return updated_result;
   } catch (err) {
     throw err;
   }
@@ -166,11 +208,11 @@ exports.setUndoneActionWildDrawFourColor = async (game_id, color) => {
   try {
     if (["red", "blue", "yellow", "green"].includes(color)) {
       const undone_action = color;
-      const updatedResult = await gamesDriver.updateUndoneAction(
+      const updated_result = await gamesDriver.updateUndoneAction(
         game_id,
         undone_action
       );
-      return updatedResult;
+      return updated_result;
     } else {
       throw new Error("Invalid input");
     }
@@ -181,11 +223,11 @@ exports.setUndoneActionWildDrawFourColor = async (game_id, color) => {
 exports.resetUndoneAction = async (game_id) => {
   try {
     const undone_action = "none";
-    const updatedResult = await gamesDriver.updateUndoneAction(
+    const updated_result = await gamesDriver.updateUndoneAction(
       game_id,
       undone_action
     );
-    return updatedResult;
+    return updated_result;
   } catch (err) {
     throw err;
   }
@@ -245,12 +287,12 @@ exports.discard = async (game_id, card_id) => {
 
 exports.setMatching = async (game_id, matching_color, matching_value) => {
   try {
-    const isSuccess = await gamesDriver.setMatching(
+    const is_success = await gamesDriver.setMatching(
       game_id,
       matching_color,
       matching_value
     );
-    return isSuccess;
+    return is_success;
   } catch (err) {
     throw err;
   }
@@ -258,8 +300,8 @@ exports.setMatching = async (game_id, matching_color, matching_value) => {
 
 exports.changeDirection = async (game_id) => {
   try {
-    const isSuccess = await gamesDriver.changeDirection(game_id);
-    return isSuccess;
+    const is_success = await gamesDriver.changeDirection(game_id);
+    return is_success;
   } catch (err) {
     throw err;
   }
@@ -295,12 +337,12 @@ exports.nextDrawTwo = async (game_id, user_id) => {
 exports.setUno = async (game_id, user_id) => {
   try {
     const uno_status = true;
-    const isSuccess = await gameUsersDriver.setUno(
+    const is_success = await gameUsersDriver.setUno(
       game_id,
       user_id,
       uno_status
     );
-    return isSuccess;
+    return is_success;
   } catch (err) {
     throw err;
   }
@@ -313,8 +355,8 @@ exports.resetUno = async (game_id, user_id) => {
       user_id
     );
     if (current_uno_status === true) {
-      const isSuccess = await gameUsersDriver.setUno(game_id, user_id, false);
-      return isSuccess;
+      const is_success = await gameUsersDriver.setUno(game_id, user_id, false);
+      return is_success;
     } else {
       // uno status is true
       return true;
@@ -390,7 +432,7 @@ exports.checkChallenge = async (game_id, user_id) => {
       const matching = await gamesDriver.getMatching(game_id);
       if (game_cards && game_cards.length && matching) {
         const cards = game_cards.map((game_card) => game_card.card_id);
-        let isMatch = false;
+        let is_match = false;
         for (card_id of cards) {
           const card = CardFactory.create(card_id);
           if (card.type === "number") {
@@ -398,7 +440,7 @@ exports.checkChallenge = async (game_id, user_id) => {
               card.color === matching.color ||
               card.face_value === matching.value
             ) {
-              isMatch = true;
+              is_match = true;
               break;
             }
           } else if (card.type === "action") {
@@ -406,7 +448,7 @@ exports.checkChallenge = async (game_id, user_id) => {
               card.color === matching.color ||
               card.action === matching.value
             ) {
-              isMatch = true;
+              is_match = true;
               break;
             }
           } else {
@@ -415,7 +457,7 @@ exports.checkChallenge = async (game_id, user_id) => {
           }
         }
         let penalty_cards = [];
-        if (isMatch) {
+        if (is_match) {
           // match existed, challenge success
           penalty_cards = await gameCardsDriver.drawCard(
             game_id,
@@ -476,11 +518,11 @@ exports.checkEndGame = async (game_id, user_id, card_id) => {
 };
 
 exports.endGame = async (game_id, draw_card_performer, drawed_cards) => {
-  const gameResults = {};
-  gameResults.game_id = game_id;
-  gameResults.draw_card_performer = draw_card_performer;
-  gameResults.drawed_cards = drawed_cards;
-  gameResults.results = [];
+  const game_results = {};
+  game_results.game_id = game_id;
+  game_results.draw_card_performer = draw_card_performer;
+  game_results.drawed_cards = drawed_cards;
+  game_results.results = [];
   try {
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
     for await (game_user of game_users) {
@@ -496,29 +538,29 @@ exports.endGame = async (game_id, draw_card_performer, drawed_cards) => {
         points += getPointOfCard(game_card.card_id);
       }
       userObj.points = points;
-      gameResults.results.push(userObj);
+      game_results.results.push(userObj);
     }
     // sort points by cards ASC
-    gameResults.results.sort((a, b) => {
+    game_results.results.sort((a, b) => {
       return a.points - b.points;
     });
     // lowest points is winner, get all others points MINUS his/her own points
     // all others are losers, minus all their points
-    for (let i = 0; i < gameResults.results.length; ++i) {
-      gameResults.results[i].points = 0 - gameResults.results[i].points;
+    for (let i = 0; i < game_results.results.length; ++i) {
+      game_results.results[i].points = 0 - game_results.results[i].points;
       if (i === 0) {
-        for (let j = 1; j < gameResults.results.length; ++j) {
-          gameResults.results[i].points += gameResults.results[j].points;
+        for (let j = 1; j < game_results.results.length; ++j) {
+          game_results.results[i].points += game_results.results[j].points;
         }
       }
     }
     // set game_users points
-    for await (user of gameResults.results) {
+    for await (user of game_results.results) {
       await gameUsersDriver.setPoints(game_id, user.user_id, user.points);
     }
     // set finished game time;
     await gamesDriver.setEndGame(game_id);
-    return gameResults;
+    return game_results;
   } catch (err) {
     throw err;
   }

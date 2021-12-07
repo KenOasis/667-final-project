@@ -11,8 +11,8 @@ exports.createGame = async (req, res, next) => {
   };
 
   try {
-    const gameList = await gameListManager.createGame(game_name, user);
-    eventsLobby.gameListUpdate(gameList);
+    const game_list = await gameListManager.createGame(game_name, user);
+    eventsLobby.gameListUpdate(game_list);
     res.status(200).json({
       status: "success",
       message: "Game: " + game_name + " is created!",
@@ -33,17 +33,17 @@ exports.joinGame = async (req, res, next) => {
     user_id: req.session.userId,
   };
   try {
-    const gameList = await gameListManager.joinGame(game_id, user);
-    if (gameList && gameList.length) {
-      eventsLobby.gameListUpdate(gameList);
-      const isInitGame = await gameListManager.initGame(game_id);
-      if (isInitGame) {
+    const game_list = await gameListManager.joinGame(game_id, user);
+    if (game_list && game_list.length) {
+      eventsLobby.gameListUpdate(game_list);
+      const is_init_game = await gameListManager.initGame(game_id);
+      if (is_init_game) {
       }
       res.status(200).json({
         status: "success",
         message: "Join game success!",
       });
-    } else if (gameList.length === 0) {
+    } else if (game_list.length === 0) {
       res.status(409).json({
         status: "failed",
         message: "The game is full.",
@@ -65,8 +65,8 @@ exports.leaveGame = async (req, res, next) => {
     user_id: req.session.userId,
   };
   try {
-    const gameList = await gameListManager.leaveGame(game_id, user);
-    eventsLobby.gameListUpdate(gameList);
+    const game_list = await gameListManager.leaveGame(game_id, user);
+    eventsLobby.gameListUpdate(game_list);
     res.status(200).json({
       status: "success",
       message: "You have leave the game",
@@ -81,8 +81,8 @@ exports.leaveGame = async (req, res, next) => {
 };
 
 exports.getLobby = async (req, res, next) => {
-  let isLoggedIn = req.session.isLoggedIn === true ? true : false;
-  if (isLoggedIn) {
+  let is_logged_in = req.session.isLoggedIn === true ? true : false;
+  if (is_logged_in) {
     const username = req.session.userName;
     const user_id = req.session.userId;
     const user = {
@@ -90,10 +90,10 @@ exports.getLobby = async (req, res, next) => {
       user_id: user_id,
     };
     try {
-      const [userStatus, gameList] = await gameListManager.getUserStatus(
+      const [user_status, game_list] = await gameListManager.getUserStatus(
         user_id
       );
-      eventsLobby.joinLobby(user, userStatus, gameList);
+      eventsLobby.joinLobby(user, user_status, game_list);
       return res.status(200).render("lobby", { whoami: username });
     } catch (err) {
       console.error(err);

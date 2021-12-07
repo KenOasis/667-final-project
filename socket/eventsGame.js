@@ -136,10 +136,6 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
             card: card,
           });
           update.actions.push(playCardAction);
-          // check uno if current player has one card left after play card (get penalty or not);
-          const current_player_cards_number = game_state.players.filter(
-            (player) => player.user_id === performer
-          )[0].number_of_cards;
 
           if (isUnoPenalty) {
             // has penalty
@@ -348,11 +344,10 @@ exports.endGame = async (game_results) => {
         const user_id = socket.request.session.userId;
         if (user_id_list.includes(user_id)) {
           const game_state = await coreDriver.getGameState(game_id, user_id);
-          gameSpace
-            .in(socket.id)
-            .emit("endGameUpdate", {
-              game_state, 
-              results: game_results });
+          gameSpace.in(socket.id).emit("endGameUpdate", {
+            game_state,
+            results: game_results,
+          });
         } else {
           throw new Error("Forbidden");
         }

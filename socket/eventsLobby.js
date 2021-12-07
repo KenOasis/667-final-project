@@ -1,9 +1,10 @@
 const gameListManager = require("../db/lobby-game-list-manager/gameListManager");
+
 exports.joinLobby = async (user, currentUserStatus, gameList) => {
   const lobbySpace = require("./socket").getNameSpace("lobby");
   const gameSpace = require("./socket").getNameSpace("game");
 
-  let userList = [];
+  let user_list = [];
 
   lobbySpace.removeAllListeners();
 
@@ -11,12 +12,12 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
   lobbySpace.on("connection", async (socket) => {
     // listen to the client event of disconnect
     try {
-      const socketsOfLobby = await lobbySpace.fetchSockets();
+      const sockets_of_lobby_space = await lobbySpace.fetchSockets();
       // filter sockets which is not whoami
-      let lobbyUserList = socketsOfLobby.filter(
+      let sockets_in_lobby = sockets_of_lobby_space.filter(
         (socket) => socket.request.session.userName !== user.username
       );
-      lobbyUserList = lobbyUserList.map((socket) => {
+      sockets_in_lobby = sockets_in_lobby.map((socket) => {
         return {
           username: socket.request.session.userName,
           user_id: socket.request.session.userId,
@@ -24,38 +25,38 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
         };
       });
 
-      const socketsOfGame = await gameSpace.fetchSockets();
+      const sockets_of_game_space = await gameSpace.fetchSockets();
       // filter sockets which is not whoami
-      let gameUserList = socketsOfGame.filter(
+      let sockets_in_game = sockets_of_game_space.filter(
         (socket) => socket.request.session.userName !== user.username
       );
 
-      gameUserList = gameUserList.map((socket) => {
+      sockets_in_game = sockets_in_game.map((socket) => {
         return {
           username: socket.request.session.userName,
           user_id: socket.request.session.userId,
         };
       });
 
-      userList = lobbyUserList.concat(gameUserList);
+      user_list = sockets_in_lobby.concat(sockets_in_game);
       // stringnify all the user obj to string
-      userList = userList.map((user) => JSON.stringify(user));
+      user_list = user_list.map((user) => JSON.stringify(user));
 
       // remove duplicate users (multi-tab with same indentity)
-      userList = userList.filter((value, index, self) => {
+      user_list = user_list.filter((value, index, self) => {
         return self.indexOf(value) === index;
       });
 
       // parsed back the user string to obj
-      userList = userList.map((user) => JSON.parse(user));
+      user_list = user_list.map((user) => JSON.parse(user));
 
       const userListWithStatus = [];
-      for await (const user of userList) {
-        const userObj = {};
-        userObj.username = user.username;
+      for await (const user of user_list) {
+        const user_obj = {};
+        user_obj.username = user.username;
         const status = await gameListManager.getUserStatus(user.user_id);
-        userObj.status = status[0];
-        userListWithStatus.push(userObj);
+        user_obj.status = status[0];
+        userListWithStatus.push(user_obj);
       }
 
       userListWithStatus.unshift({
@@ -73,9 +74,8 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
       lobbySpace.emit("gameListInitial", gameList);
 
       socket.on("disconnect", () => {
-        /* TODO disconnect: You have to manuelly
-         * leave game room or delete the unfinished game if you want to clean data.
-         **/
+        const username = socket.request.session.userName;
+        lobbySpace.emit("userLeaveLobby", { username });
       });
     } catch (err) {
       console.error(err);
