@@ -194,7 +194,16 @@ function end_game() {
     .catch((error) => console.log(error));
 }
 
-function to_lobby() {
+function leave_game_to_lobby() {
+  const confirm_to_leave = confirm(
+    "Are you sure to leave the game?(You can reconnect the game through lobby)"
+  );
+  if (confirm_to_leave) {
+    const url = "http://" + location.host + "/lobby";
+    window.location.href = url;
+  }
+}
+function end_game_to_lobby() {
   const url = "http://" + location.host + "/lobby";
   window.location.href = url;
 }
@@ -223,3 +232,28 @@ function last_wild_four() {
     })
     .catch((error) => console.log(error));
 }
+
+const sendChat = () => {
+  const message = document.getElementById("message").value;
+  const game_id = JSON.parse(document.getElementById("user_list").value)[0]
+    .game_id;
+  const body = {
+    message,
+  };
+  const url = "http://" + location.host + "/game/chat" + "?id=" + game_id;
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    credentials: "include",
+    headers: new Headers({
+      "content-type": "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((results) => {
+      if (results.status !== "success") {
+        console.log(results.message);
+      }
+    })
+    .catch((error) => console.log(error));
+};

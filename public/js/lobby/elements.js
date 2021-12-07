@@ -72,14 +72,15 @@ const initialUserList = (list) => {
 // recieve/update chat
 const updateChat = (chat) => {
   const div1 = document.createElement("div");
-  div1.className = "card border-danger mb-1 border-0";
+  div1.className = "card border-0 m-3";
   const div2 = document.createElement("div");
-  div2.className = "card-body";
+  div2.className = "card-body bg-light";
   const span = document.createElement("span");
-  span.className = "badge bg-light text-primary";
-  span.innerHTML = chat.username;
+  span.className = "badge text-primary";
+  span.innerHTML =
+    chat.username + " " + `<b class="text-danger">${chat.timestamp}</b>`;
   const messageP = document.createElement("p");
-  messageP.className = "card-text text-info";
+  messageP.className = "card-text text-primary";
   messageP.innerHTML = chat.message;
   div2.appendChild(span);
   div2.appendChild(messageP);

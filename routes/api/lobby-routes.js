@@ -4,12 +4,18 @@ const chatController = require("../../controllers/core/chat-controller");
 const lobbyController = require("../../controllers/core/lobby-controller");
 const backendValidator = require("../../middleware/backend-validator");
 
+/**
+ * Render page to the lobby hall
+ * @route GET .../lobby/
+ */
+
 router.get("/", lobbyController.getLobby);
 
 /**
  * Send the chat to the lobby
- * @queryParam  Must be 0 here to indicated the destination of chat is lobby
- *  id = 0
+ * @route POST .../lobby/chat
+ * @queryParam
+ *  id = 0   //the id here should be 0, the chat will be send to the lobby hall
  * @body {
  *  message
  * }
@@ -18,8 +24,9 @@ router.post("/chat", chatController.sendChat);
 
 /**
  * Create a new game room in the lobby
+ * @route POST ../lobby/createGame
  * @body {
- *  game_name
+ *  game_name: 1
  * }
  */
 router.post(
@@ -30,16 +37,18 @@ router.post(
 
 /**
  * Join a selected game room in the lobby
+ * @route POST ../lobby/joinGame
  * @body {
- *  game_id
+ *  game_id: 1
  * }
  */
 router.post("/joinGame", lobbyController.joinGame);
 
 /**
  * Left the game you joint in the lobby
+ * @route POST ../lobby/leaveGame
  * @body {
- *  game_id
+ *  game_id: 1
  * }
  */
 router.post("/leaveGame", lobbyController.leaveGame);

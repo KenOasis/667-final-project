@@ -1,7 +1,5 @@
 const coreDriver = require("../../db/drivers/core-driver");
 
-const gameListManager = require("../../db/lobby-game-list-manager/gameListManager");
-
 const CardFactory = require("../../factories/cardFactory");
 const eventsGame = require("../../socket/eventsGame");
 
@@ -9,6 +7,11 @@ exports.joinGame = async (req, res, next) => {
   const username = req.session.userName;
   const game_id = +req.body.game_id;
   try {
+    const is_active_game = await coreDriver.isActiveGame(game_id);
+    console.log(is_active_game);
+    if (!is_active_game) {
+      return res.status(409).redirect("/lobby/");
+    }
     const user_list = await coreDriver.getGameUserList(game_id);
     if (user_list && user_list.length) {
       eventsGame.userJoin(game_id, username, user_list);
@@ -47,7 +50,18 @@ exports.loadGameState = async (req, res, next) => {
 exports.drawCard = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
+  console.log("draw");
   try {
+    const is_action_valid = await coreDriver.checkActionValidation(
+      game_id,
+      user_id
+    );
+    if (!is_action_valid) {
+      return res.status(403).json({
+        status: "Forbidden",
+        message: "You action is forbidden",
+      });
+    }
     const card_id = await coreDriver.drawCard(game_id, user_id);
     const game_user_list = await coreDriver.getGameUserList(game_id);
     const set_undone_draw = await coreDriver.setUndoneActionDraw(game_id);
@@ -70,6 +84,16 @@ exports.pass = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   try {
+    const is_action_valid = await coreDriver.checkActionValidation(
+      game_id,
+      user_id
+    );
+    if (!is_action_valid) {
+      return res.status(403).json({
+        status: "Forbidden",
+        message: "You action is forbidden",
+      });
+    }
     // Set undone none
     const reset_undone = await coreDriver.resetUndoneAction(game_id);
 
@@ -105,8 +129,18 @@ exports.challenge = async (req, res, next) => {
   let is_success = false;
   let penalty_id;
   let penalty_cards;
-  let isSetCurrentSuccess = true;
+  let is_set_current_success = true;
   try {
+    const is_action_valid = await coreDriver.checkActionValidation(
+      game_id,
+      user_id
+    );
+    if (!is_action_valid) {
+      return res.status(403).json({
+        status: "Forbidden",
+        message: "You action is forbidden",
+      });
+    }
     const game_user_list = await coreDriver.getGameUserList(game_id);
     if (is_challenge === true) {
       // check challenge and do penalty based on the challenge result
@@ -118,7 +152,7 @@ exports.challenge = async (req, res, next) => {
       //do not challenge
       penalty_id = user_id;
       penalty_cards = await coreDriver.drawFour(game_id, user_id);
-      isSetCurrentSuccess = await coreDriver.setNextCurrent(
+      is_set_current_success = await coreDriver.setNextCurrent(
         game_id,
         user_id,
         "next"
@@ -126,7 +160,7 @@ exports.challenge = async (req, res, next) => {
     }
     if (is_success === false) {
       // if not success (or not challenge as default value false) skip his own round
-      isSetCurrentSuccess = await coreDriver.setNextCurrent(
+      is_set_current_success = await coreDriver.setNextCurrent(
         game_id,
         user_id,
         "next"
@@ -135,7 +169,7 @@ exports.challenge = async (req, res, next) => {
     if (
       penalty_id &&
       penalty_cards &&
-      isSetCurrentSuccess &&
+      is_set_current_success &&
       game_user_list &&
       game_user_list.length
     ) {
@@ -164,6 +198,16 @@ exports.sayUno = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   try {
+    const is_action_valid = await coreDriver.checkActionValidation(
+      game_id,
+      user_id
+    );
+    if (!is_action_valid) {
+      return res.status(403).json({
+        status: "Forbidden",
+        message: "You action is forbidden",
+      });
+    }
     const game_user_list = await coreDriver.getGameUserList(game_id);
     const isSetUnoSuccess = await coreDriver.setUno(game_id, user_id);
     if (game_user_list && isSetUnoSuccess) {
@@ -186,6 +230,17 @@ exports.playCard = async (req, res, next) => {
   const user_id = req.session.userId;
   const card = CardFactory.create(card_id);
   try {
+    const is_action_valid = await coreDriver.checkActionValidation(
+      game_id,
+      user_id,
+      card_id
+    );
+    if (!is_action_valid) {
+      return res.status(403).json({
+        status: "Forbidden",
+        message: "You action is forbidden",
+      });
+    }
     const game_user_list = await coreDriver.getGameUserList(game_id);
     await coreDriver.discard(game_id, card_id);
     // Check end game
@@ -226,17 +281,17 @@ exports.playCard = async (req, res, next) => {
       if (card.type === "number") {
         const matching_color = card.color;
         const matching_value = card.face_value;
-        const isSetMatchingSuccess = await coreDriver.setMatching(
+        const is_set_matching_success = await coreDriver.setMatching(
           game_id,
           matching_color,
           matching_value
         );
-        const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+        const is_set_current_success = await coreDriver.setNextCurrent(
           game_id,
           user_id,
           "next"
         );
-        if (isSetMatchingSuccess && isSetCurrentSuccess) {
+        if (is_set_matching_success && is_set_current_success) {
           eventsGame.playCard(game_user_list, card_id, user_id, {
             action: "none",
           });
@@ -244,33 +299,33 @@ exports.playCard = async (req, res, next) => {
       } else if (card.type === "action") {
         const matching_color = card.color;
         const matching_value = card.action; // matching_value as type of action card
-        const isSetMatchingSuccess = await coreDriver.setMatching(
+        const is_set_matching_success = await coreDriver.setMatching(
           game_id,
           matching_color,
           matching_value
         );
         if (card.action === "reverse") {
-          const isChangeDirectionSuccess = await coreDriver.changeDirection(
+          const is_change_direction_success = await coreDriver.changeDirection(
             game_id
           );
-          const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+          const is_set_current_success = await coreDriver.setNextCurrent(
             game_id,
             user_id,
             "next"
           );
           if (
-            isSetMatchingSuccess &&
-            isChangeDirectionSuccess &&
-            isSetCurrentSuccess
+            is_set_matching_success &&
+            is_change_direction_success &&
+            is_set_current_success
           ) {
             eventsGame.playCard(game_user_list, card_id, user_id, {
               action: "reverse",
             });
           }
         } else if (card.action === "skip") {
-          const [isSetCurrentSuccess, performer] =
+          const [is_set_current_success, performer] =
             await coreDriver.setNextCurrent(game_id, user_id, "skip");
-          if (isSetMatchingSuccess && isSetCurrentSuccess) {
+          if (is_set_matching_success && is_set_current_success) {
             eventsGame.playCard(game_user_list, card_id, user_id, {
               action: "skip",
               performer: performer,
@@ -282,12 +337,12 @@ exports.playCard = async (req, res, next) => {
             game_id,
             user_id
           );
-          const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+          const is_set_current_success = await coreDriver.setNextCurrent(
             game_id,
             user_id,
             "skip"
           );
-          if (draw_card_id_list && isSetCurrentSuccess) {
+          if (draw_card_id_list && is_set_current_success) {
             eventsGame.playCard(game_user_list, card_id, user_id, {
               action: "draw_two",
               performer: performer,
@@ -296,7 +351,7 @@ exports.playCard = async (req, res, next) => {
           }
         }
       } else {
-        const isSetCurrentSuccess = await coreDriver.setNextCurrent(
+        const is_set_current_success = await coreDriver.setNextCurrent(
           game_id,
           user_id,
           "next"
@@ -304,7 +359,7 @@ exports.playCard = async (req, res, next) => {
         if (card.action === "wild") {
           const matching_color = req.body.color;
           const matching_value = card.face_value; // actually value "none"
-          const isSetMatchingSuccess = await coreDriver.setMatching(
+          const is_set_matching_success = await coreDriver.setMatching(
             game_id,
             matching_color,
             matching_value
@@ -332,21 +387,3 @@ exports.playCard = async (req, res, next) => {
     });
   }
 };
-
-// exports.endGame = async (req, res, next) => {
-//   const game_id = +req.body.game_id;
-//   try {
-//     const game_results = await coreDriver.endGame(game_id);
-//     eventsGame.endGame(game_results);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({
-//       status: "failed",
-//       message: "Internal Server Error",
-//     });
-//   }
-//   res.status(200).json({
-//     status: "success",
-//     message: "Game over!",
-//   });
-// };

@@ -1,5 +1,6 @@
 const coreDriver = require("../db/drivers/core-driver");
 const ActionFactory = require("../factories/ActionFactory");
+const moment = require("moment");
 exports.userJoin = (game_id, username, user_list) => {
   const gameSpace = require("./socket").getNameSpace("game");
   const room = "game-" + game_id;
@@ -7,7 +8,8 @@ exports.userJoin = (game_id, username, user_list) => {
   let users_id = user_list.map((user) => user.user_id);
   gameSpace.on("connect", (socket) => {
     socket.join(room);
-    socket.emit("userJoin", { username });
+    const timestamp = moment().format("h:mm a");
+    gameSpace.in(room).emit("userJoin", { username, timestamp });
     gameSpace
       .in(room)
       .fetchSockets()
@@ -27,7 +29,7 @@ exports.userJoin = (game_id, username, user_list) => {
         }
       });
     socket.on("disconnect", () => {
-      gameSpace.in(room).emit("userDisconnect", { username });
+      gameSpace.in(room).emit("userDisconnect", { username, timestamp });
       socket.leave(room);
     });
   });
@@ -136,10 +138,6 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
             card: card,
           });
           update.actions.push(playCardAction);
-          // check uno if current player has one card left after play card (get penalty or not);
-          const current_player_cards_number = game_state.players.filter(
-            (player) => player.user_id === performer
-          )[0].number_of_cards;
 
           if (isUnoPenalty) {
             // has penalty
@@ -348,11 +346,10 @@ exports.endGame = async (game_results) => {
         const user_id = socket.request.session.userId;
         if (user_id_list.includes(user_id)) {
           const game_state = await coreDriver.getGameState(game_id, user_id);
-          gameSpace
-            .in(socket.id)
-            .emit("endGameUpdate", {
-              game_state, 
-              results: game_results });
+          gameSpace.in(socket.id).emit("endGameUpdate", {
+            game_state,
+            results: game_results,
+          });
         } else {
           throw new Error("Forbidden");
         }
@@ -364,35 +361,13 @@ exports.endGame = async (game_results) => {
     console.error(err);
   }
 };
-// exports.template = async (game_user_list, card_id, performer) => {
-//   const game_id = game_user_list[0].game_id;
-//   const room = "game-" + game_id;
-//   const users_id = game_user_list.map((game_user) => game_user.user_id);
-//   const gameSpace = require("./socket").getNameSpace("game");
-//   try {
-//     const sockets = await gameSpace.in(room).fetchSockets();
-//     for await (socket of sockets) {
-//       const user_id = socket.request.session.userId;
-//       if (users_id.includes(user_id)) {
-//         const game_state = await coreDriver.getGameState(game_id, user_id);
-//         if (game_state) {
-//           const update = {};
-//           update.game_id = game_id;
-//           update.receiver = user_id;
-//           update.actions = [];
-//           const card = [];
-//           card.push(card_id);
-//           const playCardAction = ActionFactory.create("play_card", {
-//             performer: performer,
-//             card: card,
-//           });
-//           update.actions.push(playCardAction);
-//         }
-//       } else {
-//         throw new Error("Forbidden");
-//       }
-//     }
-//   } catch (err) {
-//     console.log(err.message);
-//   }
-// };
+
+exports.sendChat = (game_id, username, timestamp, message) => {
+  const gameSpace = require("./socket").getNameSpace("game");
+  const room = "game-" + game_id;
+  gameSpace.in(room).emit("chat", {
+    username,
+    timestamp,
+    message,
+  });
+};

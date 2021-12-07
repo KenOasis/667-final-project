@@ -6,14 +6,14 @@ const url = require("url");
 
 exports.signUp = async (req, res, next) => {
   const { username, email, password } = req.body;
-  let existedUser = null;
+  let existed_user = null;
 
   try {
     // checked whether the username already existed in db
 
-    existedUser = await userDriver.findUserByName(username);
+    existed_user = await userDriver.findUserByName(username);
 
-    if (existedUser !== null) {
+    if (existed_user !== null) {
       return res.status(409).json({
         errors: [
           {
@@ -26,9 +26,9 @@ exports.signUp = async (req, res, next) => {
 
     // checked whether the email already existed in db
 
-    existedUser = await userDriver.findUserByEmail(email);
+    existed_user = await userDriver.findUserByEmail(email);
 
-    if (existedUser !== null) {
+    if (existed_user !== null) {
       return res.status(409).json({
         errors: [
           {
@@ -38,9 +38,9 @@ exports.signUp = async (req, res, next) => {
         ],
       });
     }
-    let hashPassword = await bcrpyt.hash(password, saltround);
+    let hashed_password = await bcrpyt.hash(password, saltround);
 
-    let newUser = await userDriver.signupUser(username, email, hashPassword);
+    let newUser = await userDriver.signupUser(username, email, hashed_password);
 
     if (newUser === null) {
       throw new Error("DB data error.");
@@ -70,9 +70,9 @@ exports.login = async (req, res, next) => {
   try {
     let user = await userDriver.findUserByName(username);
     if (user !== null) {
-      let hashPassword = user.password;
-      let comparedResult = await bcrpyt.compare(password, hashPassword);
-      if (comparedResult) {
+      let hashed_password = user.password;
+      let compared_result = await bcrpyt.compare(password, hashed_password);
+      if (compared_result) {
         req.session.isLoggedIn = true;
         req.session.userId = user.id;
         req.session.userName = user.username;
@@ -129,15 +129,18 @@ exports.logout = (req, res, next) => {
 };
 
 exports.changePassword = async (req, res, next) => {
-  const { userId } = req.session;
+  const user_id = req.session.userId;
   const { current_password, new_password } = req.body;
   try {
-    const user = await userDriver.findUserById(userId);
+    const user = await userDriver.findUserById(user_id);
 
     if (user !== null) {
-      let hashPassword = user.password;
-      let comparedResult = await bcrpyt.compare(current_password, hashPassword);
-      if (comparedResult) {
+      let hashed_password = user.password;
+      let compared_result = await bcrpyt.compare(
+        current_password,
+        hashed_password
+      );
+      if (compared_result) {
         user.password = await bcrpyt.hash(new_password, saltround);
         user.save();
         res.status(200).json({ status: "success" });
@@ -164,11 +167,11 @@ exports.changePassword = async (req, res, next) => {
 };
 
 exports.getProfile = async (req, res, next) => {
-  const { userId } = req.session;
+  const user_id = req.session.userId;
   try {
-    let results = await gameUsersDriver.getGameUsersByUserId(userId);
+    let results = await gameUsersDriver.getGameUsersByUserId(user_id);
 
-    let profileImg = `/images/profile/profile${
+    let profile_image_path = `/images/profile/profile${
       Math.floor(Math.random() * 3) + 1
     }.gif`;
 
@@ -184,7 +187,7 @@ exports.getProfile = async (req, res, next) => {
       res.status(200).render("profile", {
         username: results[0].username,
         email: results[0].email,
-        profileImg: profileImg,
+        profileImg: profile_image_path,
         gamePlayed: gamePlayed,
         winrate: winrate,
         lostrate: lostrate,
@@ -195,7 +198,7 @@ exports.getProfile = async (req, res, next) => {
       res.status(200).render("profile", {
         username: user.username,
         email: user.email,
-        profileImg: profileImg,
+        profileImg: profile_image_path,
         gamePlayed: 0,
         winrate: 100,
         lostrate: 0,

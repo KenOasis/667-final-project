@@ -7,12 +7,12 @@ exports.getGameList = async () => {
     const games = await gamesDriver.getAllActiveGame();
     if (games) {
       games.forEach((game) => {
-        const gameObj = {};
-        gameObj.game_id = game.id;
-        gameObj.name = game.name;
-        gameObj.capacity = 4;
-        gameObj.status = "waiting";
-        game_list.push(gameObj);
+        const game_obj = {};
+        game_obj.game_id = game.id;
+        game_obj.name = game.name;
+        game_obj.capacity = 4;
+        game_obj.status = "waiting";
+        game_list.push(game_obj);
       });
       for await (const game of game_list) {
         game.users = await gameUsersDriver.getUsersForLobby(game.game_id);
@@ -50,13 +50,13 @@ exports.joinGame = async (game_id, user) => {
   try {
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
     if (game_users.length < 4) {
-      const isJoint = await gameUsersDriver.createGameUsers(
+      const is_joint = await gameUsersDriver.createGameUsers(
         game_id,
         user.user_id,
         false,
         0
       );
-      if (isJoint) {
+      if (is_joint) {
         return true;
       }
     } else {
@@ -69,12 +69,15 @@ exports.joinGame = async (game_id, user) => {
 
 exports.leaveGame = async (game_id, user) => {
   try {
-    const isLeft = await gameUsersDriver.deleteGameUsers(game_id, user.user_id);
+    const is_left = await gameUsersDriver.deleteGameUsers(
+      game_id,
+      user.user_id
+    );
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
     if (game_users && game_users.length === 0) {
       await gamesDriver.deleteGame(game_id);
     }
-    if (isLeft) {
+    if (is_left) {
       return true;
     }
   } catch (err) {

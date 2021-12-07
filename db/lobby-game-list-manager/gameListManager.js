@@ -4,31 +4,41 @@ const eventsLobby = require("../../socket/eventsLobby");
 const e = require("cors");
 /**
  * This is the Game List data manager for handler the
- * create/join/leav of game room in the lobby page
+ * create/join/leavy of game room in the lobby page
  * This is VOLATILE means once the server shutdowns/restarts
  * the data will be gone. check dummy_data at the end to see the format
  *
  */
 
 const gameListManager = {
+  /**
+   *
+   * @returns game_list structure check dummby data
+   */
   getGameList: async function () {
     try {
-      const gameList = await lobbyDriver.getGameList();
-      return gameList;
+      const game_list = await lobbyDriver.getGameList();
+      return game_list;
     } catch (err) {
       console.error(err);
     }
   },
+
+  /**
+   *
+   * @param {*} user_id
+   * @returns [user.status, game_list]
+   */
   getUserStatus: async function (user_id) {
-    let gameList = [];
+    let game_list = [];
     try {
-      gameList = await this.getGameList();
+      game_list = await this.getGameList();
     } catch (err) {
       console.error(err);
       return "error";
     }
     let status_list = [];
-    gameList.forEach((game) =>
+    game_list.forEach((game) =>
       game.users.forEach((user) => {
         if (user.user_id === user_id) {
           status_list.push(user.status);
@@ -36,21 +46,28 @@ const gameListManager = {
       })
     );
     if (status_list.length === 0) {
-      return ["free", gameList];
+      return ["free", game_list];
     } else if (status_list.includes("playing")) {
-      return ["playing", gameList];
+      return ["playing", game_list];
     } else {
-      return ["ready", gameList];
+      return ["ready", game_list];
     }
   },
+
+  /**
+   *
+   * @param {*} game_name
+   * @param {*} user
+   * @returns game_list
+   */
   createGame: async function (game_name, user) {
     try {
-      const isGameCreated = await lobbyDriver.createGame(game_name, user);
+      const is_game_created = await lobbyDriver.createGame(game_name, user);
 
-      if (isGameCreated) {
-        const [userStatus, gameList] = await this.getUserStatus(user.user_id);
-        eventsLobby.userStatusUpdate(user.username, userStatus);
-        return gameList;
+      if (is_game_created) {
+        const [user_status, game_list] = await this.getUserStatus(user.user_id);
+        eventsLobby.userStatusUpdate(user.username, user_status);
+        return game_list;
       }
     } catch (err) {
       console.error(err);
@@ -58,14 +75,20 @@ const gameListManager = {
     }
   },
 
+  /**
+   *
+   * @param {*} game_id
+   * @param {*} user
+   * @returns [user.status, game_list] | [];
+   */
   joinGame: async function (game_id, user) {
     try {
-      const joinStatus = await lobbyDriver.joinGame(game_id, user);
-      if (joinStatus === true) {
-        const [userStatus, gameList] = await this.getUserStatus(user.user_id);
-        eventsLobby.userStatusUpdate(user.username, userStatus);
-        return gameList;
-      } else if (joinStatus === false) {
+      const join_status = await lobbyDriver.joinGame(game_id, user);
+      if (join_status === true) {
+        const [user_status, game_list] = await this.getUserStatus(user.user_id);
+        eventsLobby.userStatusUpdate(user.username, user_status);
+        return game_list;
+      } else if (join_status === false) {
         return [];
       }
     } catch (err) {
@@ -74,37 +97,51 @@ const gameListManager = {
     }
   },
 
+  /**
+   *
+   * @param {*} game_id
+   * @param {*} user
+   * @returns game_list
+   */
   leaveGame: async function (game_id, user) {
     // TODO delete a game from game_user table
     try {
-      const isLeft = await lobbyDriver.leaveGame(game_id, user);
-      if (isLeft) {
-        const [userStatus, gameList] = await this.getUserStatus(user.user_id);
-        eventsLobby.userStatusUpdate(user.username, userStatus);
-        return gameList;
+      const is_left = await lobbyDriver.leaveGame(game_id, user);
+      if (is_left) {
+        const [user_status, game_list] = await this.getUserStatus(user.user_id);
+        eventsLobby.userStatusUpdate(user.username, user_status);
+        return game_list;
       }
     } catch (err) {
       console.error(err);
       throw new Error(err.message);
     }
   },
+
+  /**
+   * Change the game.status and user.status when game is initiled
+   * @param {*} game_id
+   * @returns
+   */
   initGame: async function (game_id) {
     try {
-      const [isGameFull, user_list] = await lobbyDriver.checkGameFull(game_id);
-      if (isGameFull && user_list && user_list.length) {
+      const [is_game_full, user_list] = await lobbyDriver.checkGameFull(
+        game_id
+      );
+      if (is_game_full && user_list && user_list.length) {
         const user_id_list = user_list.map((user) => user.user_id);
-        const isInitialSuccess = await coreDriver.initialGame(
+        const is_initial_success = await coreDriver.initialGame(
           game_id,
           user_id_list
         );
-        let gameList = [];
-        let userStatus = "ready";
+        let game_list = [];
+        let user_status = "ready";
         for await (user of user_list) {
-          [userStatus, gameList] = await this.getUserStatus(user.user_id);
-          eventsLobby.userStatusUpdate(user.username, userStatus);
+          [user_status, game_list] = await this.getUserStatus(user.user_id);
+          eventsLobby.userStatusUpdate(user.username, user_status);
         }
-        if (isInitialSuccess) {
-          eventsLobby.initGame(game_id, user_id_list, gameList);
+        if (is_initial_success) {
+          eventsLobby.initGame(game_id, user_id_list, game_list);
         } else {
           throw new Error("Initial game failed");
         }
@@ -138,23 +175,5 @@ const dummy_data = {
     },
   ],
   capacity: 4,
-  status: "waiting", // "waiting" -> not full; "full" -> game is full soon to start; "playing" -> in the game
+  status: "waiting", // "waiting" -> not full; "playing" -> game started
 };
-
-// Construct game_list
-/**
- * SELECT id, name FROM games
- * WHERE created_at = finished_at
- * ~game_id = id, ~ name = name
- * ~capacity = 4, ~status: "waiting"
- * map => []
- * forEach
- * SELECT users.id, users.username, game_users.initial_order
- * FROM users INNER JOINS game_users
- * WHERE .....
- * AND game_users.game_id = (game_id)
- *
- * forEach ~user_id = users.id, ~ username = users.username,
- * ~ status: game_initial_order === 0 ? "ready" : "playing" (also change game.status)
- *  => push in users[];
- */

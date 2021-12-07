@@ -1,6 +1,6 @@
 exports.getHomepage = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn === true ? true : false;
-  res.status(200).render("index", { isLoggedIn });
+  const is_logged_in = req.session.isLoggedIn === true ? true : false;
+  res.status(200).render("index", { isLoggedIn: is_logged_in });
 };
 
 exports.getLogin = (req, res, next) => {
@@ -12,8 +12,8 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.getAbout = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn === true ? true : false;
-  res.status(200).render("about", { isLoggedIn });
+  const is_logged_in = req.session.isLoggedIn === true ? true : false;
+  res.status(200).render("about", { isLoggedIn: is_logged_in });
 };
 
 exports.getTransition = (req, res, next) => {
@@ -21,10 +21,10 @@ exports.getTransition = (req, res, next) => {
   const description = req.query.description;
   const redirect_path = req.query.redirect_path;
   const page_name = req.query.page_name;
-  const isLoggedIn = req.session.isLoggedIn === true ? true : false;
+  const is_logged_in = req.session.isLoggedIn === true ? true : false;
   if (title && description && redirect_path && page_name) {
     res.status(200).render("transition", {
-      isLoggedIn: isLoggedIn,
+      isLoggedIn: is_logged_in,
       title: title,
       description: description,
       redirectPath: redirect_path,
@@ -34,7 +34,7 @@ exports.getTransition = (req, res, next) => {
     res.status(403).render("error", {
       errorcode: "403 Forbidden",
       description: "403 Forbidden",
-      isLoggedIn: isLoggedIn,
+      isLoggedIn: is_logged_in,
     });
   }
 };

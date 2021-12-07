@@ -30,12 +30,11 @@ socket.on("userJoinLobby", (data) => {
 });
 
 socket.on("userLeaveLobby", (data) => {
-  if (data.user.username !== whoami) {
-    let currentUser = document.getElementById(`user-${data.user.username}`);
+  if (data.username !== whoami) {
+    let currentUser = document.getElementById(`user-${data.username}`);
     if (currentUser !== null) {
       userListContainer.removeChild(currentUser);
     }
-    initialGameList(data.gameList);
   }
 });
 
@@ -48,7 +47,7 @@ socket.on("updateUserStatus", (data) => {
   }
 });
 
-socket.on("lobbyChat", (data) => {
+socket.on("chat", (data) => {
   updateChat(data);
 });
 
