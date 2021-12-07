@@ -58,6 +58,14 @@ exports.checkActionValidation = async (game_id, user_id, card_id = 0) => {
   }
 };
 
+exports.isActiveGame = async (game_id) => {
+  try {
+    const is_active = await gamesDriver.isActiveGame(game_id);
+    return is_active;
+  } catch (err) {
+    throw err;
+  }
+};
 exports.initialGame = async (game_id, users_id) => {
   try {
     // Step 1 : Generate the random sequence of starting order of user

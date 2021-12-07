@@ -352,3 +352,36 @@ class game_state_helper {
   //   }
   // }
 }
+
+// Updating chat
+const messagesDiv = document.getElementById("messages");
+
+const updateChat = (data, mode) => {
+  if (mode === "message") {
+    const div1 = document.createElement("div");
+    div1.className = "card border-0 m-3";
+    div1.style = "height: 80px; width: 340px";
+    const div2 = document.createElement("div");
+    div2.className = "card-body";
+    const span = document.createElement("span");
+    span.className = "badge text-primary";
+    span.innerHTML =
+      data.username + " " + `<b class="text-danger">${data.timestamp}</b>`;
+    const messageP = document.createElement("p");
+    messageP.className = "card-text text-primary";
+    messageP.innerHTML = data.message;
+    div2.appendChild(span);
+    div2.appendChild(messageP);
+    div1.appendChild(div2);
+    messagesDiv.appendChild(div1);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  } else if (mode === "connection") {
+    // this code for user connnect or disconnect
+    const div = document.createElement("div");
+    div.className = "text-danger bg-light border-0 m-3";
+    div.style = "height: 20px; width: 340px";
+    div.innerHTML = `${data.username} is ${data.status} at ${data.timestamp}`;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+};

@@ -91,9 +91,9 @@ exports.userStatusUpdate = (username, status) => {
   });
 };
 
-exports.chatLobby = (username, timestamp, message) => {
+exports.sendChat = (username, timestamp, message) => {
   const lobbySpace = require("./socket").getNameSpace("lobby");
-  lobbySpace.emit("lobbyChat", {
+  lobbySpace.emit("chat", {
     username: username,
     message: message,
     timestamp: timestamp,

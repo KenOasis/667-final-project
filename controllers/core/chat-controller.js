@@ -1,16 +1,18 @@
 const eventsLobby = require("../../socket/eventsLobby");
-
+const eventsGame = require("../../socket/eventsGame");
+const moment = require("moment");
 exports.sendChat = (req, res, next) => {
-  // if id equal 0 them do a brocast to lobby (lobby is a specific room exclude all in-game users)
+  // if id equal 0 them do a brocast to lobby
   const id = +req.query.id;
   const message = req.body.message;
   const username = req.session.userName;
 
-  const timestamp = new Date().toLocaleDateString();
+  const timestamp = moment().format("h:mm a");
   if (id === 0) {
-    // what cause the failure by using single quotes rather than double quotes for room name and eventname?
-    const io = require("../../socket/socket").getIO();
-    eventsLobby.chatLobby(username, timestamp, message);
+    eventsLobby.sendChat(username, timestamp, message);
+  } else {
+    const game_id = id;
+    eventsGame.sendChat(game_id, username, timestamp, message);
   }
 
   return res.status(200).json({

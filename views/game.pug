@@ -35,7 +35,7 @@ html(lang="en")
           div(class="p-0 item-h1 name" ) 
         div(class="col-4")  
         div(class="col-1") 
-          botton#leave(class="btn btn-outline-danger") Leave 
+          botton#leave(class="btn btn-outline-danger" onclick="leave_game_to_lobby()") Leave 
       div(class="row")
         div(class="col-2")
         div(class="col-2" style="text-align: right;")
@@ -81,7 +81,7 @@ html(lang="en")
           div(class = "input-group mb-3" style = "width:400px")
             input#message(type = "text" class = "form-control")
             div(class = "input-group-append")
-              button(type = "button" class = "btn btn-outline-danger") Send
+              button(type = "button" class = "btn btn-outline-danger" onclick="sendChat()") Send
         #container_bottom(class="col-6 top_bottom" style="height:160px; width:640px")
         div(class="col-2" id="buttom_user") 
           div(class="d-flex flex-column row-h1" )
@@ -119,7 +119,7 @@ html(lang="en")
           div(class="modal-body" id="modal_body")
             div(class="list-group" id="end_game_list")
           div(class="modal-footer")
-            button(class="btn btn-lg btn-success" onclick ="to_lobby()" data-bs-dismiss="modal" id="end_game_leave" type="button") Leave  
+            button(class="btn btn-lg btn-success" onclick ="end_game_to_lobby()" data-bs-dismiss="modal" id="end_game_leave" type="button") Leave  
 
     
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous")

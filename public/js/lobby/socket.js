@@ -47,7 +47,7 @@ socket.on("updateUserStatus", (data) => {
   }
 });
 
-socket.on("lobbyChat", (data) => {
+socket.on("chat", (data) => {
   updateChat(data);
 });
 

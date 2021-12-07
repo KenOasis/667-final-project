@@ -7,6 +7,11 @@ exports.joinGame = async (req, res, next) => {
   const username = req.session.userName;
   const game_id = +req.body.game_id;
   try {
+    const is_active_game = await coreDriver.isActiveGame(game_id);
+    console.log(is_active_game);
+    if (!is_active_game) {
+      return res.status(409).redirect("/lobby/");
+    }
     const user_list = await coreDriver.getGameUserList(game_id);
     if (user_list && user_list.length) {
       eventsGame.userJoin(game_id, username, user_list);

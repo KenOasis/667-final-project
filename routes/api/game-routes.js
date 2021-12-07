@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const gameController = require("../../controllers/core/game-controller");
+const chatController = require("../../controllers/core/chat-controller");
 const userInGameValidator = require("../../middleware/user-in-game-validator");
 
 // DO NOT NEED user_id for each request since the user_id is attached in the session
@@ -76,4 +77,5 @@ router.post("/sayuno", userInGameValidator, gameController.sayUno);
  */
 router.post("/challenge", userInGameValidator, gameController.challenge);
 
+router.post("/chat", chatController.sendChat);
 exports.routes = router;

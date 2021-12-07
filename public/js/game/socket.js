@@ -11,7 +11,13 @@ const socket = io(host, {
 
 socket.on("userJoin", (data) => {
   const username = data.username;
-  console.log(username + " Join the game");
+  const timestamp = data.timestamp;
+  const obj = {
+    username,
+    status: "connected",
+    timestamp,
+  };
+  updateChat(obj, "connection");
 });
 
 socket.on("gameStart", (data) => {
@@ -20,7 +26,13 @@ socket.on("gameStart", (data) => {
 
 socket.on("userDisconnect", (data) => {
   const username = data.username;
-  console.log(username + " disconnected");
+  const timestamp = data.timestamp;
+  const obj = {
+    username,
+    status: "disconnected",
+    timestamp,
+  };
+  updateChat(obj, "connection");
 });
 
 socket.on("gameUpdateDrawCard", (data) => {
@@ -575,4 +587,8 @@ socket.on("endGameUpdate", (data) => {
     mymodal.toggle();
   }
   game_class.set_side_stuff();
+});
+
+socket.on("chat", (data) => {
+  updateChat(data, "message");
 });
