@@ -257,3 +257,20 @@ const sendChat = () => {
     })
     .catch((error) => console.log(error));
 };
+
+const music_controller = () => {
+  const music = document.getElementById("backgroud_music");
+  const controller = document.getElementById("musicControl");
+  const music_action = music.getAttribute("data-action");
+  if (music_action === "play") {
+    music.pause();
+    controller.classList.remove("bi-play-btn");
+    controller.classList.add("bi-pause-btn");
+    music.setAttribute("data-action", "pause");
+  } else {
+    music.play();
+    controller.classList.remove("bi-pause-btn");
+    controller.classList.add("bi-play-btn");
+    music.setAttribute("data-action", "play");
+  }
+};
