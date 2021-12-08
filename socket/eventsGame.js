@@ -1,5 +1,5 @@
 const coreDriver = require("../db/drivers/core-driver");
-const ActionFactory = require("../factories/ActionFactory");
+const ActionFactory = require("../factories/actionFactory");
 const moment = require("moment");
 exports.userJoin = (game_id, username, user_list) => {
   const gameSpace = require("./socket").getNameSpace("game");
