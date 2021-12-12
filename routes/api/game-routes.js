@@ -3,7 +3,7 @@ const router = express.Router();
 const gameController = require("../../controllers/core/game-controller");
 const chatController = require("../../controllers/core/chat-controller");
 const userInGameValidator = require("../../middleware/user-in-game-validator");
-
+const actionInGameValidator = require("../../middleware/action-in-game-validator");
 // DO NOT NEED user_id for each request since the user_id is attached in the session
 
 /**
@@ -35,7 +35,12 @@ router.post(
  *  game_id: 1
  * }
  */
-router.post("/drawcard", userInGameValidator, gameController.drawCard);
+router.post(
+  "/drawcard",
+  userInGameValidator,
+  actionInGameValidator,
+  gameController.drawCard
+);
 
 /**
  * Player pass his/her own round in a game after draw card.
@@ -44,7 +49,12 @@ router.post("/drawcard", userInGameValidator, gameController.drawCard);
  *  game_id: 1
  * }
  */
-router.post("/pass", userInGameValidator, gameController.pass);
+router.post(
+  "/pass",
+  userInGameValidator,
+  actionInGameValidator,
+  gameController.pass
+);
 
 /**
  * Player plays a card in a game
@@ -55,7 +65,12 @@ router.post("/pass", userInGameValidator, gameController.pass);
  *  undone_action,   // for the reset   undone_action if undone_action === "draw"
  * }
  */
-router.post("/playcard", userInGameValidator, gameController.playCard);
+router.post(
+  "/playcard",
+  userInGameValidator,
+  actionInGameValidator,
+  gameController.playCard
+);
 
 /**
  * Player says uno in a game
@@ -64,7 +79,12 @@ router.post("/playcard", userInGameValidator, gameController.playCard);
  *  game_id: 1
  * }
  */
-router.post("/sayuno", userInGameValidator, gameController.sayUno);
+router.post(
+  "/sayuno",
+  userInGameValidator,
+  actionInGameValidator,
+  gameController.sayUno
+);
 
 /**
  * Player do challenge when the last player played wild_draw_four
@@ -75,7 +95,12 @@ router.post("/sayuno", userInGameValidator, gameController.sayUno);
  * }
  * @
  */
-router.post("/challenge", userInGameValidator, gameController.challenge);
+router.post(
+  "/challenge",
+  userInGameValidator,
+  actionInGameValidator,
+  gameController.challenge
+);
 
 router.post("/chat", chatController.sendChat);
 exports.routes = router;

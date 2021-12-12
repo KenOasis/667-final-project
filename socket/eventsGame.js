@@ -1,5 +1,5 @@
 const coreDriver = require("../db/drivers/core-driver");
-const ActionFactory = require("../factories/ActionFactory");
+const ActionFactory = require("../factories/actionFactory");
 const moment = require("moment");
 exports.userJoin = (game_id, username, user_list) => {
   const gameSpace = require("./socket").getNameSpace("game");
@@ -69,7 +69,7 @@ exports.drawCard = async (game_user_list, card_id, performer) => {
       }
     }
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 };
 
@@ -103,7 +103,7 @@ exports.pass = async (game_user_list, performer) => {
       }
     }
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 };
 // the performer of playCard() is the player who played this card
@@ -236,7 +236,7 @@ exports.playCard = async (game_user_list, card_id, performer, next_action) => {
       }
     }
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 };
 
@@ -270,7 +270,7 @@ exports.sayUno = async (game_user_list, performer) => {
       }
     }
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 };
 
@@ -330,7 +330,7 @@ exports.challenge = async (
       }
     }
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 };
 
@@ -358,7 +358,7 @@ exports.endGame = async (game_results) => {
       throw new Error("Fetch player socket failed!");
     }
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 };
 

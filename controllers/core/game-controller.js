@@ -8,7 +8,6 @@ exports.joinGame = async (req, res, next) => {
   const game_id = +req.body.game_id;
   try {
     const is_active_game = await coreDriver.isActiveGame(game_id);
-    console.log(is_active_game);
     if (!is_active_game) {
       return res.status(409).redirect("/lobby/");
     }
@@ -50,18 +49,7 @@ exports.loadGameState = async (req, res, next) => {
 exports.drawCard = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
-  console.log("draw");
   try {
-    const is_action_valid = await coreDriver.checkActionValidation(
-      game_id,
-      user_id
-    );
-    if (!is_action_valid) {
-      return res.status(403).json({
-        status: "Forbidden",
-        message: "You action is forbidden",
-      });
-    }
     const card_id = await coreDriver.drawCard(game_id, user_id);
     const game_user_list = await coreDriver.getGameUserList(game_id);
     const set_undone_draw = await coreDriver.setUndoneActionDraw(game_id);
@@ -84,16 +72,6 @@ exports.pass = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   try {
-    const is_action_valid = await coreDriver.checkActionValidation(
-      game_id,
-      user_id
-    );
-    if (!is_action_valid) {
-      return res.status(403).json({
-        status: "Forbidden",
-        message: "You action is forbidden",
-      });
-    }
     // Set undone none
     const reset_undone = await coreDriver.resetUndoneAction(game_id);
 
@@ -131,16 +109,6 @@ exports.challenge = async (req, res, next) => {
   let penalty_cards;
   let is_set_current_success = true;
   try {
-    const is_action_valid = await coreDriver.checkActionValidation(
-      game_id,
-      user_id
-    );
-    if (!is_action_valid) {
-      return res.status(403).json({
-        status: "Forbidden",
-        message: "You action is forbidden",
-      });
-    }
     const game_user_list = await coreDriver.getGameUserList(game_id);
     if (is_challenge === true) {
       // check challenge and do penalty based on the challenge result
@@ -198,16 +166,6 @@ exports.sayUno = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
   try {
-    const is_action_valid = await coreDriver.checkActionValidation(
-      game_id,
-      user_id
-    );
-    if (!is_action_valid) {
-      return res.status(403).json({
-        status: "Forbidden",
-        message: "You action is forbidden",
-      });
-    }
     const game_user_list = await coreDriver.getGameUserList(game_id);
     const isSetUnoSuccess = await coreDriver.setUno(game_id, user_id);
     if (game_user_list && isSetUnoSuccess) {
@@ -230,17 +188,6 @@ exports.playCard = async (req, res, next) => {
   const user_id = req.session.userId;
   const card = CardFactory.create(card_id);
   try {
-    const is_action_valid = await coreDriver.checkActionValidation(
-      game_id,
-      user_id,
-      card_id
-    );
-    if (!is_action_valid) {
-      return res.status(403).json({
-        status: "Forbidden",
-        message: "You action is forbidden",
-      });
-    }
     const game_user_list = await coreDriver.getGameUserList(game_id);
     await coreDriver.discard(game_id, card_id);
     // Check end game
@@ -248,7 +195,6 @@ exports.playCard = async (req, res, next) => {
     if (isEndGame) {
       let drawed_cards = [];
       let draw_card_performer = user_id;
-      console.log(card.action);
       if (card.action === "draw_two") {
         [drawed_cards, draw_card_performer] = await coreDriver.nextDrawTwo(
           game_id,
@@ -266,9 +212,6 @@ exports.playCard = async (req, res, next) => {
         draw_card_performer,
         drawed_cards
       );
-      const game_state = await coreDriver.getGameState(game_id, user_id);
-      console.log(game_state);
-      console.log(game_results);
       eventsGame.endGame(game_results);
       res.status(200).json({
         status: "success",
@@ -380,7 +323,6 @@ exports.playCard = async (req, res, next) => {
       return res.status(200).json({ status: "success" });
     }
   } catch (err) {
-    console.error(err);
     res.status(500).json({
       status: "failed",
       message: "Internal Server Error",

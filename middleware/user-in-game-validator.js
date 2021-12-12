@@ -1,5 +1,5 @@
 const coreDriver = require("../db/drivers/core-driver");
-
+const ValidationError = require("../error/ValidationError");
 const userInGameValidator = async (req, res, next) => {
   const user_id = req.session.userId;
   const { game_id } = req.body;
@@ -8,17 +8,14 @@ const userInGameValidator = async (req, res, next) => {
     if (is_in_game) {
       next();
     } else {
-      res.status(403).json({
-        status: "forbidden",
-        message: "Join game failed. You are not in this game",
-      });
+      const error = new ValidationError(
+        "Join game failed. You are not in this game",
+        403
+      );
+      throw error;
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "failed",
-      message: "Internal server error",
-    });
+  } catch (error) {
+    next(error);
   }
 };
 

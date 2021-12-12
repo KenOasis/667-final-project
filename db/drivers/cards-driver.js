@@ -9,8 +9,7 @@ exports.getAllCardsId = async () => {
 
     const card_ids = cards.map((card) => card.id);
     return card_ids;
-  } catch (err) {
-    console.error(err);
-    return null;
+  } catch (error) {
+    throw error;
   }
 };

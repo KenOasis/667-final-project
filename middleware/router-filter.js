@@ -34,7 +34,6 @@ const routerFilter = (req, res, next) => {
     (logged_in_filter.includes(path) && is_logged_in) ||
     (logged_out_filter.includes(path) && !is_logged_in);
   if (is_forbidden) {
-    // TODO redirect after errorpage
     res.status(403).render("error", {
       errorcode: "403 Forbidden",
       description: "Forbidden action due to your auth status",

@@ -10,8 +10,8 @@ exports.findUserByName = async (username) => {
     });
 
     return user;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -24,8 +24,8 @@ exports.findUserByEmail = async (email) => {
     });
 
     return user;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -34,8 +34,8 @@ exports.findUserById = async (user_id) => {
     const user = await Users.findByPk(user_id);
 
     return user;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -55,7 +55,7 @@ exports.signupUser = async (username, email, password) => {
     });
 
     return user;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };

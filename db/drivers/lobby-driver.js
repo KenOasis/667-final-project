@@ -1,6 +1,6 @@
 const gameUsersDriver = require("./game-users-driver");
 const gamesDriver = require("./games-driver");
-
+const LogicalError = require("../../error/LogicalError");
 exports.getGameList = async () => {
   const game_list = [];
   try {
@@ -22,8 +22,8 @@ exports.getGameList = async () => {
       }
       return game_list;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -41,15 +41,21 @@ exports.createGame = async (game_name, user) => {
         return true;
       }
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
 exports.joinGame = async (game_id, user) => {
   try {
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
-    if (game_users.length < 4) {
+    if (game_users.length == 0) {
+      const error = new LogicalError(
+        `Invalid data resource, ${game_id} is not existed in game_users table`,
+        404
+      );
+      throw error;
+    } else if (game_users.length < 4) {
       const is_joint = await gameUsersDriver.createGameUsers(
         game_id,
         user.user_id,
@@ -62,8 +68,8 @@ exports.joinGame = async (game_id, user) => {
     } else {
       return false;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -80,8 +86,8 @@ exports.leaveGame = async (game_id, user) => {
     if (is_left) {
       return true;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -99,7 +105,7 @@ exports.checkGameFull = async (game_id) => {
     } else {
       return [false, []];
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };

@@ -8,6 +8,7 @@ const { Op } = require("sequelize");
 const sequelize = require("sequelize");
 const coreDriver = require("./core-driver");
 const shuffle = require("../../util/shuffle");
+const LogicalError = require("../../error/LogicalError");
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 Games.hasMany(GameUsers, { foreignKey: "game_id" });
 
@@ -26,8 +27,8 @@ exports.initialGameCards = async (game_id, user_id, card_id, draw_order) => {
       draw_order,
     });
     return game_card;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -44,7 +45,10 @@ exports.initialPlayersDeck = async (game_id) => {
     if (game_users && game_users.length) {
       user_ids = game_users.map((game_user) => game_user.user_id);
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (game_id = ${game_id}) is not existed in game_user table`,
+        404
+      );
     }
 
     for await (const user_id of user_ids) {
@@ -64,8 +68,8 @@ exports.initialPlayersDeck = async (game_id) => {
       }
     }
     return true;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -80,8 +84,8 @@ exports.getCardDeck = async (game_id) => {
     });
 
     return card_deck;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -93,12 +97,15 @@ exports.getPlayers = async (game_id, current_user_id) => {
       },
     });
     let user_ids = [];
-    if (game_users && game_users.length) {
+    if (game_users && game_users.length === 4) {
       game_users.forEach((game_user) => {
         user_ids.push(game_user.user_id);
       });
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (game_id = ${game_id}) is not correct in game_user table`,
+        409
+      );
     }
     const players = [];
     for await (const user_id of user_ids) {
@@ -140,7 +147,10 @@ exports.getPlayers = async (game_id, current_user_id) => {
         player.user_id = game_user.user_id;
         player.uno = game_user.uno;
       } else {
-        throw new Error("DB data error.");
+        throw new LogicalError(
+          `Invalid data resource, game (game_id = ${game_id}) is not existed in game_user table`,
+          404
+        );
       }
       if (game_cards) {
         player.number_of_cards = game_cards.length;
@@ -149,13 +159,16 @@ exports.getPlayers = async (game_id, current_user_id) => {
           player.cards = game_cards.map((game_card) => game_card.card_id);
         }
       } else {
-        throw new Error("DB data error.");
+        throw new LogicalError(
+          `Invalid data resource, game (game_id = ${game_id}) is not correct in game_cards table`,
+          409
+        );
       }
       players.push(player);
     }
     return players;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -181,9 +194,8 @@ exports.getDiscards = async (game_id) => {
     } else if (game_cards) {
       return discards;
     }
-    throw new Error("DB data error. ");
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -253,10 +265,10 @@ exports.drawCard = async (game_id, user_id, number_of_cards) => {
       await coreDriver.resetUno(game_id, user_id);
       return draw_card_id_list;
     } else {
-      throw new Error("DB data error.");
+      throw new Error("Reshuffle card failed.");
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -280,10 +292,13 @@ exports.setDiscards = async (game_id, card_id) => {
       game_card.discarded = game_card_max_discarded.discarded + 1;
       await game_card.save();
     } else {
-      throw new Error("DB data error.!");
+      throw new LogicalError(
+        `Invalid data resource, game (game_id = ${game_id}) is not correct in game_cards table`,
+        409
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -302,7 +317,7 @@ exports.getPlayerCards = async (game_id, user_id) => {
     } else {
       throw new Error("DB data error.");
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
