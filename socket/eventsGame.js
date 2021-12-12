@@ -8,7 +8,7 @@ exports.userJoin = (game_id, username, user_list) => {
   let users_id = user_list.map((user) => user.user_id);
   gameSpace.on("connect", (socket) => {
     socket.join(room);
-    const timestamp = moment().format("h:mm a");
+    const timestamp = moment();
     gameSpace.in(room).emit("userJoin", { username, timestamp });
     gameSpace
       .in(room)

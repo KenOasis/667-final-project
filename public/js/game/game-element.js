@@ -329,13 +329,13 @@ class game_state_helper {
       }
     }
   }
-
 }
 
 // Updating chat
 const messagesDiv = document.getElementById("messages");
 
 const updateChat = (data, mode) => {
+  const localTime = moment(data.timestamp).utc(true).format("h:mm a");
   if (mode === "message") {
     const div1 = document.createElement("div");
     div1.className = "card border-0 m-3";
@@ -345,7 +345,7 @@ const updateChat = (data, mode) => {
     const span = document.createElement("span");
     span.className = "badge text-primary";
     span.innerHTML =
-      data.username + " " + `<b class="text-danger">${data.timestamp}</b>`;
+      data.username + " " + `<b class="text-danger">${localTime}</b>`;
     const messageP = document.createElement("p");
     messageP.className = "card-text text-primary";
     messageP.innerHTML = data.message;
@@ -359,7 +359,7 @@ const updateChat = (data, mode) => {
     const div = document.createElement("div");
     div.className = "text-danger bg-light border-0 m-3";
     div.style = "height: 20px; width: 340px";
-    div.innerHTML = `${data.username} is ${data.status} at ${data.timestamp}`;
+    div.innerHTML = `${data.username} is ${data.status} at ${localTime}`;
     messagesDiv.appendChild(div);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }

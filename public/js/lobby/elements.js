@@ -71,6 +71,7 @@ const initialUserList = (list) => {
 
 // recieve/update chat
 const updateChat = (chat) => {
+  const localTime = moment(chat.timestamp).utc(true).format("h:mm a");
   const div1 = document.createElement("div");
   div1.className = "card border-0 m-3";
   const div2 = document.createElement("div");
@@ -78,7 +79,7 @@ const updateChat = (chat) => {
   const span = document.createElement("span");
   span.className = "badge text-primary";
   span.innerHTML =
-    chat.username + " " + `<b class="text-danger">${chat.timestamp}</b>`;
+    chat.username + " " + `<b class="text-danger">${localTime}</b>`;
   const messageP = document.createElement("p");
   messageP.className = "card-text text-primary";
   messageP.innerHTML = chat.message;
