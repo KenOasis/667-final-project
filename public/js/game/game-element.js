@@ -329,28 +329,7 @@ class game_state_helper {
       }
     }
   }
-  // action_empty_card() {
-  //   if (this.check_empty()) {
-  //     // end_game();
-  //   }
-  // }
-  // check_empty() {
-  //   const players = this.game_state.players;
-  //   let has_empty_card = false;
-  //   players.map((player) => {
-  //     if (player.number_of_cards === 0) {
-  //       has_empty_card = true;
-  //       return player;
-  //     }
-  //   });
-  //   return has_empty_card;
-  // }
-  // action_empty_desk() {
-  //   const desk = this.game_state.card_deck;
-  //   if (desk === 0) {
-  //     // end_game();
-  //   }
-  // }
+
 }
 
 // Updating chat

@@ -231,3 +231,6 @@ const loadGameState = () => {
     })
     .catch((error) => console.log(error));
 };
+
+const audio_file = document.getElementById("backgroud_music");
+audio_file.volume = 0.1;

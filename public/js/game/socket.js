@@ -450,7 +450,6 @@ socket.on("notChallengeUpdate", (data) => {
       .add_card_event(card_list)
       .then((result) => {
         if (result === "done") {
-          // game_class.action_empty_card();
           game_class.refresh_hand_card(penalty_player);
           game_class.color_match_card();
           game_class.set_side_stuff();
