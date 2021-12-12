@@ -82,12 +82,6 @@ exports.leaveGame = async (game_id, user) => {
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
     if (game_users && game_users.length === 0) {
       await gamesDriver.deleteGame(game_id);
-    } else {
-      const error = new LogicalError(
-        `Invalid data resource, ${game_id} is not existed in game_users table`,
-        404
-      );
-      throw error;
     }
     if (is_left) {
       return true;
