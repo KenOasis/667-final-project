@@ -10,8 +10,8 @@ exports.checkUserInGame = async (game_id, user_id) => {
   try {
     const is_in_game = await gameUsersDriver.checkUserInGame(game_id, user_id);
     return is_in_game;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -53,8 +53,8 @@ exports.checkActionValidation = async (game_id, user_id, card_id = 0) => {
       }
     }
     return false;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -62,8 +62,8 @@ exports.isActiveGame = async (game_id) => {
   try {
     const is_active = await gamesDriver.isActiveGame(game_id);
     return is_active;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 exports.initialGame = async (game_id, users_id) => {
@@ -108,8 +108,8 @@ exports.initialGame = async (game_id, users_id) => {
     await gameCardsDriver.initialPlayersDeck(game_id);
 
     return true;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -127,10 +127,14 @@ exports.getGameUserList = async (game_id) => {
       });
       return user_list;
     } else {
-      throw new Error("DB data error.");
+      const error = new LogicalError(
+        `Invalid data resource, ${game_id} is not existed in game_users table`,
+        404
+      );
+      throw error;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -183,8 +187,8 @@ exports.getGameState = async (game_id, user_id) => {
       };
       return game_state;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -194,8 +198,8 @@ exports.drawCard = async (game_id, user_id) => {
     if (card_id_list && card_id_list.length === 1) {
       return card_id_list[0];
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -207,8 +211,8 @@ exports.setUndoneActionDraw = async (game_id) => {
       undone_action
     );
     return updated_result;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -224,8 +228,8 @@ exports.setUndoneActionWildDrawFourColor = async (game_id, color) => {
     } else {
       throw new Error("Invalid input");
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 exports.resetUndoneAction = async (game_id) => {
@@ -236,8 +240,8 @@ exports.resetUndoneAction = async (game_id) => {
       undone_action
     );
     return updated_result;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -280,16 +284,16 @@ exports.setNextCurrent = async (game_id, user_id, action) => {
         return true;
       }
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
 exports.discard = async (game_id, card_id) => {
   try {
     await gameCardsDriver.setDiscards(game_id, card_id);
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -533,6 +537,13 @@ exports.endGame = async (game_id, draw_card_performer, drawed_cards) => {
   game_results.results = [];
   try {
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
+    if (game_users && game_users.length === 0) {
+      const error = new LogicalError(
+        `Invalid data resource, ${game_id} is not existed in game_users table`,
+        404
+      );
+      throw error;
+    }
     for await (game_user of game_users) {
       const userObj = {};
       userObj.user_id = game_user.id;

@@ -21,7 +21,6 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
         return {
           username: socket.request.session.userName,
           user_id: socket.request.session.userId,
-          // status: gameListManager.getUserStatus(socket.request.session.userId),
         };
       });
 

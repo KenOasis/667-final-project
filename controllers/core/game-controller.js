@@ -323,7 +323,6 @@ exports.playCard = async (req, res, next) => {
       return res.status(200).json({ status: "success" });
     }
   } catch (err) {
-    console.error(err);
     res.status(500).json({
       status: "failed",
       message: "Internal Server Error",

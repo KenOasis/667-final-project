@@ -27,7 +27,6 @@ const store = new sequelizeStore({
 });
 
 // end of setup session
-const errorController = require("./controllers/static/errors");
 
 const userRoutes = require("./routes/api/user-routes");
 const staticRoutes = require("./routes/static/static-routes");
@@ -36,6 +35,7 @@ const lobbyRoutes = require("./routes/api/lobby-routes");
 const gameRoutes = require("./routes/api/game-routes");
 
 const routerFilter = require("./middleware/router-filter");
+const errorHandler = require("./middleware/error-handlder");
 app.set("view engine", "pug");
 app.set("views", "views");
 
@@ -59,8 +59,8 @@ app.use("/", staticRoutes.routes);
 app.use("/user", userRoutes.routes);
 app.use("/lobby", lobbyRoutes.routes);
 app.use("/game", gameRoutes.routes);
-app.use(errorRoutes.routes);
-
+app.use(errorRoutes.routes); // this is for 404 error.
+app.use(errorHandler); // custom errorHandler middleware
 let port_number = process.env.PORT || 3000;
 const server = app.listen(port_number);
 
@@ -73,6 +73,7 @@ const wrap = (middleware) => (socket, next) =>
 
 for (const key of io._nsps.keys()) {
   io.of(key).use(wrap(sessionMiddleware));
+  // check socket whether authorized.
   io.of(key).use((socket, next) => {
     if (socket.request.session.userId) {
       next();

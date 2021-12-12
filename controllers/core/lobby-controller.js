@@ -17,12 +17,8 @@ exports.createGame = async (req, res, next) => {
       status: "success",
       message: "Game: " + game_name + " is created!",
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "failed",
-      message: "Internal Server Error.",
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -44,17 +40,14 @@ exports.joinGame = async (req, res, next) => {
         message: "Join game success!",
       });
     } else if (game_list.length === 0) {
+      // If game_list is empty array, it means the game is full.
       res.status(409).json({
         status: "failed",
         message: "The game is full.",
       });
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error.",
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -67,16 +60,12 @@ exports.leaveGame = async (req, res, next) => {
   try {
     const game_list = await gameListManager.leaveGame(game_id, user);
     eventsLobby.gameListUpdate(game_list);
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       message: "You have leave the game",
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error.",
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -95,11 +84,8 @@ exports.getLobby = async (req, res, next) => {
       );
       eventsLobby.joinLobby(user, user_status, game_list);
       return res.status(200).render("lobby", { whoami: username });
-    } catch (err) {
-      console.error(err);
-      res
-        .status(500)
-        .json({ status: "error", message: "Internal Server Error." });
+    } catch (error) {
+      next(error);
     }
   } else {
     return res.status(401).render("login");

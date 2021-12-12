@@ -10,8 +10,8 @@ exports.createGame = async (name) => {
     });
 
     return user;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -29,8 +29,8 @@ exports.isActiveGame = async (game_id) => {
       return true;
     }
     return false;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -44,10 +44,13 @@ exports.getDirection = async (id) => {
     if (game) {
       return game.direction;
     } else {
-      throw new Error("DB data Error");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -75,10 +78,13 @@ exports.initialMatching = async (id) => {
       game.save();
       return true;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -94,10 +100,13 @@ exports.getMatching = async (id) => {
         value: matching_value,
       };
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -112,10 +121,13 @@ exports.getUndoneAction = async (id) => {
     if (game) {
       return game.undone_action;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -127,57 +139,68 @@ exports.updateUndoneAction = async (id, undone_action) => {
       await game.save();
       return true;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
-exports.setMatching = async (game_id, matching_color, matching_value) => {
+exports.setMatching = async (id, matching_color, matching_value) => {
   try {
-    const game = await Games.findByPk(game_id);
+    const game = await Games.findByPk(id);
     if (game) {
       game.matching_color = matching_color;
       game.matching_value = matching_value;
       await game.save();
       return true;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
-exports.changeDirection = async (game_id) => {
+exports.changeDirection = async (id) => {
   try {
-    const game = await Games.findByPk(game_id);
+    const game = await Games.findByPk(id);
     if (game) {
       const current_direction = game.direction;
       game.direction = current_direction === 1 ? -1 : 1;
       await game.save();
       return true;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
-exports.setEndGame = async (game_id) => {
+exports.setEndGame = async (id) => {
   try {
-    const game = await Games.findByPk(game_id);
+    const game = await Games.findByPk(id);
     if (game) {
-      // TODO test
       game.finished_at = sequelize.fn("NOW");
       await game.save();
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game (id = ${id}) is not existed`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 /**
@@ -196,8 +219,8 @@ exports.getAllActiveGame = async () => {
     if (games) {
       return games;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -215,7 +238,7 @@ exports.deleteGame = async (game_id) => {
       await game.destroy();
       return true;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };

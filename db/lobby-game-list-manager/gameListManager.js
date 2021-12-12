@@ -19,8 +19,8 @@ const gameListManager = {
     try {
       const game_list = await lobbyDriver.getGameList();
       return game_list;
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      throw error;
     }
   },
 
@@ -33,9 +33,8 @@ const gameListManager = {
     let game_list = [];
     try {
       game_list = await this.getGameList();
-    } catch (err) {
-      console.error(err);
-      return "error";
+    } catch (error) {
+      throw error;
     }
     let status_list = [];
     game_list.forEach((game) =>
@@ -69,9 +68,8 @@ const gameListManager = {
         eventsLobby.userStatusUpdate(user.username, user_status);
         return game_list;
       }
-    } catch (err) {
-      console.error(err);
-      throw new Error(err.message);
+    } catch (error) {
+      throw error;
     }
   },
 
@@ -89,11 +87,10 @@ const gameListManager = {
         eventsLobby.userStatusUpdate(user.username, user_status);
         return game_list;
       } else if (join_status === false) {
-        return [];
+        return ["none", []];
       }
-    } catch (err) {
-      console.error(err);
-      throw new Error(err.message);
+    } catch (error) {
+      throw error;
     }
   },
 
@@ -112,9 +109,8 @@ const gameListManager = {
         eventsLobby.userStatusUpdate(user.username, user_status);
         return game_list;
       }
-    } catch (err) {
-      console.error(err);
-      throw new Error(err.message);
+    } catch (error) {
+      throw error;
     }
   },
 
@@ -142,14 +138,12 @@ const gameListManager = {
         }
         if (is_initial_success) {
           eventsLobby.initGame(game_id, user_id_list, game_list);
-        } else {
-          throw new Error("Initial game failed");
         }
       } else {
         return false;
       }
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   },
   userLeaveLobby: function (user_id) {

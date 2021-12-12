@@ -2,6 +2,7 @@ const db = require("../../models/");
 const Users = db["users"];
 const GameUsers = db["game_users"];
 const { Op } = require("sequelize");
+const LogicalError = require("../../error/LogicalError");
 
 Users.hasMany(GameUsers, { foreignKey: "user_id" });
 
@@ -23,8 +24,8 @@ exports.getGameUsersByUserId = async (id) => {
     });
 
     return game_users;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -44,8 +45,8 @@ exports.getGameUsersByGameId = async (game_id) => {
     });
 
     return game_users;
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -65,8 +66,8 @@ exports.createGameUsers = async (
     if (game_user) {
       return game_user;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -88,9 +89,15 @@ exports.updateGameUsers = async (
       game_user.initial_order = initial_order;
       await game_user.save();
       return true;
+    } else {
+      const error = new LogicalError(
+        `Invaliad data resource, cannot find the resource in game_users table`,
+        404
+      );
+      throw error;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -108,8 +115,8 @@ exports.checkUserInGame = async (game_id, user_id) => {
     } else {
       return false;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -123,15 +130,18 @@ exports.getGameOrder = async (game_id) => {
       order: [["initial_order", "ASC"]],
     });
 
-    if (game_users && game_users.length) {
+    if (game_users && game_users.length === 4) {
       const game_order = game_users.map((game_user) => game_user.user_id);
 
       return game_order;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game: (game_id = ${game_id}) is not initial correctly`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -146,10 +156,13 @@ exports.getCurrentPlayer = async (game_id) => {
     if (game) {
       return game.user_id;
     } else {
-      throw new Error("DB data error");
+      throw new LogicalError(
+        `Invalid data resource, game: (game_id = ${game_id}) is not initial correctly`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -166,10 +179,13 @@ exports.setCurrentPlayer = async (game_id, user_id, is_current) => {
       await game_user.save();
       return true;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game: (game_id = ${game_id}) is not initial correctly`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -186,10 +202,13 @@ exports.setUno = async (game_id, user_id, uno_status) => {
       await game_user.save();
       return true;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game: (game_id = ${game_id}) is not initial correctly`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -204,10 +223,36 @@ exports.getUnoStatus = async (game_id, user_id) => {
     if (game_user) {
       return game_user.uno;
     } else {
-      throw new Error("DB data error.");
+      throw new LogicalError(
+        `Invalid data resource, game: (game_id = ${game_id}) is not initial correctly`,
+        404
+      );
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.setPoints = async (game_id, user_id, points) => {
+  try {
+    const game_users = await GameUsers.findOne({
+      where: {
+        game_id,
+        user_id,
+      },
+    });
+    if (game_users) {
+      game_users.points = points;
+      await game_users.save();
+      return true;
+    } else {
+      throw new LogicalError(
+        `Invalid data resource, game: (game_id = ${game_id}) is not existed`,
+        404
+      );
+    }
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -240,8 +285,8 @@ exports.getUsersForLobby = async (game_id) => {
       });
       return users;
     }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -257,27 +302,7 @@ exports.deleteGameUsers = async (game_id, user_id) => {
       await game_user.destroy();
       return true;
     }
-  } catch (err) {
-    throw err;
-  }
-};
-
-exports.setPoints = async (game_id, user_id, points) => {
-  try {
-    const game_users = await GameUsers.findOne({
-      where: {
-        game_id,
-        user_id,
-      },
-    });
-    if (game_users) {
-      game_users.points = points;
-      await game_users.save();
-      return true;
-    } else {
-      throw new Error("DB data error.");
-    }
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };

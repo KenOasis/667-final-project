@@ -1,5 +1,5 @@
 const coreDriver = require("../db/drivers/core-driver");
-
+const ValidationError = require("../error/ValidationError");
 const actionInGameValidator = async (req, res, next) => {
   const game_id = +req.body.game_id;
   const user_id = req.session.userId;
@@ -11,19 +11,16 @@ const actionInGameValidator = async (req, res, next) => {
       req.url === "/playcard" ? card_id : 0
     );
     if (!is_action_valid) {
-      return res.status(403).json({
-        status: "Forbidden",
-        message: "You action is forbidden",
-      });
+      const error = new ValidationError(
+        `Game action request ${req.url} is invalid.`,
+        403
+      );
+      throw error;
     } else {
       next();
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "failed",
-      message: "Internal Server Error",
-    });
+    next(err);
   }
 };
 
