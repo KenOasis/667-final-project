@@ -6,6 +6,12 @@ const CardFactory = require("../../factories/cardFactory");
 const { getPointOfCard } = require("../../config/end_game");
 const shuffle = require("../../util/shuffle");
 
+/**
+ * Check whether a certain user is in a certain game
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns true for user in game, otherwise return false
+ */
 exports.checkUserInGame = async (game_id, user_id) => {
   try {
     const is_in_game = await gameUsersDriver.checkUserInGame(game_id, user_id);
@@ -14,9 +20,16 @@ exports.checkUserInGame = async (game_id, user_id) => {
     throw error;
   }
 };
-
+/**
+ * Check whether an action in game (pass/playcard/challenge/sayuno) is valid or not
+ * @param {number} game_id
+ * @param {number} user_id
+ * @param {number} card_id
+ * @returns true for valid, false for invalid
+ */
 exports.checkActionValidation = async (game_id, user_id, card_id = 0) => {
   try {
+    // check current
     let is_current_player = false;
     const current_player = await gameUsersDriver.getCurrentPlayer(game_id);
     if (current_player === user_id) {
@@ -30,10 +43,12 @@ exports.checkActionValidation = async (game_id, user_id, card_id = 0) => {
         user_id
       );
       const cards = player_cards.map((card) => card.card_id);
+      // check in-hand
       const is_card_onhand = cards.includes(card_id);
       const matching = await gamesDriver.getMatching(game_id);
       let is_card_matching = false;
       const Card = CardFactory.create(card_id);
+      // check matching
       if (
         Card.type === "number" &&
         (Card.color === matching.color || Card.face_value === matching.value)
@@ -58,6 +73,12 @@ exports.checkActionValidation = async (game_id, user_id, card_id = 0) => {
   }
 };
 
+/**
+ * Check whether tha game is active (not finished)
+ * @param {number} game_id
+ * @returns
+ * return true for active game, false for inactive game
+ */
 exports.isActiveGame = async (game_id) => {
   try {
     const is_active = await gamesDriver.isActiveGame(game_id);
@@ -66,6 +87,15 @@ exports.isActiveGame = async (game_id) => {
     throw error;
   }
 };
+
+/**
+ * Initialize the game after the game is full;
+ * @param {number} game_id
+ * @param {number} users_id
+ * @returns
+ * return true for successfullly initialized the game.
+ * If initialization is failed, it will throw an error
+ */
 exports.initialGame = async (game_id, users_id) => {
   try {
     // Step 1 : Generate the random sequence of starting order of user
@@ -113,6 +143,19 @@ exports.initialGame = async (game_id, users_id) => {
   }
 };
 
+/**
+ * get an obj representing the game_id and user info
+ * @param {number} game_id
+ * @returns
+ * An array of obj which elements are
+ * ```
+ * {
+ *    game_id: number,
+ *    user_id: number,
+ *    username: string
+ * }
+ * ```
+ */
 exports.getGameUserList = async (game_id) => {
   try {
     const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
@@ -138,6 +181,13 @@ exports.getGameUserList = async (game_id) => {
   }
 };
 
+/**
+ * Get the game state obj for a certern user in a certain game
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * An game state obj (check "/factories/Actions/actionExample")
+ */
 exports.getGameState = async (game_id, user_id) => {
   try {
     const card_deck = await gameCardsDriver.getCardDeck(game_id);
@@ -192,6 +242,13 @@ exports.getGameState = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Draw a card in the card pile
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * The id of the card.
+ */
 exports.drawCard = async (game_id, user_id) => {
   try {
     const card_id_list = await gameCardsDriver.drawCard(game_id, user_id, 1);
@@ -203,6 +260,12 @@ exports.drawCard = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Set undone_action as "draw" after the draw card action
+ * @param {number} game_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.setUndoneActionDraw = async (game_id) => {
   try {
     const undone_action = "draw";
@@ -216,6 +279,13 @@ exports.setUndoneActionDraw = async (game_id) => {
   }
 };
 
+/**
+ * Set the undone_action as given color ("red" | "blue" | "green" | "yellow") for the wild draw four action
+ * @param {number} game_id
+ * @param {string} color
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.setUndoneActionWildDrawFourColor = async (game_id, color) => {
   try {
     if (["red", "blue", "yellow", "green"].includes(color)) {
@@ -232,6 +302,13 @@ exports.setUndoneActionWildDrawFourColor = async (game_id, color) => {
     throw error;
   }
 };
+
+/**
+ * Rest the undone action to "none"
+ * @param {number} game_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.resetUndoneAction = async (game_id) => {
   try {
     const undone_action = "none";
@@ -245,6 +322,19 @@ exports.resetUndoneAction = async (game_id) => {
   }
 };
 
+/**
+ * Change the current player of the given game
+ * ```
+ * action === "next" : current player move to next player
+ * action === "skip" : current player move to next next player
+ * ```
+ * @param {number} game_id
+ * @param {number} user_id // current player
+ * @param {string} action
+ * @returns
+ * Return true if action === "next" and executed successfully;
+ * [true, number] if action === "skip", the seconde element of returned array is the user id which has been skipped; throws an error if executed fail
+ */
 exports.setNextCurrent = async (game_id, user_id, action) => {
   // action type: "next" = move 1, "skip" = move 2
   const step = action === "next" ? 1 : 2;
@@ -289,6 +379,12 @@ exports.setNextCurrent = async (game_id, user_id, action) => {
   }
 };
 
+/**
+ * Discard a card in the game
+ * @param {number} game_id
+ * @param {number} card_id
+ * Throws an error if executed fail
+ */
 exports.discard = async (game_id, card_id) => {
   try {
     await gameCardsDriver.setDiscards(game_id, card_id);
@@ -297,6 +393,14 @@ exports.discard = async (game_id, card_id) => {
   }
 };
 
+/**
+ * Set the matching color and matching value of the game
+ * @param {number} game_id
+ * @param {string} matching_color
+ * @param {string} matching_value
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.setMatching = async (game_id, matching_color, matching_value) => {
   try {
     const is_success = await gamesDriver.setMatching(
@@ -310,6 +414,12 @@ exports.setMatching = async (game_id, matching_color, matching_value) => {
   }
 };
 
+/**
+ * Change the game direction of a game
+ * @param {number} game_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.changeDirection = async (game_id) => {
   try {
     const is_success = await gamesDriver.changeDirection(game_id);
@@ -319,6 +429,15 @@ exports.changeDirection = async (game_id) => {
   }
 };
 
+/**
+ * For a given user in a given game, the next player of the given user will draw two cards
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * Return an array has two elements:
+ * First element is an array of card id which drawed from the card pile.
+ * Second element is the user id of next player (who drawed the cards)
+ */
 exports.nextDrawTwo = async (game_id, user_id) => {
   try {
     const direction = await gamesDriver.getDirection(game_id);
@@ -346,6 +465,13 @@ exports.nextDrawTwo = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Set the uno status of given user in the given game as true.
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.setUno = async (game_id, user_id) => {
   try {
     const uno_status = true;
@@ -360,6 +486,13 @@ exports.setUno = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Reset the uno status of given user in the given game as false.
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.resetUno = async (game_id, user_id) => {
   try {
     const current_uno_status = await gameUsersDriver.getUnoStatus(
@@ -378,6 +511,13 @@ exports.resetUno = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Check whether the player is getting penalty cards (Forget to say uno before he/she played the second last card)
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * If not getting the penalty it will return false, otherwise will return [true, draw_card_id_list]
+ */
 exports.checkUnoPenalty = async (game_id, user_id) => {
   try {
     const game_cards = await gameCardsDriver.getPlayerCards(game_id, user_id);
@@ -398,6 +538,13 @@ exports.checkUnoPenalty = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Drawed four card for a given user in a given game
+ * @param {number} game_id
+ * @param {bynber} user_id
+ * @returns
+ * Return an array of card id if success; otherwise it will throw an error
+ */
 exports.drawFour = async (game_id, user_id) => {
   try {
     const card_id_list = await gameCardsDriver.drawCard(game_id, user_id, 4);
@@ -409,6 +556,14 @@ exports.drawFour = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Get the next player(user)'s id of a given user of a given game based on the current
+ * direction and initial order of the game
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * Return the user id of next player if executed successfully; otherwise it will throw an error
+ */
 exports.getNextPlayerId = async (game_id, user_id) => {
   try {
     const direction = await gamesDriver.getDirection(game_id);
@@ -426,6 +581,14 @@ exports.getNextPlayerId = async (game_id, user_id) => {
     throw err;
   }
 };
+
+/**
+ * Check whether the challenge made,and if challenge made, check whether the challenge is success;draw the penalty cards to the user based on the result of challenge.
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * Return a array if executes success: the 1st element is boolean value which indicated whether the current player do the challenge; the 2nd element is the user_id who drawed the penalty cards; the 3rd element is an array of the card id of penalty cards
+ */
 exports.checkChallenge = async (game_id, user_id) => {
   try {
     const direction = await gamesDriver.getDirection(game_id);
@@ -490,6 +653,12 @@ exports.checkChallenge = async (game_id, user_id) => {
   }
 };
 
+/**
+ * Get the undone_action of a given game
+ * @param {number} game_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.getUndoneAction = async (game_id) => {
   try {
     const undone_action = await gamesDriver.getUndoneAction(game_id);
@@ -501,7 +670,13 @@ exports.getUndoneAction = async (game_id) => {
   }
 };
 
-// sepecial case when user say uno but pass instead of play the card. reset uno.
+/**
+ * Sepecial case when user say uno but pass instead of play the card. reset uno status as false.
+ * @param {number} game_id
+ * @param {number} user_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will throw an error
+ */
 exports.resetUnoAtPass = async (game_id, user_id) => {
   try {
     const game_cards = await gameCardsDriver.getPlayerCards(game_id, user_id);
@@ -516,7 +691,15 @@ exports.resetUnoAtPass = async (game_id, user_id) => {
   }
 };
 
-exports.checkEndGame = async (game_id, user_id, card_id) => {
+/**
+ * Check whether the game is end (which the given player has 0 card in hand)
+ * @param {number} game_id
+ * @param {number} user_id
+ * @param {number} card_id
+ * @returns
+ * Return true for successfully excute the action, otherwise will return false
+ */
+exports.checkEndGame = async (game_id, user_id) => {
   try {
     const game_card = await gameCardsDriver.getPlayerCards(game_id, user_id);
     if (game_card && game_card.length === 0) {
@@ -529,6 +712,15 @@ exports.checkEndGame = async (game_id, user_id, card_id) => {
   }
 };
 
+/**
+ * Return the end game results; draw_card_performer and drawed_cards are the next user who has to
+ * finished the drawed card penalty side effect if the last card is wild draw four / draw two,
+ * @param {number} game_id
+ * @param {number} draw_card_performer
+ * @param {number} drawed_cards
+ * @returns
+ * Return the end game results based on the given info
+ */
 exports.endGame = async (game_id, draw_card_performer, drawed_cards) => {
   const game_results = {};
   game_results.game_id = game_id;

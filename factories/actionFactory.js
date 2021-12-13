@@ -21,7 +21,7 @@ const checkParams = (paramsObj, objParams) => {
 
 class ActionFactory {
   /**
-   *
+   * Factory to generate action obj according to the reciever and/or performer
    * @param {string} type of the action
    * @param {object} params an object contain the corresponded type of params of the action
    */

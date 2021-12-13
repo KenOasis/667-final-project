@@ -100,15 +100,22 @@ const sendChat = () => {
 };
 
 const startGame = (game_id) => {
+  const game_name = document.getElementById(`game-${game_id}`).dataset
+    .game_name;
   const form = document.createElement("form");
   form.style = "display: none;";
   form.method = "POST";
   form.action = "/game/join";
-  const input = document.createElement("input");
-  input.type = "hidden";
-  input.name = "game_id";
-  input.value = game_id;
-  form.appendChild(input);
+  const inputId = document.createElement("input");
+  inputId.type = "hidden";
+  inputId.name = "game_id";
+  inputId.value = game_id;
+  const inputName = document.createElement("input");
+  inputName.type = "hidden";
+  inputName.name = "game_name";
+  inputName.value = game_name;
+  form.appendChild(inputId);
+  form.appendChild(inputName);
   document.body.append(form);
   form.submit();
 };

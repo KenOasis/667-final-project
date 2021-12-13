@@ -7,7 +7,7 @@ exports.sendChat = (req, res, next) => {
   const message = req.body.message;
   const username = req.session.userName;
 
-  const timestamp = moment().format("h:mm a");
+  const timestamp = moment();
   if (id === 0) {
     eventsLobby.sendChat(username, timestamp, message);
   } else {
@@ -18,5 +18,4 @@ exports.sendChat = (req, res, next) => {
   return res.status(200).json({
     status: "success",
   });
-  // TODO, broadcast to specific game
 };

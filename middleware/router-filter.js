@@ -1,4 +1,4 @@
-// NOTE: if you are not filter the route here, you have to check the filter condition in the routes/controllers
+// NOTE: if you are not filter the route here, you have to check the filter condition in the controller
 // You can find example at /transition
 // Manually added path which cannot visted when logged in
 const forbid_logged_in = ["/login", "/signup", "/user/login", "/user/signup"];

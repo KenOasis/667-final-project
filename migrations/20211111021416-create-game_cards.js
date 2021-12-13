@@ -25,7 +25,7 @@ module.exports = {
             model: "users",
             key: "id",
           },
-          onDelete: "CASCADE",
+          onDelete: "RESTRICT",
           unique: "game_user_card_unique",
         },
         card_id: {

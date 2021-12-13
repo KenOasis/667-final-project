@@ -1,13 +1,6 @@
-/**
- *  This class is used for generate action object
- *  which is returned to the frondend to reflect
- *  the changes of the game state (before and after
- *  the last user action)
- */
 
 
-
-//FINISH
+// Example of game_state and update obj
 const game_state = {
  
   game_id: 2,

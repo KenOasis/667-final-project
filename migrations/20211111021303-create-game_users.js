@@ -16,7 +16,7 @@ module.exports = {
             model: "games",
             key: "id",
           },
-          onDelete: "RESTRICT",
+          onDelete: "CASCADE",
           unique: "game_user_unique",
         },
         user_id: {

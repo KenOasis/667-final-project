@@ -17,7 +17,7 @@ router.get("/", lobbyController.getLobby);
  * @queryParam
  *  id = 0   //the id here should be 0, the chat will be send to the lobby hall
  * @body {
- *  message
+ *  message: string
  * }
  */
 router.post("/chat", chatController.sendChat);
@@ -26,7 +26,7 @@ router.post("/chat", chatController.sendChat);
  * Create a new game room in the lobby
  * @route POST ../lobby/createGame
  * @body {
- *  game_name: 1
+ *  game_name: number
  * }
  */
 router.post(
@@ -39,7 +39,7 @@ router.post(
  * Join a selected game room in the lobby
  * @route POST ../lobby/joinGame
  * @body {
- *  game_id: 1
+ *  game_id: number
  * }
  */
 router.post("/joinGame", lobbyController.joinGame);
@@ -48,7 +48,7 @@ router.post("/joinGame", lobbyController.joinGame);
  * Left the game you joint in the lobby
  * @route POST ../lobby/leaveGame
  * @body {
- *  game_id: 1
+ *  game_id: number
  * }
  */
 router.post("/leaveGame", lobbyController.leaveGame);

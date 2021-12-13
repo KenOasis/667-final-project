@@ -10,7 +10,7 @@ const actionInGameValidator = require("../../middleware/action-in-game-validator
  * Joined and rendered a game page
  * @route POST ../game/join
  * @body {
- *  game_id: 1
+ *  game_id: number
  * }
  */
 router.post("/join", userInGameValidator, gameController.joinGame);
@@ -19,7 +19,7 @@ router.post("/join", userInGameValidator, gameController.joinGame);
  * Returned a game state of a game
  * @route POST ../game/loadgamestate
  * @body {
- *  game_id: 1
+ *  game_id: number
  * }
  */
 router.post(
@@ -32,7 +32,7 @@ router.post(
  * Player draws a card from card pile in a game
  * @route POST ../game/drawcard
  * @body {
- *  game_id: 1
+ *  game_id: number
  * }
  */
 router.post(
@@ -46,7 +46,7 @@ router.post(
  * Player pass his/her own round in a game after draw card.
  * @route POST ../game/pass
  * @body {
- *  game_id: 1
+ *  game_id: number
  * }
  */
 router.post(
@@ -60,9 +60,9 @@ router.post(
  * Player plays a card in a game
  * @route POST ../game/playcard
  * @body {
- *  game_id: 1,
- *  card_id: 2,
- *  undone_action,   // for the reset   undone_action if undone_action === "draw"
+ *  game_id: number,
+ *  card_id: number,
+ *  undone_action: enum_type,   // for the reset   undone_action if undone_action === "draw"
  * }
  */
 router.post(
@@ -76,7 +76,7 @@ router.post(
  * Player says uno in a game
  * @route POST ../game/sayuno
  * @body {
- *  game_id: 1
+ *  game_id: number
  * }
  */
 router.post(
@@ -90,8 +90,8 @@ router.post(
  * Player do challenge when the last player played wild_draw_four
  * @route POST ../game/challenge
  * @body {
- *  game_id: 1,
- *  is_challenge: true
+ *  game_id: number,
+ *  is_challenge: boolean
  * }
  * @
  */
@@ -102,5 +102,14 @@ router.post(
   gameController.challenge
 );
 
+/**
+ * Send the chat to the lobby
+ * @route POST .../lobby/chat
+ * @queryParam
+ *  id: game_id (number)
+ * @body {
+ *  message: string
+ * }
+ */
 router.post("/chat", chatController.sendChat);
 exports.routes = router;

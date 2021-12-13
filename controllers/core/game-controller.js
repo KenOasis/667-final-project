@@ -4,8 +4,8 @@ const CardFactory = require("../../factories/cardFactory");
 const eventsGame = require("../../socket/eventsGame");
 
 exports.joinGame = async (req, res, next) => {
-  const username = req.session.userName;
   const game_id = +req.body.game_id;
+  const game_name = req.body.game_name;
   try {
     const is_active_game = await coreDriver.isActiveGame(game_id);
     if (!is_active_game) {
@@ -13,8 +13,13 @@ exports.joinGame = async (req, res, next) => {
     }
     const user_list = await coreDriver.getGameUserList(game_id);
     if (user_list && user_list.length) {
-      eventsGame.userJoin(game_id, username, user_list);
-      res.status(200).render("game", { user_list: JSON.stringify(user_list) });
+      eventsGame.userJoin(game_id, user_list);
+      res
+        .status(200)
+        .render("game", {
+          title: game_name,
+          user_list: JSON.stringify(user_list),
+        });
     }
   } catch (err) {
     console.error(err);
