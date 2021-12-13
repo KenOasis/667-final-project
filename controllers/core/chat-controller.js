@@ -18,5 +18,4 @@ exports.sendChat = (req, res, next) => {
   return res.status(200).json({
     status: "success",
   });
-  // TODO, broadcast to specific game
 };

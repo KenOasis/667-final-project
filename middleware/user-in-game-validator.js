@@ -1,5 +1,7 @@
 const coreDriver = require("../db/drivers/core-driver");
 const ValidationError = require("../error/ValidationError");
+
+// Checked whether the user is in a certain game.
 const userInGameValidator = async (req, res, next) => {
   const user_id = req.session.userId;
   const { game_id } = req.body;

@@ -3,11 +3,8 @@ const coreDriver = require("../drivers/core-driver");
 const eventsLobby = require("../../socket/eventsLobby");
 const e = require("cors");
 /**
- * This is the Game List data manager for handler the
- * create/join/leavy of game room in the lobby page
- * This is VOLATILE means once the server shutdowns/restarts
- * the data will be gone. check dummy_data at the end to see the format
- *
+ * This is the Game List data driver manager for handle the
+ * create/join/leave actions of game room in the lobby hall
  */
 
 const gameListManager = {
@@ -26,7 +23,7 @@ const gameListManager = {
 
   /**
    *
-   * @param {*} user_id
+   * @param {number} user_id
    * @returns [user.status, game_list]
    */
   getUserStatus: async function (user_id) {
@@ -55,8 +52,12 @@ const gameListManager = {
 
   /**
    *
-   * @param {*} game_name
-   * @param {*} user
+   * @param {string} game_name
+   * @param {obj} user
+   * {
+   *  username: string,
+   *  user_id: number
+   * }
    * @returns game_list
    */
   createGame: async function (game_name, user) {
@@ -75,8 +76,12 @@ const gameListManager = {
 
   /**
    *
-   * @param {*} game_id
-   * @param {*} user
+   * @param {number} game_id
+   * @param {object} user
+   * {
+   *  username: string,
+   *  user_id: number
+   * }
    * @returns [user.status, game_list] | [];
    */
   joinGame: async function (game_id, user) {
@@ -96,8 +101,12 @@ const gameListManager = {
 
   /**
    *
-   * @param {*} game_id
-   * @param {*} user
+   * @param {number} game_id
+   * @param {obj} user
+   * {
+   *  username: string,
+   *  user_id: number
+   * }
    * @returns game_list
    */
   leaveGame: async function (game_id, user) {
@@ -116,7 +125,7 @@ const gameListManager = {
 
   /**
    * Change the game.status and user.status when game is initiled
-   * @param {*} game_id
+   * @param {number} game_id
    * @returns
    */
   initGame: async function (game_id) {
@@ -148,11 +157,13 @@ const gameListManager = {
   },
   userLeaveLobby: function (user_id) {
     // TODO should delate a row in game user table if it is not started (not game_cards)
+    // Should be done in dbm.
   },
 };
 
 module.exports = gameListManager;
 
+// game obj example
 const dummy_data = {
   game_id: 2,
   name: "Uno!",

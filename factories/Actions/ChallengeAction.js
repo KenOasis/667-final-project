@@ -8,7 +8,7 @@ class ChallengeAction extends Action {
    * @param {boolean} is_success if do the challenge, is it success ?
    * @param {number} penalty_player who get the penalty
    * @param {number} penalty_count how many penlalty cards
-   * @param {[number]} penalty_cards card's ids
+   * @param {number[]} penalty_cards card's ids
    * @param {number} receiver who is goint to receiver this update action ?
    */
   constructor(

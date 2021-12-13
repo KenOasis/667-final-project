@@ -16,6 +16,7 @@ const card_face_values = [
   "none",
 ];
 
+// create an array of cards for initializing the cards table in db
 card_types.forEach((card_type) => {
   if (card_type === "number") {
     card_face_values.forEach((face_value) => {

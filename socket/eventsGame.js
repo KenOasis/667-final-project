@@ -1,7 +1,7 @@
 const coreDriver = require("../db/drivers/core-driver");
 const ActionFactory = require("../factories/actionFactory");
 const moment = require("moment");
-exports.userJoin = (game_id, username, user_list) => {
+exports.userJoin = (game_id, user_list) => {
   const gameSpace = require("./socket").getNameSpace("game");
   const room = "game-" + game_id;
   gameSpace.removeAllListeners();
@@ -9,6 +9,7 @@ exports.userJoin = (game_id, username, user_list) => {
   gameSpace.on("connect", (socket) => {
     socket.join(room);
     const timestamp = moment();
+    const username = socket.request.session.userName;
     gameSpace.in(room).emit("userJoin", { username, timestamp });
     gameSpace
       .in(room)
