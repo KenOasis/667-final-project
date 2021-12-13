@@ -94,6 +94,7 @@ const constructGameElement = (game) => {
   game_li.className = "list-group-item d-flex justify-content-between";
   game_li.id = "game-" + game.game_id;
   game_li.dataset.game_id = game.game_id;
+  game_li.dataset.game_name = game.name;
 
   const name_div = document.createElement("div");
   name_div.className = "badge bg-light text-primary";
