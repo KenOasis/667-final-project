@@ -53,4 +53,7 @@ router.post("/joinGame", lobbyController.joinGame);
  */
 router.post("/leaveGame", lobbyController.leaveGame);
 
+router.get("/room/:game_id&:game_name", lobbyController.joinRoom);
+
+router.post("/room/gameReady", lobbyController.startGame);
 exports.routes = router;

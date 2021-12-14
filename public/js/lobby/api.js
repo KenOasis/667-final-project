@@ -14,11 +14,13 @@ const createGame = () => {
     }),
   })
     .then((response) => response.json())
-    .then((results) => {
-      if (results.status === "failed") {
+    .then((result) => {
+      if (result.status === "success") {
+        location.href = `/lobby/room/${result.game_id}&${game_name}`;
+      } else if (result.status === "failed") {
         if (toastContainer) {
           const newToast = addToast(
-            "Created game failed: " + results.errors[0].msg
+            "Created game failed: " + result.errors[0].msg
           );
           let toast = new bootstrap.Toast(newToast);
           toast.show();
@@ -30,6 +32,7 @@ const createGame = () => {
 
 const joinGame = (event) => {
   const game_id = event.target.parentNode.parentNode.dataset.game_id;
+  const game_name = event.target.parentNode.parentNode.dataset.game_name;
   const url = "http://" + location.host + "/lobby/joinGame";
   const body = {
     game_id,
@@ -43,28 +46,32 @@ const joinGame = (event) => {
     }),
   })
     .then((response) => response.json())
-    .then((result) => {})
+    .then((result) => {
+      if (result.status === "success") {
+        location.href = `/lobby/room/${game_id}&${game_name}`;
+      }
+    })
     .catch((err) => console.log(err));
 };
 
-const leaveGame = (event) => {
-  const game_id = event.target.parentNode.parentNode.dataset.game_id;
-  const url = "http://" + location.host + "/lobby/leaveGame";
-  const body = {
-    game_id,
-  };
-  fetch(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-    credentials: "include",
-    headers: new Headers({
-      "content-type": "application/json",
-    }),
-  })
-    .then((response) => response.json())
-    .then((result) => {})
-    .catch((err) => console.log(err));
-};
+// const leaveGame = (event) => {
+//   const game_id = event.target.parentNode.parentNode.dataset.game_id;
+//   const url = "http://" + location.host + "/lobby/leaveGame";
+//   const body = {
+//     game_id,
+//   };
+//   fetch(url, {
+//     method: "POST",
+//     body: JSON.stringify(body),
+//     credentials: "include",
+//     headers: new Headers({
+//       "content-type": "application/json",
+//     }),
+//   })
+//     .then((response) => response.json())
+//     .then((result) => {})
+//     .catch((err) => console.log(err));
+// };
 
 const reconnectGame = (event) => {
   const form = document.createElement("form");

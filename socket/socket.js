@@ -12,6 +12,7 @@ module.exports = {
   },
   initNameSpace: () => {
     const lobby = this.io.of("lobby");
+    const room = this.io.of("room");
     const game = this.io.of("game");
   },
   getNameSpace: (name) => {

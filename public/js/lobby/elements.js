@@ -108,12 +108,12 @@ const constructGameElement = (game) => {
   if (indexOfUser !== -1) {
     const user = game.users[indexOfUser];
     if (user.status === "ready") {
-      const span_leave = document.createElement("span");
-      span_leave.className = "btn badge bg-danger rounded-spill mx-1";
-      span_leave.id = "game-" + game.game_id + "-leave";
-      span_leave.onclick = leaveGame;
-      span_leave.innerHTML = "leave";
-      buttons_div.appendChild(span_leave);
+      // const span_leave = document.createElement("span");
+      // span_leave.className = "btn badge bg-danger rounded-spill mx-1";
+      // span_leave.id = "game-" + game.game_id + "-leave";
+      // span_leave.onclick = leaveGame;
+      // span_leave.innerHTML = "leave";
+      // buttons_div.appendChild(span_leave);
     } else {
       // The game is playing
       const span_reconnect = document.createElement("span");
