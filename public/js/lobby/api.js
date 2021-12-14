@@ -15,7 +15,15 @@ const createGame = () => {
   })
     .then((response) => response.json())
     .then((results) => {
-      // Nothing to do, message was sent by socket
+      if (results.status === "failed") {
+        if (toastContainer) {
+          const newToast = addToast(
+            "Created game failed: " + results.errors[0].msg
+          );
+          let toast = new bootstrap.Toast(newToast);
+          toast.show();
+        }
+      }
     })
     .catch((err) => console.log(err));
 };

@@ -109,11 +109,14 @@ exports.changePWValidation = async (req, res, next) => {
 exports.gameNameValidation = async (req, res, next) => {
   await check("game_name")
     .isLength({ min: 3, max: 20 })
-    .withMessage("The length of game name is between 3 to 30!")
+    .withMessage("The length of game name must be  between 3 to 30!")
     .run(req);
   let results = validationResult(req);
   if (!results.isEmpty()) {
-    return res.status(400).json({ errors: results.array() });
+    return res.status(400).json({
+      status: "failed",
+      errors: results.array(),
+    });
   } else {
     next();
   }
