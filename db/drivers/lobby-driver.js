@@ -38,7 +38,7 @@ exports.createGame = async (game_name, user) => {
         0
       );
       if (game_user) {
-        return true;
+        return game.id;
       }
     }
   } catch (error) {
@@ -104,6 +104,23 @@ exports.checkGameFull = async (game_id) => {
       return [true, user_list];
     } else {
       return [false, []];
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getGameUsersByGameId = async (game_id) => {
+  try {
+    const game_users = await gameUsersDriver.getGameUsersByGameId(game_id);
+    if (game_users) {
+      const game_user_list = game_users.map((game_user) => {
+        return {
+          user_id: game_user.id,
+          username: game_user.username,
+        };
+      });
+      return game_user_list;
     }
   } catch (error) {
     throw error;

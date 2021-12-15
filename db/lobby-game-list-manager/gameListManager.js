@@ -1,7 +1,7 @@
 const lobbyDriver = require("../drivers/lobby-driver");
 const coreDriver = require("../drivers/core-driver");
 const eventsLobby = require("../../socket/eventsLobby");
-const e = require("cors");
+const eventsRoom = require("../../socket/eventsRoom");
 /**
  * This is the Game List data driver manager for handle the
  * create/join/leave actions of game room in the lobby hall
@@ -62,12 +62,12 @@ const gameListManager = {
    */
   createGame: async function (game_name, user) {
     try {
-      const is_game_created = await lobbyDriver.createGame(game_name, user);
+      const game_id = await lobbyDriver.createGame(game_name, user);
 
-      if (is_game_created) {
+      if (game_id) {
         const [user_status, game_list] = await this.getUserStatus(user.user_id);
         eventsLobby.userStatusUpdate(user.username, user_status);
-        return game_list;
+        return [game_id, game_list];
       }
     } catch (error) {
       throw error;
@@ -146,7 +146,8 @@ const gameListManager = {
           eventsLobby.userStatusUpdate(user.username, user_status);
         }
         if (is_initial_success) {
-          eventsLobby.initGame(game_id, user_id_list, game_list);
+          eventsLobby.initGame(game_list);
+          return true;
         }
       } else {
         return false;

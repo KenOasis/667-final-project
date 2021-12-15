@@ -106,18 +106,18 @@ exports.gameListUpdate = (gameList) => {
   });
 };
 
-exports.initGame = (game_id, user_id_list, game_list) => {
+exports.initGame = (game_list) => {
   const lobbySpace = require("./socket").getNameSpace("lobby");
   lobbySpace.emit("updateGameList", { game_list });
-  lobbySpace.fetchSockets().then((sockets) => {
-    users_socket = sockets.filter((socket) =>
-      user_id_list.includes(socket.request.session.userId)
-    );
-    users_socket.forEach((socket) => {
-      lobbySpace.to(socket.id).emit("gameReady", {
-        game_id: game_id,
-        message: `Game is ready, will start soon!`,
-      });
-    });
-  });
+  // lobbySpace.fetchSockets().then((sockets) => {
+  //   users_socket = sockets.filter((socket) =>
+  //     user_id_list.includes(socket.request.session.userId)
+  //   );
+  //   users_socket.forEach((socket) => {
+  //     lobbySpace.to(socket.id).emit("gameReady", {
+  //       game_id: game_id,
+  //       message: `Game is ready, will start soon!`,
+  //     });
+  //   });
+  // });
 };
