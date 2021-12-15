@@ -4,7 +4,7 @@ const chatController = require("../../controllers/core/chat-controller");
 const lobbyController = require("../../controllers/core/lobby-controller");
 const backendValidator = require("../../middleware/backend-validator");
 const userInGameValidator = require("../../middleware/user-in-game-validator");
-
+const rejoinFilter = require("../../middleware/rejoin-filter");
 /**
  * Render page to the lobby hall
  * @route GET .../lobby/
@@ -54,11 +54,22 @@ router.post("/joinGame", lobbyController.joinGame);
  */
 router.post("/leaveGame", userInGameValidator, lobbyController.leaveGame);
 
+/**
+ * Join the game (waiting) room page
+ * @route GET ../lobby/room/:game_id&:game_name"
+ */
 router.get(
   "/room/:game_id&:game_name",
   userInGameValidator,
+  rejoinFilter,
   lobbyController.joinRoom
 );
-
+/**
+ * Informed the server that all player are ready to start game
+ * @route POST ../room/gameReady
+ * @body {
+ *  game_id: number
+ * }
+ */
 router.post("/room/gameReady", userInGameValidator, lobbyController.startGame);
 exports.routes = router;
