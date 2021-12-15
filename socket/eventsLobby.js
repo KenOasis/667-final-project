@@ -2,6 +2,7 @@ const gameListManager = require("../db/lobby-game-list-manager/gameListManager")
 
 exports.joinLobby = async (user, currentUserStatus, gameList) => {
   const lobbySpace = require("./socket").getNameSpace("lobby");
+  const roomSpace = require("./socket").getNameSpace("room");
   const gameSpace = require("./socket").getNameSpace("game");
 
   let user_list = [];
@@ -13,7 +14,7 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
     // listen to the client event of disconnect
     try {
       const sockets_of_lobby_space = await lobbySpace.fetchSockets();
-      // filter sockets which is not whoami
+      // filter sockets which is not whoami in lobby namespace
       let sockets_in_lobby = sockets_of_lobby_space.filter(
         (socket) => socket.request.session.userName !== user.username
       );
@@ -23,9 +24,20 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
           user_id: socket.request.session.userId,
         };
       });
+      const sockets_of_room_space = await roomSpace.fetchSockets();
+      // filter sockets which is not whoami in room namespace
+      let sockets_in_room = sockets_of_room_space.filter(
+        (socket) => socket.request.session.userName !== user.username
+      );
 
+      sockets_in_room = sockets_in_room.map((socket) => {
+        return {
+          username: socket.request.session.userName,
+          user_id: socket.request.session.userId,
+        };
+      });
       const sockets_of_game_space = await gameSpace.fetchSockets();
-      // filter sockets which is not whoami
+      // filter sockets which is not whoami in game namespace
       let sockets_in_game = sockets_of_game_space.filter(
         (socket) => socket.request.session.userName !== user.username
       );
@@ -37,7 +49,9 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
         };
       });
 
-      user_list = sockets_in_lobby.concat(sockets_in_game);
+      user_list = sockets_in_lobby
+        .concat(sockets_in_game)
+        .concat(sockets_in_room);
       // stringnify all the user obj to string
       user_list = user_list.map((user) => JSON.stringify(user));
 
