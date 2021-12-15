@@ -25,27 +25,6 @@ body(style="width: 1600px; height: 500px")
       )
   div(class="text-center" style="width: 1000px; margin-left: 20%")
     #users(class="row")
-      div(class="col-3" style="width: 240px;")
-        div(class="card")
-          img(class="card-img" src="/images/profile/profile1.gif")
-          div(class="card-img-overlay")
-            h5(class="card-title") User1
-      div(class="col-3" style="width: 240px;")
-        div(class="card")
-          img(class="card-img" src="/images/profile/profile2.gif")
-          div(class="card-img-overlay")
-            h5(class="card-title") User2
-      div(class="col-3" style="width: 240px;")
-        div(class="card")
-          img(class="card-img" src="/images/profile/profile3.gif")
-          div(class="card-img-overlay")
-            h5(class="card-title") User3
-      div(class="col-3" style="width: 240px;")
-        div(class="card border border-success")
-          div(style="width: 214px; height: 214px;")
-          //- img(class="card-img" src="/images/profile/profile4.gif")
-          //- div(class="card-img-overlay")
-          //-   h5(class="card-title") User4
   button(class="btn btn-lg btn-outline-danger mt-2" type="button" onclick="leaveGame()" style="margin-left:20%;") leave
   script(type="text/javascript").
     let user_list = !{JSON.stringify(user_list)};
