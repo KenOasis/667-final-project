@@ -3,6 +3,7 @@ const router = express.Router();
 const chatController = require("../../controllers/core/chat-controller");
 const lobbyController = require("../../controllers/core/lobby-controller");
 const backendValidator = require("../../middleware/backend-validator");
+const userInGameValidator = require("../../middleware/user-in-game-validator");
 
 /**
  * Render page to the lobby hall
@@ -51,9 +52,13 @@ router.post("/joinGame", lobbyController.joinGame);
  *  game_id: number
  * }
  */
-router.post("/leaveGame", lobbyController.leaveGame);
+router.post("/leaveGame", userInGameValidator, lobbyController.leaveGame);
 
-router.get("/room/:game_id&:game_name", lobbyController.joinRoom);
+router.get(
+  "/room/:game_id&:game_name",
+  userInGameValidator,
+  lobbyController.joinRoom
+);
 
-router.post("/room/gameReady", lobbyController.startGame);
+router.post("/room/gameReady", userInGameValidator, lobbyController.startGame);
 exports.routes = router;

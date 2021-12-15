@@ -63,6 +63,8 @@ exports.leaveGame = async (req, res, next) => {
   try {
     const game_list = await gameListManager.leaveGame(game_id, user);
     eventsLobby.gameListUpdate(game_list);
+    const user_list = await lobbyDriver.getGameUsersByGameId(game_id);
+    eventsRoom.leaveRoom(game_id, user_list);
     return res.status(200).json({
       status: "success",
       message: "You have leave the game",

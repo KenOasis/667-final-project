@@ -134,3 +134,10 @@ const startGame = (game_id) => {
   document.body.append(form);
   form.submit();
 };
+
+const reJoin = (event) => {
+  // rejoin the game_room
+  const game_id = event.target.parentNode.parentNode.dataset.game_id;
+  const game_name = event.target.parentNode.parentNode.dataset.game_name;
+  location.href = `/lobby/room/${game_id}&${game_name}`;
+};

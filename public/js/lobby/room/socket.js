@@ -7,6 +7,7 @@ const socket = io(host, {
 
 socket.on("userListUpdate", (data) => {
   console.log("run");
+  constructUserList(data.user_list);
   user_list = data.user_list;
   console.log(user_list);
   if (data.user_list.length === 4) {
