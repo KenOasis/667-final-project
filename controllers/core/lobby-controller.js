@@ -21,7 +21,6 @@ exports.createGame = async (req, res, next) => {
       message: "Game: " + game_name + " is created!",
       game_id: game_id,
     });
-    // res.status(200).redirect(`/lobby/room/${game_id}&${game_name}`);
   } catch (error) {
     next(error);
   }
