@@ -39,6 +39,8 @@ socket.on("userLeaveLobby", (data) => {
 });
 
 socket.on("updateUserStatus", (data) => {
+  console.log("updateUserStatus");
+  console.log(data);
   let currentUser = document.getElementById(`user-${data.username}`);
   if (currentUser !== null) {
     const newUser = constructUserElement(data);
@@ -68,24 +70,3 @@ socket.on("initGame", (data) => {
   gameListContainer.insertBefore(new_game_li, current_game_li);
   gameListContainer.removeChild(current_game_li);
 });
-
-socket.on("gameReady", (data) => {
-  if (toastContainer) {
-    const newToast = addToast(data.message);
-    let toast = new bootstrap.Toast(newToast);
-    toast.show();
-  }
-  setTimeout(function () {
-    startGame(data.game_id);
-  }, 1000);
-  // startGame(data.game_id);
-});
-
-// test code for socket handshake.
-// socket.on('Hello', (data) => {
-//   // if (lobbyToast) {
-//   //   lobbyMessage.innerHTML = "Hello!" + data;
-//   //   let toast = new bootstrap.Toast(lobbyToast);
-//   //   toast.show();
-//   // }
-// });

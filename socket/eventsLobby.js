@@ -88,7 +88,39 @@ exports.joinLobby = async (user, currentUserStatus, gameList) => {
 
       socket.on("disconnect", () => {
         const username = socket.request.session.userName;
-        lobbySpace.emit("userLeaveLobby", { username });
+        setTimeout(function () {
+          roomSpace.fetchSockets().then((sockets_in_room) => {
+            if (
+              sockets_in_room.findIndex(
+                (s) =>
+                  s.request.session.userId === socket.request.session.userId
+              ) === -1
+            ) {
+              gameSpace.fetchSockets().then((sockets_in_game) => {
+                if (
+                  sockets_in_game.findIndex(
+                    (s) =>
+                      s.request.session.userId === socket.request.session.userId
+                  ) === -1
+                ) {
+                  lobbySpace.emit("userLeaveLobby", { username });
+                }
+              });
+            }
+          });
+        }, 2000);
+        // setTimeout(function () {
+        //   roomSpace.fetchSockets().then((sockets) => {
+        //     if (
+        //       sockets.findIndex(
+        //         (s) =>
+        //           s.request.session.userId === socket.request.session.userId
+        //       ) === -1
+        //     ) {
+        //       lobbySpace.emit("userLeaveLobby", { username });
+        //     }
+        //   });
+        // }, 2000);
       });
     } catch (err) {
       console.error(err);
